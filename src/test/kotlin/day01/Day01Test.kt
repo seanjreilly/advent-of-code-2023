@@ -10,6 +10,16 @@ class Day01Test {
         treb7uchet
     """.trimIndent().lines()
 
+    private val sampleInputPart2 = """
+        two1nine
+        eightwothree
+        abcone2threexyz
+        xtwone3four
+        4nineeightseven2
+        zoneight234
+        7pqrstsixteen
+    """.trimIndent().lines()
+
     @Test
     fun `firstDigit should return the first digit in the string`() {
         assert(firstDigit(sampleInput[0]) == '1')
@@ -35,7 +45,35 @@ class Day01Test {
     }
 
     @Test
+    fun `firstDigitPart2 should take spelled out digits into account`() {
+        assert(firstDigitPart2(sampleInputPart2[0]) == '2')
+        assert(firstDigitPart2(sampleInputPart2[1]) == '8')
+        assert(firstDigitPart2(sampleInputPart2[2]) == '1')
+        assert(firstDigitPart2(sampleInputPart2[3]) == '2')
+        assert(firstDigitPart2(sampleInputPart2[4]) == '4')
+        assert(firstDigitPart2(sampleInputPart2[5]) == '1')
+        assert(firstDigitPart2(sampleInputPart2[6]) == '7')
+    }
+
+    @Test
+    fun `lastDigitPart2 should take spelled out digits into account`() {
+        assert(lastDigitPart2(sampleInputPart2[0]) == '9')
+        assert(lastDigitPart2(sampleInputPart2[1]) == '3')
+        assert(lastDigitPart2(sampleInputPart2[2]) == '3')
+        assert(lastDigitPart2(sampleInputPart2[3]) == '4')
+        assert(lastDigitPart2(sampleInputPart2[4]) == '2')
+        assert(lastDigitPart2(sampleInputPart2[5]) == '4')
+        assert(lastDigitPart2(sampleInputPart2[6]) == '6')
+    }
+
+    @Test
     fun `part1 should return the sum of the first and last digits of every line`() {
         assert(part1(sampleInput) == 142L)
     }
+
+    @Test
+    fun `part2 should tranform the input, and then return the sum of the first and last digits of every line`() {
+        assert(part2(sampleInputPart2) == 281L)
+    }
+
 }
