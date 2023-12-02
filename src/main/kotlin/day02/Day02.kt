@@ -19,7 +19,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return input.map { parse(it) }.sumOf { it.power }.toLong()
 }
 
 private const val RED = "red"
@@ -42,4 +42,5 @@ internal fun parse(line: String): GameDescription {
 
 data class GameDescription(val id: Int, val maxRed: Int, val maxGreen: Int, val maxBlue: Int) {
     val possible: Boolean = maxRed <= 12 && maxGreen <= 13 && maxBlue <= 14
+    val power: Int = maxRed * maxGreen * maxBlue
 }

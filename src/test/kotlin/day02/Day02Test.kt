@@ -2,6 +2,7 @@ package day02
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import utils.readInput
 
 class Day02Test {
     private val sampleInput = """
@@ -51,10 +52,36 @@ class Day02Test {
             assert(!parse(sampleInput[3]).possible)
             assert(parse(sampleInput[4]).possible)
         }
+
+        @Test
+        fun `power should return minRed times minGreen times minBlue`() {
+            assert(parse(sampleInput[0]).power == 48)
+            assert(parse(sampleInput[1]).power == 12)
+            assert(parse(sampleInput[2]).power == 1560)
+            assert(parse(sampleInput[3]).power == 630)
+            assert(parse(sampleInput[4]).power == 36)
+        }
+    }
+
+    @Test
+    fun `sanity check -- the production file should not include any lines that don't mention every color at least once`() {
+        val lines = readInput("Day02")
+        lines.forEach {
+            val gd = parse(it)
+
+            assert(gd.maxRed > 0) { "line ${gd.id} doesn't have any red cubes" }
+            assert(gd.maxGreen > 0) { "line ${gd.id} doesn't have any green cubes" }
+            assert(gd.maxBlue > 0) { "line ${gd.id} doesn't have any blue cubes" }
+        }
     }
 
     @Test
     fun `part1 should find the possible games and return the sum of their ids`() {
         assert(part1(sampleInput) == 8L)
+    }
+
+    @Test
+    fun `part2 should return the sum of the games power scores`() {
+        assert(part2(sampleInput) == 2286L)
     }
 }
