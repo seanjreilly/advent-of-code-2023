@@ -15,11 +15,11 @@ fun main() {
 }
 
 fun part1(input: List<String>): Long {
-    return input.map { parse(it) }.filter { it.possible }.sumOf { it.id }.toLong()
+    return input.map(::parse).filter { it.possible }.sumOf { it.id }.toLong()
 }
 
 fun part2(input: List<String>): Long {
-    return input.map { parse(it) }.sumOf { it.power }.toLong()
+    return input.map(::parse).sumOf { it.power }.toLong()
 }
 
 private const val RED = "red"
