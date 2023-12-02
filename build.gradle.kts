@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.21"
     id("com.bnorm.power.kotlin-power-assert") version "0.13.0"
+    `jvm-test-suite`
 }
 
 repositories {
@@ -14,14 +15,21 @@ kotlin {
     jvmToolchain(21)
 }
 
-tasks {
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events("passed", "skipped", "failed")
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
         }
     }
 }
+
+//tasks {
+//    test {
+//        testLogging {
+//            events("passed", "skipped", "failed")
+//        }
+//    }
+//}
 
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.1"))
