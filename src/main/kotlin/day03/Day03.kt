@@ -18,7 +18,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return findGears(input).sumOf { it.firstPartNumber.toLong() * it.secondPartNumber.toLong() }
 }
 
 private val DIGITS_REGEX = """\d+""".toRegex()
@@ -63,4 +63,25 @@ internal data class SymbolPosition(val line: Int, val column: Int)
 
 internal data class PartNumber(val value: String, val adjacentSymbolPositions: Set<SymbolPosition>) {
     internal constructor(value: String, vararg adjacentSymbolPositions: SymbolPosition) : this(value, adjacentSymbolPositions.toSet())
+}
+
+internal class Gear(val firstPartNumber: String, val secondPartNumber: String) {
+    val partNumbers = setOf(firstPartNumber, secondPartNumber)
+}
+
+internal fun findGears(input: List<String>): List<Gear> {
+    //build an inverse index of symbol positions to adjacent part numbers
+    val partNumbersByAdjacentSymbolPosition = findPartNumbers(input)
+        .flatMap { partNumber -> partNumber.adjacentSymbolPositions.map { Pair(it, partNumber.value) } }
+        .groupBy( { it.first }, { it.second } )
+
+    val starSymbolLocations = input
+        .flatMapIndexed { lineNumber: Int, line: String ->
+            line.withIndex().filter { it.value == '*' }.map { SymbolPosition(lineNumber, it.index) }
+        }
+
+    return starSymbolLocations
+        .map { partNumbersByAdjacentSymbolPosition[it] ?: emptyList() } //a star symbol might not be adjacent to any part numbers
+        .filter { it.size == 2 }
+        .map { Gear(it.first(), it.last()) }
 }

@@ -34,10 +34,24 @@ class Day03Test {
     }
 
     @Test
+    fun `findGears should find star symbols adjacent to exactly 2 part numbers and return the values`() {
+        val results: List<Gear> = findGears(sampleInput)
+
+        assert(results.size == 2)
+        assert(results[0].partNumbers == setOf("467", "35"))
+        assert(results[1].partNumbers == setOf("755", "598"))
+    }
+
+    @Test
     fun `part1 should return the sum of all the part numbers in the engine schematic `() {
         assert(part1(sampleInput) == 4361L)
     }
-    
+
+    @Test
+    fun `part2 should calculate the product of the part numbers for each gear and return the sum of those products`() {
+        assert(part2(sampleInput) == 467835L)
+    }
+
     @Nested
     inner class StringTest {
         @Test
