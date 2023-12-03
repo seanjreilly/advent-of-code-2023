@@ -76,12 +76,8 @@ internal fun findGears(input: List<String>): List<Gear> {
         .flatMap { partNumber -> partNumber.adjacentSymbolPositions.map { Pair(it, partNumber.value) } }
         .groupBy( { it.first }, { it.second } )
 
-    val starSymbolLocations = input
-        .flatMapIndexed { lineNumber: Int, line: String ->
-            line.withIndex().filter { it.value == '*' }.map { SymbolPosition(lineNumber, it.index) }
-        }
-
-    return starSymbolLocations
+    return input
+        .buildSymbolPositions { it == '*' }
         .map { partNumbersByAdjacentSymbolPosition[it] ?: emptyList() } //a star symbol might not be adjacent to any part numbers
         .filter { it.size == 2 }
         .map { Gear(it.first(), it.last()) }
