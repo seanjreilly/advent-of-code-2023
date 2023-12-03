@@ -46,16 +46,14 @@ private fun generatePotentialSymbolPositions(match: MatchResult, lineNumber: Int
 
 
 internal fun List<String>.buildSymbolPositions() = this
-    .flatMapIndexed { lineNumber, line -> line.symbolPositions().map { SymbolPosition(lineNumber, it) } }
+    .flatMapIndexed { lineNumber, line ->
+        line.toCharArray()
+            .withIndex()
+            .filter { it.value.isSymbol() }
+            .map { it.index }
+            .toSet().map { SymbolPosition(lineNumber, it) }
+    }
     .toSet()
-
-internal fun String.symbolPositions(): Set<Int> {
-    return this.toCharArray()
-        .withIndex()
-        .filter { it.value.isSymbol() }
-        .map { it.index }
-        .toSet()
-}
 
 internal fun Char.isSymbol() = this != '.' && !this.isDigit()
 
@@ -70,7 +68,7 @@ internal class Gear(val firstPartNumber: String, val secondPartNumber: String) {
 }
 
 internal fun findGears(input: List<String>): List<Gear> {
-    //build an inverse index of symbol positions to adjacent part numbers
+    //build an inverse mapping of symbol positions to adjacent part numbers
     val partNumbersByAdjacentSymbolPosition = findPartNumbers(input)
         .flatMap { partNumber -> partNumber.adjacentSymbolPositions.map { Pair(it, partNumber.value) } }
         .groupBy( { it.first }, { it.second } )

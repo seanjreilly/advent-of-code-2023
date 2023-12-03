@@ -53,18 +53,6 @@ class Day03Test {
     }
 
     @Nested
-    inner class StringTest {
-        @Test
-        fun `symbolPositions() should return the set of positions in the string that contain symbols`() {
-            assert(sampleInput[0].symbolPositions() == emptySet<Int>())
-            assert(sampleInput[1].symbolPositions() == setOf(3))
-
-            assert(sampleInput[3].symbolPositions() == setOf(6))
-            assert(sampleInput[8].symbolPositions() == setOf(3,5))
-        }
-    }
-
-    @Nested
     inner class ListOfStringTest {
 
         @Test
