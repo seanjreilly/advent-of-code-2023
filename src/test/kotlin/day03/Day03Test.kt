@@ -38,8 +38,8 @@ class Day03Test {
         val results: List<Gear> = findGears(sampleInput)
 
         assert(results.size == 2)
-        assert(results[0].partNumbers == setOf("467", "35"))
-        assert(results[1].partNumbers == setOf("755", "598"))
+        assert(results[0].partNumbers == setOf(467L, 35L))
+        assert(results[1].partNumbers == setOf(755L, 598L))
     }
 
     @Test

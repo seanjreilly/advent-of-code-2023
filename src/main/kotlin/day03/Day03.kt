@@ -14,11 +14,11 @@ fun main() {
 }
 
 fun part1(input: List<String>): Long {
-    return findPartNumbers(input).sumOf { it.value.toLong() }
+    return findPartNumbers(input).sumOf { it.value }
 }
 
 fun part2(input: List<String>): Long {
-    return findGears(input).sumOf { it.firstPartNumber.toLong() * it.secondPartNumber.toLong() }
+    return findGears(input).sumOf { it.firstPartNumber * it.secondPartNumber }
 }
 
 private val DIGITS_REGEX = """\d+""".toRegex()
@@ -31,7 +31,7 @@ internal fun findPartNumbers(input: List<String>): List<PartNumber> {
                 val adjacentSymbolPositions = generatePotentialSymbolPositions(match, lineNumber)
                     .filter { it in validSymbolPositions }
                     .toSet()
-                PartNumber(match.value, adjacentSymbolPositions)
+                PartNumber(match.value.toLong(), adjacentSymbolPositions)
             }
             .filter { it.adjacentSymbolPositions.isNotEmpty() }
             .toList()
@@ -62,11 +62,11 @@ internal fun Char.isSymbol() = this != '.' && !this.isDigit()
 
 internal data class SymbolPosition(val line: Int, val column: Int)
 
-internal data class PartNumber(val value: String, val adjacentSymbolPositions: Set<SymbolPosition>) {
-    internal constructor(value: String, vararg adjacentSymbolPositions: SymbolPosition) : this(value, adjacentSymbolPositions.toSet())
+internal data class PartNumber(val value: Long, val adjacentSymbolPositions: Set<SymbolPosition>) {
+    internal constructor(value: String, vararg adjacentSymbolPositions: SymbolPosition) : this(value.toLong(), adjacentSymbolPositions.toSet())
 }
 
-internal class Gear(val firstPartNumber: String, val secondPartNumber: String) {
+internal class Gear(val firstPartNumber: Long, val secondPartNumber: Long) {
     val partNumbers = setOf(firstPartNumber, secondPartNumber)
 }
 
