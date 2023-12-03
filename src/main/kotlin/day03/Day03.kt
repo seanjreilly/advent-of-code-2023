@@ -46,7 +46,7 @@ private fun generatePotentialSymbolPositions(match: MatchResult, lineNumber: Int
 
 internal typealias Predicate = (Char) -> Boolean
 
-internal fun List<String>.buildSymbolPositions(predicate: Predicate = { c: Char -> c.isSymbol() }): Set<SymbolPosition> {
+internal fun List<String>.buildSymbolPositions(predicate: Predicate = Char::isSymbol): Set<SymbolPosition> {
     return this
         .flatMapIndexed { lineNumber, line ->
             line.toCharArray()
