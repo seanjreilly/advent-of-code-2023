@@ -18,19 +18,19 @@ class Day03Test {
     """.trimIndent().lines()
 
     @Test
-    fun `findPartNumbers() should return the number runs that are adjacent to a symbol, given a line, line number and a map of symbol positions`() {
-        val symbolPositions = sampleInput.buildSymbolPositions()
+    fun `findPartNumbers() should return the part numbers that are adjacent to at least one symbol`() {
+        val partNumbers: List<PartNumber> = findPartNumbers(sampleInput)
 
-        assert(findPartNumbers(sampleInput[0], 0, symbolPositions) == listOf("467"))
-        assert(findPartNumbers(sampleInput[1], 1, symbolPositions) == emptyList<String>())
-        assert(findPartNumbers(sampleInput[2], 2, symbolPositions) == listOf("35", "633"))
-        assert(findPartNumbers(sampleInput[3], 3, symbolPositions) == emptyList<String>())
-        assert(findPartNumbers(sampleInput[4], 4, symbolPositions) == listOf("617"))
-        assert(findPartNumbers(sampleInput[5], 5, symbolPositions) == emptyList<String>())
-        assert(findPartNumbers(sampleInput[6], 6, symbolPositions) == listOf("592"))
-        assert(findPartNumbers(sampleInput[7], 7, symbolPositions) == listOf("755"))
-        assert(findPartNumbers(sampleInput[8], 8, symbolPositions) == emptyList<String>())
-        assert(findPartNumbers(sampleInput[9], 9, symbolPositions) == listOf("664", "598"))
+        assert(partNumbers.size == 8)
+        assert(partNumbers.contains(PartNumber("467", SymbolPosition(1,3))))
+        assert(partNumbers.contains(PartNumber("35", SymbolPosition(1,3))))
+        assert(partNumbers.contains(PartNumber("633", SymbolPosition(3,6))))
+        assert(partNumbers.contains(PartNumber("617", SymbolPosition(4,3))))
+        assert(partNumbers.contains(PartNumber("592", SymbolPosition(5,5))))
+        assert(partNumbers.contains(PartNumber("755", SymbolPosition(8,5))))
+        assert(partNumbers.contains(PartNumber("664", SymbolPosition(8,3))))
+        assert(partNumbers.contains(PartNumber("598", SymbolPosition(8,5))))
+
     }
 
     @Test
@@ -52,14 +52,18 @@ class Day03Test {
 
     @Nested
     inner class ListOfStringTest {
-        @Test
-        fun `buildSymbolPositions() should build a map of line number to symbol position`() {
-            val result: Map<Int, Set<Int>> = sampleInput.buildSymbolPositions()
 
-            assert(result.size == sampleInput.size)
-            sampleInput.forEachIndexed { index, line ->
-                assert(result[index] == line.symbolPositions())
-            }
+        @Test
+        fun `buildSymbolPositions() should build a set of SymbolPositions in the input that correspond to symbols`() {
+            val result: Set<SymbolPosition> = sampleInput.buildSymbolPositions()
+
+            assert(result.size == 6)
+            assert(SymbolPosition(1,3) in result)
+            assert(SymbolPosition(3,6) in result)
+            assert(SymbolPosition(4,3) in result)
+            assert(SymbolPosition(5,5) in result)
+            assert(SymbolPosition(8,3) in result)
+            assert(SymbolPosition(8,5) in result)
         }
     }
 
