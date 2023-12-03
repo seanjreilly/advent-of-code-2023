@@ -44,16 +44,17 @@ private fun generatePotentialSymbolPositions(match: MatchResult, lineNumber: Int
     return lineNumbers.flatMap { ln -> extendedRange.map { SymbolPosition(ln, it) } }
 }
 
-
-internal fun List<String>.buildSymbolPositions() = this
-    .flatMapIndexed { lineNumber, line ->
-        line.toCharArray()
-            .withIndex()
-            .filter { it.value.isSymbol() }
-            .map { it.index }
-            .toSet().map { SymbolPosition(lineNumber, it) }
-    }
-    .toSet()
+internal fun List<String>.buildSymbolPositions(predicate: (Char) -> Boolean = { c: Char -> c.isSymbol() }): Set<SymbolPosition> {
+    return this
+        .flatMapIndexed { lineNumber, line ->
+            line.toCharArray()
+                .withIndex()
+                .filter { predicate.invoke(it.value) }
+                .map { it.index }
+                .toSet().map { SymbolPosition(lineNumber, it) }
+        }
+        .toSet()
+}
 
 internal fun Char.isSymbol() = this != '.' && !this.isDigit()
 
