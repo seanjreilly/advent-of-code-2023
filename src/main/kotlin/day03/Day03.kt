@@ -18,7 +18,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return findGears(input).sumOf { it.firstPartNumber * it.secondPartNumber }
+    return findGears(input).sumOf { it.partNumbers.reduce(Long::times) }
 }
 
 private val DIGITS_REGEX = """\d+""".toRegex()
@@ -66,8 +66,8 @@ internal data class PartNumber(val value: Long, val adjacentSymbolPositions: Set
     internal constructor(value: String, vararg adjacentSymbolPositions: SymbolPosition) : this(value.toLong(), adjacentSymbolPositions.toSet())
 }
 
-internal class Gear(val firstPartNumber: Long, val secondPartNumber: Long) {
-    val partNumbers = setOf(firstPartNumber, secondPartNumber)
+internal class Gear(firstPartNumber: Long, secondPartNumber: Long) {
+    val partNumbers = listOf(firstPartNumber, secondPartNumber)
 }
 
 internal fun findGears(input: List<String>): List<Gear> {

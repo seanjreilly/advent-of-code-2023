@@ -33,13 +33,17 @@ class Day03Test {
 
     }
 
+    private infix fun <T> List<T>.equalsIgnoreOrder(other:List<T>) : Boolean {
+        return this.size == other.size && this.toSet() == other.toSet()
+    }
+
     @Test
     fun `findGears should find star symbols adjacent to exactly 2 part numbers and return the values`() {
         val results: List<Gear> = findGears(sampleInput)
 
         assert(results.size == 2)
-        assert(results[0].partNumbers == setOf(467L, 35L))
-        assert(results[1].partNumbers == setOf(755L, 598L))
+        assert(results[0].partNumbers equalsIgnoreOrder listOf(467L, 35L))
+        assert(results[1].partNumbers equalsIgnoreOrder listOf(755L, 598L))
     }
 
     @Test
