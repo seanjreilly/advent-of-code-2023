@@ -19,6 +19,11 @@ class Day04Test {
     }
 
     @Test
+    fun `part2 should win extra copies of the next n cards for the winning numbers on each card, and return the total number of cards seen `() {
+        assert(part2(sampleInput) == 30L)
+    }
+    
+    @Test
     fun `parseCard should return a card instance with winning numbers and selected numbers given an input line`() {
         val result: Card = parseCard(sampleInput[0])
 

@@ -22,8 +22,22 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    var remainingCards = input.map { CardCopies(parseCard(it), 1) } //start with 1 copy of each card
+    var cardsSeenSoFar = 0L
+    while (remainingCards.isNotEmpty()) {
+        val currentCard = remainingCards.first()
+        remainingCards = remainingCards.drop(1)
+
+        remainingCards
+            .take(currentCard.card.matchingNumberCount)
+            .forEach { it.copies += currentCard.copies }
+
+        cardsSeenSoFar += currentCard.copies
+    }
+    return cardsSeenSoFar
 }
+
+private class CardCopies(val card: Card, var copies: Int)
 
 internal class Card(val winningNumbers: Set<Int>, val numbersYouHave: Set<Int>) {
     val matchingNumberCount = winningNumbers.intersect(numbersYouHave).size
