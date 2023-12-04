@@ -22,12 +22,11 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    var remainingCardsAndCopies = input.map { CardCopies(parseCard(it), 1) } //start with 1 copy of each card
+    val remainingCardsAndCopies = input.map { CardCopies(parseCard(it), 1) }.toMutableList() //start with 1 copy of each card
     var cardsSeenSoFar = 0L
     while (remainingCardsAndCopies.isNotEmpty()) {
-        val (currentCard, currentCopies) = remainingCardsAndCopies.first()
+        val (currentCard, currentCopies) = remainingCardsAndCopies.removeAt(0)
         cardsSeenSoFar += currentCopies
-        remainingCardsAndCopies = remainingCardsAndCopies.drop(1)
 
         remainingCardsAndCopies
             .take(currentCard.matchingNumberCount)
