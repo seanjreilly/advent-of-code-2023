@@ -38,7 +38,9 @@ internal fun parseSeeds(input: List<String>): Set<Long> {
 
 internal class SparseMap(internal val mappings: List<Mapping>) {
     operator fun get(sourceValue: Long): Long {
-        return sourceValue + (mappings.firstOrNull { sourceValue in it.sourceRange }?.destinationOffset ?: 0L)
+        //if no mapping is found return the input by using an offset of zero
+        val offset = mappings.firstOrNull { sourceValue in it.sourceRange }?.destinationOffset ?: 0L
+        return sourceValue + offset
     }
 
     internal data class Mapping(val destinationRangeStart: Long, val sourceRangeStart: Long, val rangeLength: Long) {
