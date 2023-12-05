@@ -35,6 +35,16 @@ internal fun parseSeeds(input: List<String>): Set<Long> {
         .toSet()
 }
 
+internal fun parseSeedRanges(input: List<String>): Set<LongRange> {
+    return input.first()
+        .substringAfter(": ")
+        .split(" ")
+        .map { it.toLong() }
+        .windowed(2, 2)
+        .map { it.first() until (it.first() + it[1]) }
+        .toSet()
+}
+
 internal class SparseMap(internal val mappings: List<Mapping>) {
     operator fun get(sourceValue: Long): Long {
         //if no mapping is found return the input by using an offset of zero

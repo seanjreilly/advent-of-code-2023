@@ -48,6 +48,13 @@ class Day05Test {
     }
 
     @Test
+    fun `parseSeedRanges should return a list of seed ranges given an input file`() {
+        val result: Set<LongRange> = parseSeedRanges(sampleInput)
+
+        assert(result == setOf(79L until 93L, 55L until 68L))
+    }
+
+    @Test
     fun `part1 should parse the seed numbers and the appropriate maps, run each seed number through every map in order, and return the lowest overall result`() {
         assert(part1(sampleInput) == 35L)
     }
