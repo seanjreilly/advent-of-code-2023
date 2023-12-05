@@ -1,6 +1,7 @@
 package day05
 
 import utils.readInput
+import kotlin.streams.asStream
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -14,17 +15,36 @@ fun main() {
 }
 
 fun part1(input: List<String>): Long {
-    //every line containing a colon except the first is the start of a map definition
-    val maps = input
-        .filter { ':' in it }
-        .drop(1)
-        .map { SparseMap(input, it) }
-
+    val maps = parseSparseMaps(input)
     return parseSeeds(input).minOf { maps.fold(it) { accumulator, map -> map[accumulator] } }
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    val maps = parseSparseMaps(input)
+
+    //super naive implementation — takes forever
+    //    return parseSeedRanges(input)
+    //        .asSequence()
+    //        .flatten()
+    //        .minOf { maps.fold(it) { accumulator, map -> map[accumulator] } }
+
+    // ever-so-slightly less naive implementation that runs in parallel
+    // super slow but actually returns a result in just over 2 minutes on my mac
+    return parseSeedRanges(input)
+        .asSequence()
+        .asStream()
+        .parallel()
+        .flatMap { it.asSequence().asStream().parallel() }
+        .map { maps.fold(it) { accumulator, map -> map[accumulator] } }
+        .min(Comparator.comparingLong { it }).get()
+}
+
+private fun parseSparseMaps(input: List<String>): List<SparseMap> {
+    //every line containing a colon except the first is the start of a map definition
+    return input
+        .filter { ':' in it }
+        .drop(1)
+        .map { SparseMap(input, it) }
 }
 
 internal fun parseSeeds(input: List<String>): Set<Long> {

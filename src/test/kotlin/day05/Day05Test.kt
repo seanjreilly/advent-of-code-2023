@@ -59,6 +59,11 @@ class Day05Test {
         assert(part1(sampleInput) == 35L)
     }
 
+    @Test
+    fun `part2 should consider every seed in every range, run each seed number through every map in order, and return the lowest overall result`() {
+        assert(part2(sampleInput) == 46L)
+    }
+
     @Nested
     inner class SparseMapTest {
         @Test
