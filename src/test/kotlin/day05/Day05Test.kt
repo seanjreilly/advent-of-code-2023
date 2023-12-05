@@ -2,6 +2,8 @@ package day05
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.lang.IllegalArgumentException
 
 class Day05Test {
     private val sampleInput = """
@@ -112,6 +114,34 @@ class Day05Test {
         fun `get(sourceValue) should return its input given a source value that doesn't correspond to a mapping`() {
             val map = SparseMap(sampleInput, "seed-to-soil map:")
             assert(map[100L] == 100L)
+        }
+    }
+
+    @Nested
+    inner class LongRangeTest {
+        @Test
+        fun `split should return a list of ranges, each of the appropriate size`() {
+            val source: LongRange = 1L..27L
+            val result: List<LongRange> = source.split(10)
+
+            assert(result == listOf(1L..10L, 11L..20L, 21L..27L))
+        }
+
+        @Test
+        fun `split should work when the split is an exact divisor of the range`() {
+            val source: LongRange = 1L .. 20L
+            val result = source.split(5)
+
+            assert(result == listOf(1L..5L, 6L..10L, 11L..15L, 16L..20L))
+
+        }
+
+        @Test
+        fun `split should throw an exception when the range can't be split`() {
+            val source: LongRange = 1L .. 2L
+            val exception = assertThrows<IllegalArgumentException> { source.split(2) }
+
+            assert(exception.message == "Cannot split range into chunks of size 2")
         }
     }
 }

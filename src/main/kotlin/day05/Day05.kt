@@ -1,7 +1,7 @@
 package day05
 
 import utils.readInput
-import kotlin.streams.asStream
+import kotlin.math.min
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -21,22 +21,44 @@ fun part1(input: List<String>): Long {
 
 fun part2(input: List<String>): Long {
     val maps = parseSparseMaps(input)
+    fun transform(seedValue: Long) = maps.fold(seedValue) { accumulator, map -> map[accumulator] }
 
-    //super naive implementation — takes forever
-    //    return parseSeedRanges(input)
-    //        .asSequence()
-    //        .flatten()
-    //        .minOf { maps.fold(it) { accumulator, map -> map[accumulator] } }
+    // complex solution for speed: for each range, check if it's continuous
+    // if so, we just need to check the smallest value against our current best
+    // if not, break it into chunks and try each chunk again
+    // brute force small chunks
 
-    // ever-so-slightly less naive implementation that runs in parallel
-    // super slow but actually returns a result in just over 2 minutes on my mac
-    return parseSeedRanges(input)
-        .asSequence()
-        .asStream()
-        .parallel()
-        .flatMap { it.asSequence().asStream().parallel() }
-        .map { maps.fold(it) { accumulator, map -> map[accumulator] } }
-        .min(Comparator.comparingLong { it }).get()
+    fun isContinuous(range: LongRange): Boolean {
+        if (range.size() == 1L) {
+            return true //single value ranges are continuous by definition
+        }
+        val min = transform(range.first)
+        val step = transform(range.first + 1) - min
+
+        if (step < 0) {
+            return false //no messing around with negative slops
+        }
+
+        return (step * range.size()) + min == transform(range.last)
+    }
+
+    val rangesToSplit: ArrayDeque<LongRange> = ArrayDeque(parseSeedRanges(input))
+    var lowestValueSoFar = Long.MAX_VALUE
+
+    while (rangesToSplit.isNotEmpty()) {
+        val range = rangesToSplit.removeFirst()
+        if (isContinuous(range)) {
+            // the first part of a continuous range will yield the smallest value
+            lowestValueSoFar = min(lowestValueSoFar, transform(range.first))
+        } else if (range.size() < 10L) {
+            // brute force small ranges
+            // (necessary because small ranges can't be split properly)
+            lowestValueSoFar = min(lowestValueSoFar, range.minOf { transform(it) })
+        } else {
+            rangesToSplit += range.split(range.size() / 2) //split it into chunks and add them all to the queue to test
+        }
+    }
+    return lowestValueSoFar
 }
 
 private fun parseSparseMaps(input: List<String>): List<SparseMap> {
@@ -93,3 +115,21 @@ internal class SparseMap(internal val mappings: List<Mapping>) {
         }
     }
 }
+
+internal fun LongRange.split(chunkSize: Long): List<LongRange> {
+    val result = mutableListOf<LongRange>()
+    var remainingRange = this
+
+    while (remainingRange.size() > chunkSize) {
+        val startOfNextChunk = remainingRange.first + chunkSize
+        result += remainingRange.first until startOfNextChunk
+        remainingRange = startOfNextChunk..remainingRange.last
+    }
+    result += remainingRange
+    if (result.size < 2) {
+        throw IllegalArgumentException("Cannot split range into chunks of size ${chunkSize}")
+    }
+    return result
+}
+
+internal fun LongRange.size(): Long = this.last - this.first
