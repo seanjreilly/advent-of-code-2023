@@ -14,12 +14,11 @@ fun main() {
 }
 
 fun part1(input: List<String>): Long {
-
-    val maps = listOf(
-        "seed-to-soil", "soil-to-fertilizer", "fertilizer-to-water",
-        "water-to-light", "light-to-temperature", "temperature-to-humidity",
-        "humidity-to-location"
-    ).map { SparseMap(input, it) }
+    //every line containing a colon except the first is the start of a map definition
+    val maps = input
+        .filter { ':' in it }
+        .drop(1)
+        .map { SparseMap(input, it) }
 
     return parseSeeds(input).minOf { maps.fold(it) { accumulator, map -> map[accumulator] } }
 }
