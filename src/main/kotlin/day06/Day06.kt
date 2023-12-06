@@ -37,7 +37,6 @@ internal data class RaceDescription(val time: Long, val recordDistance: Long) {
         val bSquaredMinus4ac = time.toBigDecimal().pow(2) - (recordDistance.toBigDecimal() * 4.toBigDecimal())
         val rootBSquaredMinus4ac = bSquaredMinus4ac.sqrt(MathContext.DECIMAL128)
 
-
         val roots = listOf(
             (time.toBigDecimal().negate() - rootBSquaredMinus4ac) / ((-2).toBigDecimal()),
             (time.toBigDecimal().negate() + rootBSquaredMinus4ac) / ((-2).toBigDecimal()),
@@ -50,7 +49,7 @@ internal data class RaceDescription(val time: Long, val recordDistance: Long) {
         val longestRecordBreakingButtonPress = highestRoot.round(MathContext(64, RoundingMode.DOWN)).toLong()
         val algebraAnswer = longestRecordBreakingButtonPress - shortestRecordBreakingButtonPress
 
-        //correct for a quadratic root that is an exact match: there's one fewer record breaking option in this case.
+        //correct for a quadratic root that is an exact match: there's one fewer record-breaking option in this case.
         if (shortestRecordBreakingButtonPress * (time - shortestRecordBreakingButtonPress) == recordDistance) {
            return algebraAnswer - 1
         }
