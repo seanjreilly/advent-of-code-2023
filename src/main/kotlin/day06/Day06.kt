@@ -1,7 +1,8 @@
 package day06
 
 import utils.readInput
-import kotlin.streams.asStream
+import java.math.MathContext
+import java.math.RoundingMode
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -27,14 +28,34 @@ fun part2(input: List<String>): Long {
 
 internal data class RaceDescription(val time: Long, val recordDistance: Long) {
     fun waysToBeatRecordDistance(): Long {
-        val longRange = 0L until time
-        return longRange
-            .asSequence()
-            .asStream()
-            .parallel()
-            .map { it * (time - it) }
-            .filter { it > recordDistance }
-            .count()
+        // this is actually a quadratic equation of the form tx - x^2 = d (where t = time and d = distance)
+        // it starts and ends at negative infinity (forced to zero by the function)
+        // the points where x = 0 are the times when we begin and end to break the record
+        // we can solve for those using the formula for finding quadratic equation roots
+        // x = (-t +/- sqrt(t^2 - 4d))/ -2
+
+        val bSquaredMinus4ac = time.toBigDecimal().pow(2) - (recordDistance.toBigDecimal() * 4.toBigDecimal())
+        val rootBSquaredMinus4ac = bSquaredMinus4ac.sqrt(MathContext.DECIMAL128)
+
+
+        val roots = listOf(
+            (time.toBigDecimal().negate() - rootBSquaredMinus4ac) / ((-2).toBigDecimal()),
+            (time.toBigDecimal().negate() + rootBSquaredMinus4ac) / ((-2).toBigDecimal()),
+        )
+
+        val lowestRoot = roots.min()
+        val highestRoot = roots.max()
+
+        val shortestRecordBreakingButtonPress = lowestRoot.round(MathContext(64, RoundingMode.UP)).toLong()
+        val longestRecordBreakingButtonPress = highestRoot.round(MathContext(64, RoundingMode.DOWN)).toLong()
+        val algebraAnswer = longestRecordBreakingButtonPress - shortestRecordBreakingButtonPress
+
+        //correct for a quadratic root that is an exact match: there's one fewer record breaking option in this case.
+        if (shortestRecordBreakingButtonPress * (time - shortestRecordBreakingButtonPress) == recordDistance) {
+           return algebraAnswer - 1
+        }
+
+        return algebraAnswer
     }
 }
 
