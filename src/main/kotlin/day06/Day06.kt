@@ -25,23 +25,24 @@ fun part2(input: List<String>): Long {
 }
 
 internal fun parse(input: List<String>): List<RaceDescription> {
-    val times = parseSpaceDelimitedInts(input.first())
-    val recordDistances = parseSpaceDelimitedInts(input.last())
+    val times = parseSpaceDelimitedNumbers(input.first())
+    val recordDistances = parseSpaceDelimitedNumbers(input.last())
     return times.zip(recordDistances, ::RaceDescription)
 }
 
-private fun parseSpaceDelimitedInts(line: String): List<Int> {
+private fun parseSpaceDelimitedNumbers(line: String): List<Long> {
     return line
         .substringAfter(":")
         .split(' ')
         .map { it.trim() }
         .filter { it.isNotBlank() }
-        .map { it.toInt() }
+        .map { it.toLong() }
 }
 
-internal data class RaceDescription(val time: Int, val recordDistance: Int) {
+internal data class RaceDescription(val time: Long, val recordDistance: Long) {
     fun waysToBeatRecordDistance(): Int {
-        return (0 until time)
+        val longRange = 0L until time
+        return longRange
             .map { it * (time - it) }
             .count { it > recordDistance }
     }
