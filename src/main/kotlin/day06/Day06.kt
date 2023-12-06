@@ -49,13 +49,16 @@ internal data class RaceDescription(val time: Long, val recordDistance: Long) {
         val longestRecordBreakingButtonPress = highestRoot.round(MathContext(64, RoundingMode.DOWN)).toLong()
         val algebraAnswer = longestRecordBreakingButtonPress - shortestRecordBreakingButtonPress
 
-        //correct for a quadratic root that is an exact match: there's one fewer record-breaking option in this case.
-        if (shortestRecordBreakingButtonPress * (time - shortestRecordBreakingButtonPress) == recordDistance) {
+        // correct for a quadratic root that is an exact match on the lower bound:
+        // there's one fewer record-breaking option in this case (because it will tie the record)
+        if (calculateDistance(shortestRecordBreakingButtonPress) == recordDistance) {
            return algebraAnswer - 1
         }
 
         return algebraAnswer
     }
+
+    private fun calculateDistance(buttonPressTime: Long) = buttonPressTime * (time - buttonPressTime)
 }
 
 internal fun parse(input: List<String>): List<RaceDescription> {
