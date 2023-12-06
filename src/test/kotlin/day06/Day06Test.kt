@@ -42,10 +42,9 @@ class Day06Test {
     inner class RaceDescriptionTest {
         @Test
         fun `waysToBeatRecordDistance() should return the possible ways to beat the record distance for the race`() {
-            assert(RaceDescription(7, 9).waysToBeatRecordDistance() == 4)
-            assert(RaceDescription(15, 40).waysToBeatRecordDistance() == 8)
-            assert(RaceDescription(30, 200).waysToBeatRecordDistance() == 9)
+            assert(RaceDescription(7, 9).waysToBeatRecordDistance() == 4L)
+            assert(RaceDescription(15, 40).waysToBeatRecordDistance() == 8L)
+            assert(RaceDescription(30, 200).waysToBeatRecordDistance() == 9L)
         }
     }
-
 }

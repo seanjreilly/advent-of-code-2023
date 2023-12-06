@@ -1,6 +1,7 @@
 package day06
 
 import utils.readInput
+import kotlin.streams.asStream
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -16,20 +17,24 @@ fun main() {
 fun part1(input: List<String>): Long {
     return parse(input)
         .map { it.waysToBeatRecordDistance() }
-        .map { it.toLong() }
+        .map { it }
         .reduce(Long::times)
 }
 
 fun part2(input: List<String>): Long {
-    return parsePart2(input).waysToBeatRecordDistance().toLong()
+    return parsePart2(input).waysToBeatRecordDistance()
 }
 
 internal data class RaceDescription(val time: Long, val recordDistance: Long) {
-    fun waysToBeatRecordDistance(): Int {
+    fun waysToBeatRecordDistance(): Long {
         val longRange = 0L until time
         return longRange
+            .asSequence()
+            .asStream()
+            .parallel()
             .map { it * (time - it) }
-            .count { it > recordDistance }
+            .filter { it > recordDistance }
+            .count()
     }
 }
 
