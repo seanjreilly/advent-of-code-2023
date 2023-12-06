@@ -21,7 +21,16 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return parsePart2(input).waysToBeatRecordDistance().toLong()
+}
+
+internal data class RaceDescription(val time: Long, val recordDistance: Long) {
+    fun waysToBeatRecordDistance(): Int {
+        val longRange = 0L until time
+        return longRange
+            .map { it * (time - it) }
+            .count { it > recordDistance }
+    }
 }
 
 internal fun parse(input: List<String>): List<RaceDescription> {
@@ -39,11 +48,15 @@ private fun parseSpaceDelimitedNumbers(line: String): List<Long> {
         .map { it.toLong() }
 }
 
-internal data class RaceDescription(val time: Long, val recordDistance: Long) {
-    fun waysToBeatRecordDistance(): Int {
-        val longRange = 0L until time
-        return longRange
-            .map { it * (time - it) }
-            .count { it > recordDistance }
-    }
+internal fun parsePart2(input: List<String>): RaceDescription {
+    return RaceDescription(extractDigitsIntoOneNumber(input.first()), extractDigitsIntoOneNumber(input.last()))
+}
+
+private fun extractDigitsIntoOneNumber(line:String) : Long {
+    return line
+        .substringAfter(":")
+        .toCharArray()
+        .filter { it.isDigit() }
+        .joinToString("")
+        .toLong()
 }

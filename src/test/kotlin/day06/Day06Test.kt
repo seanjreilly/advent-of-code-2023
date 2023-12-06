@@ -27,6 +27,17 @@ class Day06Test {
         assert(part1(sampleInput) == 288L)
     }
 
+    @Test
+    fun `part2 should parse the input as a single race, and calculate the number of ways to beat the record`() {
+        assert(part2(sampleInput) == 71503L)
+    }
+    
+    @Test
+    fun `parsePart2 should return a single RaceDescription`() {
+        val result = parsePart2(sampleInput)
+        assert(result == RaceDescription(71530L, 940200L))
+    }
+
     @Nested
     inner class RaceDescriptionTest {
         @Test
@@ -36,4 +47,5 @@ class Day06Test {
             assert(RaceDescription(30, 200).waysToBeatRecordDistance() == 9)
         }
     }
+
 }
