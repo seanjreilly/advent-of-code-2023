@@ -56,30 +56,29 @@ internal enum class HandType {
 }
 
 internal data class Hand(val cards: List<Card>) {
-    val type: HandType
-    init {
-        val cardTypeCount = cards.groupBy { it }.mapValues { it.value.size }
-        type = if (cardTypeCount.values.max() == 5) {
-            HandType.FIVE_OF_A_KIND
-        } else if (cardTypeCount.values.max() == 4) {
-            HandType.FOUR_OF_A_KIND
-        } else if (cardTypeCount.size == 2 && cardTypeCount.values.max() == 3 && cardTypeCount.values.min() == 2) {
-            HandType.FULL_HOUSE
-        } else if (cardTypeCount.size == 3 && cardTypeCount.values.max() == 3 && cardTypeCount.values.min() == 1) {
-            HandType.THREE_OF_A_KIND
-        } else if (cardTypeCount.filter { it.value == 2 }.count() == 2) {
-            HandType.TWO_PAIR
-        } else if (cardTypeCount.size == 4 && cardTypeCount.values.max() == 2) {
-            HandType.ONE_PAIR
-        } else {
-            HandType.HIGH_CARD
-        }
-    }
+    val type: HandType = determineHandType(cards.groupBy { it }.mapValues { it.value.size })
 
     companion object {
         internal operator fun invoke(rawCards: String) : Hand {
             return Hand(rawCards.toCharArray().map { Card.fromSymbol(it) })
         }
+
+        private fun determineHandType(cardTypeCount: Map<Card, Int>) =
+            if (cardTypeCount.values.max() == 5) {
+                HandType.FIVE_OF_A_KIND
+            } else if (cardTypeCount.values.max() == 4) {
+                HandType.FOUR_OF_A_KIND
+            } else if (cardTypeCount.size == 2 && cardTypeCount.values.max() == 3 && cardTypeCount.values.min() == 2) {
+                HandType.FULL_HOUSE
+            } else if (cardTypeCount.size == 3 && cardTypeCount.values.max() == 3 && cardTypeCount.values.min() == 1) {
+                HandType.THREE_OF_A_KIND
+            } else if (cardTypeCount.filter { it.value == 2 }.count() == 2) {
+                HandType.TWO_PAIR
+            } else if (cardTypeCount.size == 4 && cardTypeCount.values.max() == 2) {
+                HandType.ONE_PAIR
+            } else {
+                HandType.HIGH_CARD
+            }
     }
 }
 
