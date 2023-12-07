@@ -82,21 +82,21 @@ class Day07Test {
         fun `type should return HIGH_CARD given a hand where every card is a different type`() {
             assert(Hand("23456").type == HandType.HIGH_CARD)
         }
+    }
 
-        @Test
-        fun `compareTo should compare by hand type and then by card value in order`() {
-            assert(Hand("22222").compareTo(Hand("AAAAK")) > 0)
-            assert(Hand("2AAAA").compareTo(Hand("AAAKK")) > 0)
-            assert(Hand("22233").compareTo(Hand("AAAKQ")) > 0)
-            assert(Hand("22234").compareTo(Hand("AAKKQ")) > 0)
-            assert(Hand("22334").compareTo(Hand("AAKQJ")) > 0)
-            assert(Hand("22345").compareTo(Hand("AKQJT")) > 0)
+    @Test
+    fun `Part1HandStrengthComparator should compare by hand type and then by card value in order`() {
+        assert(Part1HandStrengthComparator.compare(Hand("22222"), Hand("AAAAK")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("2AAAA"), Hand("AAAKK")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("22233"), Hand("AAAKQ")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("22234"), Hand("AAKKQ")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("22334"), Hand("AAKQJ")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("22345"), Hand("AKQJT")) > 0)
 
-            assert(Hand("33332").compareTo(Hand("2AAAA")) > 0)
-            assert(Hand("77888").compareTo(Hand("77788")) > 0)
-            assert(Hand("AAAAK").compareTo(Hand("AAAAQ")) > 0)
-            assert(Hand("KKKKK").compareTo(Hand("QQQQQ")) > 0)
-            assert(Hand("23457").compareTo(Hand("23456")) > 0)
-        }
+        assert(Part1HandStrengthComparator.compare(Hand("33332"), Hand("2AAAA")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("77888"), Hand("77788")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("AAAAK"), Hand("AAAAQ")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("KKKKK"), Hand("QQQQQ")) > 0)
+        assert(Part1HandStrengthComparator.compare(Hand("23457"), Hand("23456")) > 0)
     }
 }

@@ -16,7 +16,7 @@ fun main() {
 fun part1(input: List<String>): Long {
     return input
         .map { parse(it) }
-        .sortedBy { it.hand }
+        .sortedWith(compareBy(Part1HandStrengthComparator) { it.hand })
         .withIndex()
         .sumOf { (it.index + 1) * it.value.bid }
 }
@@ -55,7 +55,7 @@ internal enum class HandType {
     FIVE_OF_A_KIND
 }
 
-internal data class Hand(val cards: List<Card>) : Comparable<Hand> {
+internal data class Hand(val cards: List<Card>) {
     val type: HandType
     init {
         val cardTypeCount = cards.groupBy { it }.mapValues { it.value.size }
@@ -81,11 +81,16 @@ internal data class Hand(val cards: List<Card>) : Comparable<Hand> {
             return Hand(rawCards.toCharArray().map { Card.fromSymbol(it) })
         }
     }
+}
 
-    override fun compareTo(other: Hand): Int {
-        var result: Int = compareValues(this.type, other.type)
-        val mutableCards = cards.toMutableList()
-        val otherMutableCards = other.cards.toMutableList()
+internal object Part1HandStrengthComparator : Comparator<Hand> {
+    override fun compare(o1: Hand?, o2: Hand?): Int {
+        if (o1 == null || o2 == null) {
+            throw IllegalArgumentException("comparator doesn't work with null instances")
+        }
+        var result: Int = compareValues(o1.type, o2.type)
+        val mutableCards = o1.cards.toMutableList()
+        val otherMutableCards = o2.cards.toMutableList()
         while (result == 0 && mutableCards.isNotEmpty()) {
             result = compareValues(mutableCards.removeFirst(), otherMutableCards.removeFirst())
         }
