@@ -19,8 +19,13 @@ class Day07Test {
     }
 
     @Test
-    fun `part1 should order every card by strength, multiply the hand's bid by it's rank for each card, and return the sum for all cards`() {
+    fun `part1 should order every card by strength, multiply each hand's bid by it's rank, and return the sum for all cards`() {
         assert(part1(sampleInput) == 6440L)
+    }
+
+    @Test
+    fun `part2 should order every card by strength using wildcards, multiply each hand's bid by it's rank, and return the sum for all cards`() {
+        assert(part2(sampleInput) == 5905L)
     }
 
     @Nested
@@ -82,8 +87,35 @@ class Day07Test {
         fun `type should return HIGH_CARD given a hand where every card is a different type`() {
             assert(Hand("23456").type == HandType.HIGH_CARD)
         }
+
+        @Test
+        fun `part2Type should consider Js as wild cards when building hand types`() {
+            assert(Hand("QJJQ2").part2Type == HandType.FOUR_OF_A_KIND)
+            assert(Hand("T55J5").part2Type == HandType.FOUR_OF_A_KIND)
+            assert(Hand("TJJJJ").part2Type == HandType.FIVE_OF_A_KIND)
+            assert(Hand("TT99J").part2Type == HandType.FULL_HOUSE)
+            assert(Hand("TT9JJ").part2Type == HandType.FOUR_OF_A_KIND)
+            assert(Hand("234JJ").part2Type == HandType.THREE_OF_A_KIND)
+            assert(Hand("3345J").part2Type == HandType.THREE_OF_A_KIND)
+            assert(Hand("3456J").part2Type == HandType.ONE_PAIR)
+        }
+
+        @Test
+        fun `part2Type should consider 5 jokes to be five of a kind`() {
+            assert(Hand("JJJJJ").part2Type == HandType.FIVE_OF_A_KIND)
+        }
     }
 
+    @Nested
+    inner class CardTest {
+        @Test
+        fun `part2Ordinal should put the JACK_OR_JOKER first`() {
+            val result = Card.entries.sortedBy { it.part2Ordinal() }
+            assert(result.first() == Card.JACK_OR_JOKER)
+            assert(result.drop(1) == Card.entries.filter { it != Card.JACK_OR_JOKER })
+        }
+    }
+    
     @Test
     fun `Part1HandStrengthComparator should compare by hand type and then by card value in order`() {
         assert(Part1HandStrengthComparator.compare(Hand("22222"), Hand("AAAAK")) > 0)
@@ -98,5 +130,15 @@ class Day07Test {
         assert(Part1HandStrengthComparator.compare(Hand("AAAAK"), Hand("AAAAQ")) > 0)
         assert(Part1HandStrengthComparator.compare(Hand("KKKKK"), Hand("QQQQQ")) > 0)
         assert(Part1HandStrengthComparator.compare(Hand("23457"), Hand("23456")) > 0)
+    }
+
+    @Test
+    fun `Part2HandStrengthComparator should compare by hand type with wild cards and then by part2 card value in order`() {
+        assert(Part2HandStrengthComparator.compare(Hand("22223"), Hand("JQQQK")) > 0)
+
+        assert(Part2HandStrengthComparator.compare(Hand("KTJJT"), Hand("QQQJA")) > 0)
+        assert(Part2HandStrengthComparator.compare(Hand("QQQJA"), Hand("T55J5")) > 0)
+        assert(Part2HandStrengthComparator.compare(Hand("T55J5"), Hand("KK677")) > 0)
+        assert(Part2HandStrengthComparator.compare(Hand("KK677"), Hand("32T3K")) > 0)
     }
 }
