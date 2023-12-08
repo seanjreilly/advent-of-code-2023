@@ -22,7 +22,20 @@ class Day08Test {
         BBB = (AAA, ZZZ)
         ZZZ = (ZZZ, ZZZ)
     """.trimIndent().lines()
-    
+
+    private val samplePart2Input = """
+        LR
+
+        11A = (11B, XXX)
+        11B = (XXX, 11Z)
+        11Z = (11B, XXX)
+        22A = (22B, XXX)
+        22B = (22C, 22C)
+        22C = (22Z, 22Z)
+        22Z = (22B, 22B)
+        XXX = (XXX, XXX)
+    """.trimIndent().lines()
+
     @Test
     fun `parseNodes should return a map of ids to LeftRight instances given input`() {
         val nodes: Map<String, LeftRight> = parse(sampleInput)
@@ -47,5 +60,10 @@ class Day08Test {
     fun `part1 should count how many steps are needed following the directions to reach ZZZ from AAA`() {
         assert(part1(sampleInput) == 2L)
         assert(part1(sampleInput2) == 6L)
+    }
+    
+    @Test
+    fun `part2 should count how many steps are needed starting from __A puts every journey on a __Z node`() {
+        assert(part2(samplePart2Input) == 6L)
     }
 }
