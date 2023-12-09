@@ -18,7 +18,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return input.map(::parseLongs).sumOf { predictPreviousValue(it) }
+    return input.map(::parseLongs).sumOf { predictNextValue(it.reversed()) }
 }
 
 internal fun parseLongs(line: String) = line.split(" ").map { it.toLong() }
@@ -29,12 +29,4 @@ internal fun predictNextValue(history: List<Long>): Long {
     }
     val delta = history.windowed(2, 1).map { it[1] - it[0] }
     return history.last() + predictNextValue(delta)
-}
-
-internal fun predictPreviousValue(history: List<Long>): Long {
-    if (history.all { it == 0L }) {
-        return 0L //base case: the previous value of a history of all zeros is zero
-    }
-    val delta = history.windowed(2, 1).map { it[1] - it[0] }
-    return history.first() - predictPreviousValue(delta)
 }

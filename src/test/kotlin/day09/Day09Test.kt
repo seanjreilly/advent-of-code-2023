@@ -24,13 +24,6 @@ class Day09Test {
     }
 
     @Test
-    fun `predictPreviousValue should recursively calculate differences until it produces a list of all zeros, and then return the difference of the previous result and the first list item`() {
-        assert(predictPreviousValue(parseLongs(sampleInput[0])) == -3L)
-        assert(predictPreviousValue(parseLongs(sampleInput[1])) == 0L)
-        assert(predictPreviousValue(parseLongs(sampleInput[2])) == 5L)
-    }
-
-    @Test
     fun `part1 should predict the next value for each line and return their sum`() {
         assert(part1(sampleInput) == 114L)
     }
