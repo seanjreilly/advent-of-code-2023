@@ -25,24 +25,25 @@ fun part2(input: List<String>): Long {
     val horizontalSegmentEnders = "7J"
     val upCorners = "LJ"
 
+    fun pointsUp(tile: Char) = tile in upCorners
+
     var tilesInsideTheLoopSoFar = 0L
     input.mapIndexed { y, line ->
-        //use a ray-casting algorithm to find tiles that are "inside the loop" on each line
+        // use a ray-casting algorithm to find tiles that are "inside the loop" on each line
+        // an odd number of intersections from the beginning of the line counts as "inside"
         var intersectionsSoFarThisLine = 0
-        var horizontalSegmentStartedUp = true //garbage value
+        var horizontalSegmentStart = '.' //garbage value
         for (p: Point in line.mapIndexed { x, _ -> Point(x, y) }) {
             if (p in loop) {
                 val tile = input[p]
-                if (tile == '|') {
-                    intersectionsSoFarThisLine++
-                } else if (tile in horizontalSegmentStarters) {
-                    horizontalSegmentStartedUp = tile in upCorners
-                } else if (tile in horizontalSegmentEnders) {
-                    //horizontal segments only count as intersections IF their beginning and end go in different vertical directions
-                    val endsUp = tile in upCorners
-                    if (endsUp != horizontalSegmentStartedUp) {
-                        intersectionsSoFarThisLine++
+                intersectionsSoFarThisLine += when (tile) {
+                    '|' -> 1  //vertical segments always count
+                    in horizontalSegmentStarters -> { horizontalSegmentStart = tile; 0 } //a horizontal segment might count at the end
+                    in horizontalSegmentEnders -> {
+                        //horizontal segments only count as intersections IF their ends go in different vertical directions
+                        if (pointsUp(tile) != pointsUp(horizontalSegmentStart)) { 1 } else { 0 }
                     }
+                    else -> 0 //in the middle of a horizontal segment
                 }
             } else if (intersectionsSoFarThisLine % 2 == 1) {
                 tilesInsideTheLoopSoFar++
