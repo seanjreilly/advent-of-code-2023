@@ -20,30 +20,17 @@ fun part1(input: List<String>): Long {
 
 fun part2(input: List<String>): Long {
     val loop = findLoop(input)
-
-    val horizontalSegmentStarters = "SFL"  //S is a top-left corner in all test data and the production data
-    val horizontalSegmentEnders = "7J"
-    val upCorners = "LJ"
-
-    fun pointsUp(tile: Char) = tile in upCorners
-
+    val upFacingSegments = "L|J" //S is a top-left (down facing) corner in all test and production data
     var tilesInsideTheLoopSoFar = 0L
+
     input.mapIndexed { y, line ->
         // use a ray-casting algorithm to find tiles that are "inside the loop" on each line
         // an odd number of intersections from the beginning of the line counts as "inside"
         var intersectionsSoFarThisLine = 0
-        var horizontalSegmentStart = '.' //garbage value
         for (p: Point in line.mapIndexed { x, _ -> Point(x, y) }) {
             if (p in loop) {
-                val tile = input[p]
-                intersectionsSoFarThisLine += when (tile) {
-                    '|' -> 1  //vertical segments always count
-                    in horizontalSegmentStarters -> { horizontalSegmentStart = tile; 0 } //a horizontal segment might count at the end
-                    in horizontalSegmentEnders -> {
-                        //horizontal segments only count as intersections IF their ends go in different vertical directions
-                        if (pointsUp(tile) != pointsUp(horizontalSegmentStart)) { 1 } else { 0 }
-                    }
-                    else -> 0 //in the middle of a horizontal segment
+                if (input[p] in upFacingSegments) {
+                    intersectionsSoFarThisLine++ //only segments that "cross" the horizontal count as intersections
                 }
             } else if (intersectionsSoFarThisLine % 2 == 1) {
                 tilesInsideTheLoopSoFar++
