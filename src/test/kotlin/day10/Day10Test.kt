@@ -46,15 +46,45 @@ class Day10Test {
     }
 
     @Test
-    fun `findLoopLength should return the length of the loop from S to S`() {
-        assert(findLoopLength(sampleInput) == 8)
-        assert(findLoopLength(moreComplexLoop) == 16)
+    fun `findLoop should return the points in the loop given a simple loop`() {
+        val pointsInLoop: Set<Point> = findLoop(sampleInput)
+        assert(pointsInLoop.size == 8)
+        assert(Point(1,1) in pointsInLoop)
+        assert(Point(1,2) in pointsInLoop)
+        assert(Point(1,3) in pointsInLoop)
+        assert(Point(2,3) in pointsInLoop)
+        assert(Point(3,3) in pointsInLoop)
+        assert(Point(3,2) in pointsInLoop)
+        assert(Point(3,1) in pointsInLoop)
+        assert(Point(2,1) in pointsInLoop)
     }
 
     @Test
-    fun `findLoopLength should not be confused by extra pipe segments around the S`() {
-        assert(findLoopLength(sampleInputWithExtraPipes) == 8)
-        assert(findLoopLength(moreComplexLoopWithExtraPipes) == 16)
+    fun `findLoop should return the points in the loop given a more complicated loop`() {
+        val pointsInLoop: Set<Point> = findLoop(moreComplexLoop)
+        assert(pointsInLoop.size == 16)
+        assert(Point(0, 2) in pointsInLoop)
+        assert(Point(0, 3) in pointsInLoop)
+        assert(Point(0, 4) in pointsInLoop)
+        assert(Point(1, 4) in pointsInLoop)
+        assert(Point(1, 3) in pointsInLoop)
+        assert(Point(2, 3) in pointsInLoop)
+        assert(Point(3, 3) in pointsInLoop)
+        assert(Point(4, 3) in pointsInLoop)
+        assert(Point(4, 2) in pointsInLoop)
+        assert(Point(3, 2) in pointsInLoop)
+        assert(Point(3, 1) in pointsInLoop)
+        assert(Point(3, 0) in pointsInLoop)
+        assert(Point(2, 0) in pointsInLoop)
+        assert(Point(2, 1) in pointsInLoop)
+        assert(Point(1, 1) in pointsInLoop)
+        assert(Point(1, 2) in pointsInLoop)
+    }
+
+    @Test
+    fun `findLoop should not be confused by extra pipe segments that aren't in the loop`() {
+        assert(findLoop(sampleInputWithExtraPipes) == findLoop(sampleInput))
+        assert(findLoop(moreComplexLoopWithExtraPipes) == findLoop(moreComplexLoop))
     }
 
     @Test

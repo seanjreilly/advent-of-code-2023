@@ -15,32 +15,30 @@ fun main() {
 }
 
 fun part1(input: List<String>): Long {
-    return findLoopLength(input).toLong() / 2
+    return findLoop(input).size.toLong() / 2
 }
 
 fun part2(input: List<String>): Long {
     return 0
 }
 
-internal fun findLoopLength(input: List<String>): Int {
+internal fun findLoop(input: List<String>): Set<Point> {
     val s = findS(input)
     val startPoints = findLegalStartingPoints(input, s).toList()
 
-    var lastPoint = s
+    val path = mutableListOf(s)
     var currentPoint = startPoints.first() //arbitrary starting direction
-    var stepsSoFar = 1
 
     do {
-        stepsSoFar++
         val nextPoint = input[currentPoint]
             .nextDirections()
             .toList()
             .map { it(currentPoint) }
-            .first { it != lastPoint } //keep going in the same direction
-        lastPoint = currentPoint
+            .first { it != path.last() } //keep going in the same direction
+        path += currentPoint
         currentPoint = nextPoint
     } while (currentPoint != s)
-    return stepsSoFar
+    return path.toSet()
 }
 
 internal fun Char.nextDirections(): Pair<(Point) -> Point, (Point) -> Point> = when (this) {
