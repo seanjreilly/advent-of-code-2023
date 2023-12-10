@@ -20,7 +20,7 @@ fun part1(input: List<String>): Long {
 
 fun part2(input: List<String>): Long {
     val loop = findLoop(input)
-    val upFacingSegments = "L|J" //S is a top-left (down facing) corner in all test and production data
+    val upFacingSegments = "L|J"
     var tilesInsideTheLoopSoFar = 0L
 
     input.mapIndexed { y, line ->
@@ -29,7 +29,9 @@ fun part2(input: List<String>): Long {
         var intersectionsSoFarThisLine = 0
         for (p: Point in line.mapIndexed { x, _ -> Point(x, y) }) {
             if (p in loop) {
-                if (input[p] in upFacingSegments) {
+                var tile = input[p]
+                if (tile == 'S') { tile = replaceSWithOriginalCharacter(input, p) }
+                if (tile in upFacingSegments) {
                     intersectionsSoFarThisLine++ //only segments that "cross" the horizontal count as intersections
                 }
             } else if (intersectionsSoFarThisLine % 2 == 1) {
@@ -74,6 +76,16 @@ internal fun findS(input: List<String>): Point = input
     .first { it.x != -1 }
 
 internal fun Point.isWithinBounds(input: List<String>) = x in 0 until input.first().length && y in input.indices
+
+private fun replaceSWithOriginalCharacter(input: List<String>, s: Point): Char {
+    val pipeStartPoints = findLegalStartingPoints(input, s).toList().toSet()
+    return "|-LJ7F"
+        .toCharArray()
+        .map { it to it.nextDirections().toList().map { nd -> nd(s) }.toSet() }
+        .filter { it.second == pipeStartPoints }
+        .map { it.first }
+        .first()
+}
 
 private fun findLegalStartingPoints(input: List<String>, s: Point): Pair<Point, Point> {
     val startPoints = s.getCardinalNeighbours()
