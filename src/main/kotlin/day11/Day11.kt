@@ -51,11 +51,9 @@ internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image, expansionFactor
 }
 
 internal fun findTotalDistanceBetweenGalaxies(expandedGalaxies: Set<Galaxy>): Long {
-    // we want unique pairs, and this method calculates the distance for every pair twice,
-    // once from A->B and once from B->A
-    // divide the answer by 2 to adjust
-    return expandedGalaxies
-        .map { galaxy -> galaxy to expandedGalaxies.filter { it != galaxy } }
-        .flatMap { (galaxy, otherGalaxies) -> otherGalaxies.map { og -> galaxy.manhattanDistance(og) } }
-        .sumOf { it.toLong() } / 2
+    val galaxyList = expandedGalaxies.toList() // transform from a set to a list to get unique pairs
+    return galaxyList
+        .flatMapIndexed { index, galaxy -> galaxyList.drop(index + 1).map { galaxy to it } }
+        .map { it.first.manhattanDistance(it.second) }
+        .sumOf { it.toLong() }
 }
