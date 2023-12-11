@@ -21,7 +21,8 @@ fun part1(input: Image): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    val expandedGalaxies = expandUniverse(findGalaxies(input), input, 1_000_000)
+    return findTotalDistanceBetweenGalaxies(expandedGalaxies)
 }
 
 typealias Image = List<String>

@@ -64,7 +64,21 @@ class Day11Test {
     }
 
     @Test
+    fun `expandUniverse should work as expected with expansion factors larger than one`() {
+        val galaxies = findGalaxies(sampleInput)
+        val expandedGalaxiesFactor10 = expandUniverse(galaxies, sampleInput, 10)
+        val expandedGalaxiesFactor100 = expandUniverse(galaxies, sampleInput, 100)
+        assert(findTotalDistanceBetweenGalaxies(expandedGalaxiesFactor10) == 1030L)
+        assert(findTotalDistanceBetweenGalaxies(expandedGalaxiesFactor100) == 8410L)
+    }
+
+    @Test
     fun `part1 should expand the universe, calculate the shortest distance between every unique pair of galaxies, and return the sum`() {
         assert(part1(sampleInput) == 374L)
+    }
+
+    @Test
+    fun `part2 should expand the universe by a factor of 1 million, calculate the shortest distance between every unique pair of galaxies, and return the sum`() {
+        assert(part2(sampleInput) == 82000210L)
     }
 }
