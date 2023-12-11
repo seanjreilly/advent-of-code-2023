@@ -16,16 +16,12 @@ fun main() {
 }
 
 fun part1(input: Image): Long {
-    return findTotalDistanceBetweenExpandedGalaxies(input)
+    val expandedGalaxies = expandUniverse(findGalaxies(input), input)
+    return findTotalDistanceBetweenGalaxies(expandedGalaxies)
 }
 
 fun part2(input: List<String>): Long {
     return 0
-}
-
-private fun findTotalDistanceBetweenExpandedGalaxies(input: Image): Long {
-    val expandedGalaxies = expandUniverse(findGalaxies(input), input)
-    return findTotalDistanceBetweenGalaxies(expandedGalaxies)
 }
 
 typealias Image = List<String>
@@ -39,7 +35,7 @@ internal fun findGalaxies(image: Image): Set<Galaxy> {
         .toSet()
 }
 
-internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image, expansionFactor:Int = 1): Set<Galaxy> {
+internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image, expansionFactor:Int = 2): Set<Galaxy> {
     val uniqueYValuesInGalaxyCoordinates = galaxies.map { it.y }.toSet()
     val emptyRows = TreeSet(image.indices.toSet() - uniqueYValuesInGalaxyCoordinates)
 
@@ -47,8 +43,8 @@ internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image, expansionFactor
     val emptyColumns = TreeSet((0 until image.first().length).toSet() - uniqueXValuesInGalaxyCoordinates)
 
     return galaxies.map {(oldX, oldY) ->
-        val newX = oldX + (emptyColumns.headSet(oldX).size * expansionFactor)
-        val newY = oldY + (emptyRows.headSet(oldY).size * expansionFactor)
+        val newX = oldX + (emptyColumns.headSet(oldX).size * (expansionFactor - 1))
+        val newY = oldY + (emptyRows.headSet(oldY).size * (expansionFactor - 1))
         Galaxy(newX, newY)
     }.toSet()
 }
