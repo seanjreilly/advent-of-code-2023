@@ -16,26 +16,21 @@ fun main() {
 }
 
 fun part1(input: Image): Long {
-    val expandedGalaxies = expandUniverse(findGalaxies(input), input)
-
-    // we want unique pairs, and this method calculates the distance for every pair twice,
-    // once from A->B and once from B->A
-    // divide the answer by 2 to adjust
-    return expandedGalaxies
-        .map { galaxy ->
-            galaxy to expandedGalaxies.filter { it != galaxy }
-        }
-        .flatMap { (galaxy, otherGalaxies) -> otherGalaxies.map { og -> galaxy.manhattanDistance(og) } }
-        .map { it.toLong() }
-        .sum() / 2
+    return findTotalDistanceBetweenExpandedGalaxies(input)
 }
 
 fun part2(input: List<String>): Long {
     return 0
 }
 
+private fun findTotalDistanceBetweenExpandedGalaxies(input: Image): Long {
+    val expandedGalaxies = expandUniverse(findGalaxies(input), input)
+    return findTotalDistanceBetweenGalaxies(expandedGalaxies)
+}
+
 typealias Image = List<String>
 typealias Galaxy = Point
+
 internal fun findGalaxies(image: Image): Set<Galaxy> {
     return image
         .flatMapIndexed {y, line -> line.mapIndexed { x, char -> Triple(x, y, char) } }
@@ -44,7 +39,7 @@ internal fun findGalaxies(image: Image): Set<Galaxy> {
         .toSet()
 }
 
-internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image): Set<Galaxy> {
+internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image, expansionFactor:Int = 1): Set<Galaxy> {
     val uniqueYValuesInGalaxyCoordinates = galaxies.map { it.y }.toSet()
     val emptyRows = TreeSet(image.indices.toSet() - uniqueYValuesInGalaxyCoordinates)
 
@@ -52,8 +47,20 @@ internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image): Set<Galaxy> {
     val emptyColumns = TreeSet((0 until image.first().length).toSet() - uniqueXValuesInGalaxyCoordinates)
 
     return galaxies.map {(oldX, oldY) ->
-        val newX = oldX + emptyColumns.headSet(oldX).size
-        val newY = oldY + emptyRows.headSet(oldY).size
+        val newX = oldX + (emptyColumns.headSet(oldX).size * expansionFactor)
+        val newY = oldY + (emptyRows.headSet(oldY).size * expansionFactor)
         Galaxy(newX, newY)
     }.toSet()
+}
+
+internal fun findTotalDistanceBetweenGalaxies(expandedGalaxies: Set<Galaxy>): Long {
+    // we want unique pairs, and this method calculates the distance for every pair twice,
+    // once from A->B and once from B->A
+    // divide the answer by 2 to adjust
+    return expandedGalaxies
+        .map { galaxy ->
+            galaxy to expandedGalaxies.filter { it != galaxy }
+        }
+        .flatMap { (galaxy, otherGalaxies) -> otherGalaxies.map { og -> galaxy.manhattanDistance(og) } }
+        .sumOf { it.toLong() } / 2
 }
