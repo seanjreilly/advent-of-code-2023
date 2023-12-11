@@ -55,9 +55,7 @@ internal fun findTotalDistanceBetweenGalaxies(expandedGalaxies: Set<Galaxy>): Lo
     // once from A->B and once from B->A
     // divide the answer by 2 to adjust
     return expandedGalaxies
-        .map { galaxy ->
-            galaxy to expandedGalaxies.filter { it != galaxy }
-        }
+        .map { galaxy -> galaxy to expandedGalaxies.filter { it != galaxy } }
         .flatMap { (galaxy, otherGalaxies) -> otherGalaxies.map { og -> galaxy.manhattanDistance(og) } }
         .sumOf { it.toLong() } / 2
 }
