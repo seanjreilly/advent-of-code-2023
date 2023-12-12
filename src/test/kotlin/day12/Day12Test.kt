@@ -30,9 +30,12 @@ class Day12Test {
         
         @Test
         fun `countLegalArrangements should return the number of legal patterns which would satisfy the alternate format`() {
-            assert(ConditionRecord.parse(sampleInput.first()).countLegalArrangements() == 1L)
+            assert(ConditionRecord.parse(sampleInput[0]).countLegalArrangements() == 1L)
             assert(ConditionRecord.parse(sampleInput[1]).countLegalArrangements() == 4L)
-            assert(ConditionRecord.parse(sampleInput.last()).countLegalArrangements() == 10L)
+            assert(ConditionRecord.parse(sampleInput[2]).countLegalArrangements() == 1L)
+            assert(ConditionRecord.parse(sampleInput[3]).countLegalArrangements() == 1L)
+            assert(ConditionRecord.parse(sampleInput[4]).countLegalArrangements() == 4L)
+            assert(ConditionRecord.parse(sampleInput[5]).countLegalArrangements() == 10L)
         }
 
         @Test
