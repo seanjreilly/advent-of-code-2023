@@ -32,7 +32,7 @@ internal data class ConditionRecord(val damagedRecord: String, val alternateForm
 
     private fun countPossibleArrangementsInternal(parsePosition: Int, currentRunLength: Int, remainingConstraints: List<Int>) : Long {
         if (parsePosition == damagedRecord.length) {
-            // legal if there is one constraint left that matches the current run count, or no constraints left
+            // legal iff there is one constraint left that matches the current run count, or no constraints left
             return when(remainingConstraints) {
                 listOf(currentRunLength), emptyList<Int>() -> 1
                 else -> 0
@@ -48,29 +48,29 @@ internal data class ConditionRecord(val damagedRecord: String, val alternateForm
             return if ('#' !in damagedRecord.drop(parsePosition)) { 1 } else { 0 }
         }
 
-        fun doNotStartRun() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints)
-        fun endCurrentRun() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints.drop(1))
-        fun startOrContinueRun() = countPossibleArrangements(parsePosition + 1, currentRunLength + 1, remainingConstraints)
+        fun unbrokenSpring() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints)
+        fun endCurrentRunOfBrokenSprings() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints.drop(1))
+        fun startOrContinueRunOfBrokenSprings() = countPossibleArrangements(parsePosition + 1, currentRunLength + 1, remainingConstraints)
 
         return when(val char = damagedRecord[parsePosition]) {
             '.' -> {
                 when (currentRunLength) {
-                    0 -> doNotStartRun()
-                    remainingConstraints.first() -> endCurrentRun()
+                    0 -> unbrokenSpring()
+                    remainingConstraints.first() -> endCurrentRunOfBrokenSprings()
                     else -> 0 //wouldn't be legal
                 }
             }
             '#' -> {
                 when(currentRunLength) {
                     remainingConstraints.first() -> 0 //not legal
-                    else -> startOrContinueRun()
+                    else -> startOrContinueRunOfBrokenSprings()
                 }
             }
             '?' -> {
                 when(currentRunLength) {
-                    0 -> startOrContinueRun() + doNotStartRun() //start or don't start
-                    remainingConstraints.first() -> endCurrentRun()
-                    else -> startOrContinueRun() //continue the current run
+                    0 -> startOrContinueRunOfBrokenSprings() + unbrokenSpring() //start or don't start
+                    remainingConstraints.first() -> endCurrentRunOfBrokenSprings()
+                    else -> startOrContinueRunOfBrokenSprings() //continue the current run
                 }
             }
             else -> throw IllegalStateException("unexpected character '$char'")
