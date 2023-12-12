@@ -19,7 +19,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return input.map(::unfold).map(ConditionRecord::parse).sumOf { it.countPossibleArrangements() }
 }
 
 internal data class ConditionRecord(val damagedRecord: String, val alternateFormat: List<Int>) {

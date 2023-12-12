@@ -18,6 +18,11 @@ class Day12Test {
         assert(part1(sampleInput) == 21L)
     }
 
+    @Test
+    fun `part2 should calculate the number of legal arrangements for each unfolded line and return the sum`() {
+        assert(part2(sampleInput) == 525152L)
+    }
+
     @Nested
     inner class ConditionRecordTest {
         @Test
@@ -36,6 +41,16 @@ class Day12Test {
             assert(ConditionRecord.parse(sampleInput[3]).countPossibleArrangements() == 1L)
             assert(ConditionRecord.parse(sampleInput[4]).countPossibleArrangements() == 4L)
             assert(ConditionRecord.parse(sampleInput[5]).countPossibleArrangements() == 10L)
+        }
+        
+        @Test
+        fun `countPossibleArrangements should calculate results with unfolded arguments`() {
+            assert(ConditionRecord.parse(unfold(sampleInput[0])).countPossibleArrangements() == 1L)
+            assert(ConditionRecord.parse(unfold(sampleInput[1])).countPossibleArrangements() == 16384L)
+            assert(ConditionRecord.parse(unfold(sampleInput[2])).countPossibleArrangements() == 1L)
+            assert(ConditionRecord.parse(unfold(sampleInput[3])).countPossibleArrangements() == 16L)
+            assert(ConditionRecord.parse(unfold(sampleInput[4])).countPossibleArrangements() == 2500L)
+            assert(ConditionRecord.parse(unfold(sampleInput[5])).countPossibleArrangements() == 506250L)
         }
     }
 
