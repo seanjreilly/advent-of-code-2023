@@ -44,4 +44,10 @@ class Day12Test {
             assert(!record.isLegal(".##.###"))
         }
     }
+
+
+    @Test
+    fun `unfold replaces the pattern with five copies of itself joined by a question mark, and the list of ints repeated five times`() {
+        assert(unfold(".# 1") == ".#?.#?.#?.#?.# 1,1,1,1,1")
+    }
 }

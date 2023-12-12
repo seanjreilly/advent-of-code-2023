@@ -46,3 +46,8 @@ internal data class ConditionRecord(val damagedRecord: String, val alternateForm
         }
     }
 }
+
+internal fun unfold(line: String): String {
+    val parts = line.split(' ')
+    return (List(5) { parts.first() }).joinToString("?") + " " + (List(5) { parts.last() }).joinToString(",")
+}
