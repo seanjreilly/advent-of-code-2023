@@ -29,22 +29,13 @@ class Day12Test {
         }
         
         @Test
-        fun `countLegalArrangements should return the number of legal patterns which would satisfy the alternate format`() {
-            assert(ConditionRecord.parse(sampleInput[0]).countLegalArrangements() == 1L)
-            assert(ConditionRecord.parse(sampleInput[1]).countLegalArrangements() == 4L)
-            assert(ConditionRecord.parse(sampleInput[2]).countLegalArrangements() == 1L)
-            assert(ConditionRecord.parse(sampleInput[3]).countLegalArrangements() == 1L)
-            assert(ConditionRecord.parse(sampleInput[4]).countLegalArrangements() == 4L)
-            assert(ConditionRecord.parse(sampleInput[5]).countLegalArrangements() == 10L)
-        }
-
-        @Test
-        fun `fun isLegal should return true given a proposed record pattern that matches the alternateFormat`() {
-            val record = ConditionRecord.parse(sampleInput.first())
-
-            assert(record.isLegal("#.#.###"))
-            assert(!record.isLegal("##..###"))
-            assert(!record.isLegal(".##.###"))
+        fun `countPossibleArrangements should return the number of legal patterns which would satisfy the alternate format`() {
+            assert(ConditionRecord.parse(sampleInput[0]).countPossibleArrangements() == 1L)
+            assert(ConditionRecord.parse(sampleInput[1]).countPossibleArrangements() == 4L)
+            assert(ConditionRecord.parse(sampleInput[2]).countPossibleArrangements() == 1L)
+            assert(ConditionRecord.parse(sampleInput[3]).countPossibleArrangements() == 1L)
+            assert(ConditionRecord.parse(sampleInput[4]).countPossibleArrangements() == 4L)
+            assert(ConditionRecord.parse(sampleInput[5]).countPossibleArrangements() == 10L)
         }
     }
 

@@ -15,8 +15,7 @@ fun main() {
 }
 
 fun part1(input: List<String>): Long {
-    return input
-        .map(ConditionRecord::parse).sumOf { it.countLegalArrangements() }
+    return input.map(ConditionRecord::parse).sumOf { it.countPossibleArrangements() }
 }
 
 fun part2(input: List<String>): Long {
@@ -26,18 +25,11 @@ fun part2(input: List<String>): Long {
 internal data class ConditionRecord(val damagedRecord: String, val alternateFormat: List<Int>) {
     private val recordChars = "$damagedRecord.".toCharArray()
 
-    fun isLegal(proposedRecordPattern: CharSequence): Boolean {
-        return proposedRecordPattern
-            .split('.')
-            .filter { it.isNotEmpty() }
-            .map { it.length } == alternateFormat
+    fun countPossibleArrangements(parsePosition: Int = 0, currentRunLength: Int = 0, remainingConstraints: List<Int> = alternateFormat): Long {
+        return countPossibleArrangementsInternal(parsePosition, currentRunLength, remainingConstraints)
     }
 
-    fun countLegalArrangements(parsePosition: Int = 0, currentRunLength: Int = 0, remainingConstraints: List<Int> = alternateFormat): Long {
-        return countArrangementsInternal(parsePosition, currentRunLength, remainingConstraints)
-    }
-
-    private fun countArrangementsInternal(parsePosition: Int, currentRunLength: Int, remainingConstraints: List<Int>) : Long {
+    private fun countPossibleArrangementsInternal(parsePosition: Int, currentRunLength: Int, remainingConstraints: List<Int>) : Long {
         if (remainingConstraints.isEmpty()) {
             /*
             1 legal possibility here, IF there are no definitely broken springs left
@@ -57,9 +49,9 @@ internal data class ConditionRecord(val damagedRecord: String, val alternateForm
             return if (remainingConstraints.isEmpty()) { 1 } else { 0 }
         }
 
-        fun doNotStartRun() = countLegalArrangements(parsePosition + 1, 0, remainingConstraints)
-        fun endCurrentRun() = countLegalArrangements(parsePosition + 1, 0, remainingConstraints.drop(1))
-        fun startOrContinueRun() = countLegalArrangements(parsePosition + 1, currentRunLength + 1, remainingConstraints)
+        fun doNotStartRun() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints)
+        fun endCurrentRun() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints.drop(1))
+        fun startOrContinueRun() = countPossibleArrangements(parsePosition + 1, currentRunLength + 1, remainingConstraints)
 
         return when(recordChars[parsePosition]) {
             '.' -> {
