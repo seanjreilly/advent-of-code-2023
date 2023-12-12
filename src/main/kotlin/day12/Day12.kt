@@ -24,9 +24,11 @@ fun part2(input: List<String>): Long {
 
 internal data class ConditionRecord(val damagedRecord: String, val alternateFormat: List<Int>) {
     private val recordChars = "$damagedRecord.".toCharArray()
+    private val cache = mutableMapOf<Triple<Int, Int, List<Int>>, Long>()
 
     fun countPossibleArrangements(parsePosition: Int = 0, currentRunLength: Int = 0, remainingConstraints: List<Int> = alternateFormat): Long {
-        return countPossibleArrangementsInternal(parsePosition, currentRunLength, remainingConstraints)
+        val cacheKey = Triple(parsePosition, currentRunLength, remainingConstraints)
+        return cache.getOrPut(cacheKey) { countPossibleArrangementsInternal(parsePosition, currentRunLength, remainingConstraints) }
     }
 
     private fun countPossibleArrangementsInternal(parsePosition: Int, currentRunLength: Int, remainingConstraints: List<Int>) : Long {
