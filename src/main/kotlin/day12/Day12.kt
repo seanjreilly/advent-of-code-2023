@@ -23,7 +23,6 @@ fun part2(input: List<String>): Long {
 }
 
 internal data class ConditionRecord(val damagedRecord: String, val alternateFormat: List<Int>) {
-    private val recordChars = "$damagedRecord.".toCharArray()
     private val cache = mutableMapOf<Triple<Int, Int, List<Int>>, Long>()
 
     fun countPossibleArrangements(parsePosition: Int = 0, currentRunLength: Int = 0, remainingConstraints: List<Int> = alternateFormat): Long {
@@ -32,30 +31,28 @@ internal data class ConditionRecord(val damagedRecord: String, val alternateForm
     }
 
     private fun countPossibleArrangementsInternal(parsePosition: Int, currentRunLength: Int, remainingConstraints: List<Int>) : Long {
+        if (parsePosition == damagedRecord.length) {
+            // legal if there is one constraint left that matches the current run count, or no constraints left
+            return when(remainingConstraints) {
+                listOf(currentRunLength), emptyList<Int>() -> 1
+                else -> 0
+            }
+        }
+
         if (remainingConstraints.isEmpty()) {
             /*
             1 legal possibility here, IF there are no definitely broken springs left
             (wildcards are ok, they would just all resolve to '.')
             if there are broken string left this isn't legal
             */
-            return if ('#' !in recordChars.drop(parsePosition)) { 1 } else { 0 }
-        }
-
-        /*
-        end of the character string
-        we've appended a '.' to the end, so we know that it doesn't end in the middle of a run
-        */
-        if (parsePosition == recordChars.size) {
-            // legal if there are no unresolved constraints left
-            @Suppress("KotlinConstantConditions") //analyzer error — it's not always empty
-            return if (remainingConstraints.isEmpty()) { 1 } else { 0 }
+            return if ('#' !in damagedRecord.drop(parsePosition)) { 1 } else { 0 }
         }
 
         fun doNotStartRun() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints)
         fun endCurrentRun() = countPossibleArrangements(parsePosition + 1, 0, remainingConstraints.drop(1))
         fun startOrContinueRun() = countPossibleArrangements(parsePosition + 1, currentRunLength + 1, remainingConstraints)
 
-        return when(recordChars[parsePosition]) {
+        return when(val char = damagedRecord[parsePosition]) {
             '.' -> {
                 when (currentRunLength) {
                     0 -> doNotStartRun()
@@ -76,7 +73,7 @@ internal data class ConditionRecord(val damagedRecord: String, val alternateForm
                     else -> startOrContinueRun() //continue the current run
                 }
             }
-            else -> throw IllegalStateException("unexpected character '${recordChars[parsePosition]}'")
+            else -> throw IllegalStateException("unexpected character '$char'")
         }
     }
 
