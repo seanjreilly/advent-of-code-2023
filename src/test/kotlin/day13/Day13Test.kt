@@ -43,9 +43,9 @@ class Day13Test {
     @Test
     fun `findMirrorRow should also look from bottom to top for matching rows`() {
         val input = """
-            aaa
-            bbb
-            bbb
+            ###
+            ##.
+            ##.
         """.trimIndent().lines()
 
         assert(findMirrorRow(input) == 2)
@@ -54,10 +54,10 @@ class Day13Test {
     @Test
     fun `findMirrorRow should return null when there is no fold, even if it looks like there could be one`() {
         val input = """
-            bbb
-            aaa
-            ccc
-            bbb
+            ##.
+            ###
+            ...
+            ##.
         """.trimIndent().lines()
 
         assert(findMirrorRow(input) == null)
@@ -66,12 +66,12 @@ class Day13Test {
     @Test
     fun `findMirrorRow should return the correct index for a reflection in the middle of the pattern`() {
         val input = """
-            aaa
-            bbb
-            ccc
-            ccc
-            bbb
-            aaa
+            ...
+            ..#
+            .#.
+            .#.
+            ..#
+            ...
         """.trimIndent().lines()
 
         assert(findMirrorRow(input) == 3)
@@ -105,11 +105,6 @@ class Day13Test {
         val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
         assert(findMirrorRow(chunkedInput.last()) == 4)
     }
-
-    //find mirror row with smudge should work when the smudge isn't at the mirror index
-
-    //find mirror row with smudge should work when the smude is at the mirror index
-
     
     @Test
     fun `oneCharAwayFromEqual should return true given two lines that differ by exactly one character`() {
