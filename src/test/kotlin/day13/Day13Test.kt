@@ -28,7 +28,12 @@ class Day13Test {
     fun `part1 should find the reflection in each pattern and return the sum of row indicies times 100 plus column indices`() {
         assert(part1(sampleInput) == 405L)
     }
-    
+
+    @Test
+    fun `part2 should find the reflection with smudge in each pattern and return the sum of row indicies time 100 plus column indices`() {
+        assert(part2(sampleInput) == 400L)
+    }
+
     @Test
     fun `findMirrorRow should look from top to bottom for matching rows`() {
         val input = """
@@ -111,7 +116,19 @@ class Day13Test {
         val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
         assert(findMirrorRow(chunkedInput.first().transpose()) == 5)
     }
-    
+
+    @Test
+    fun `findMirrorRowWithSmudge should return a different value with the first pattern`() {
+        val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
+        assert(findMirrorRowWithSmudge(chunkedInput.first()) == 3)
+    }
+
+    @Test
+    fun `findMirrorRowWithSmudge should return a different value with the second pattern`() {
+        val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
+        assert(findMirrorRowWithSmudge(chunkedInput[1]) == 1)
+    }
+
     @Test
     fun `oneCharAwayFromEqual should return true given two lines that differ by exactly one character`() {
         val a = "###.###".customHashCode()
@@ -184,6 +201,34 @@ class Day13Test {
         val maxChunkLength = readInput("Day13").chunkOnPredicate { it.isBlank() }.maxOf { it.size }
         println(maxChunkLength)
         assert(maxChunkLength < 32)
+    }
+
+    @Test
+    fun `there should be no line with a custom hash code of 0`() {
+        readInput("Day13")
+            .filter { it.isNotBlank() }
+            .map { it.customHashCode() }
+            .none { it == 0u }
+    }
+
+    @Test
+    fun `there should be no transposed line with a custom hash code of 0`() {
+        readInput("Day13")
+            .chunkOnPredicate { it.isBlank() }
+            .map { it.transpose() }
+            .flatten()
+            .map { it.customHashCode() }
+            .none { it == 0u }
+    }
+
+    @Test
+    fun `flipBit should flip the specified bit of a hash code`() {
+        val hashCode = "#####".customHashCode()
+        assert(hashCode.flipBit(0) == ".####".customHashCode())
+        assert(hashCode.flipBit(1) == "#.###".customHashCode())
+        assert(hashCode.flipBit(2) == "##.##".customHashCode())
+        assert(hashCode.flipBit(3) == "###.#".customHashCode())
+        assert(hashCode.flipBit(4) == "####.".customHashCode())
     }
 
     @Test
