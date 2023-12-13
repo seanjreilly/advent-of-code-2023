@@ -38,23 +38,24 @@ internal enum class MirrorOrientation { Row, Column}
 internal data class ReflectionResult(val mirrorOrientation: MirrorOrientation, val index: Int)
 
 internal fun findMirrorRow(input: List<String>): Int? {
-    return input
-        .asSequence()
-        .windowed(2, 1)
-        .withIndex()
-        .filter { it.value.first() == it.value.last() }
-        .map { it.index + 1 }
-        .firstOrNull { verifyFold(input, it) != null }
-}
+    val matchingHashCodes = input.withIndex().groupBy({ it.value.customHashCode() }, { it.index }).values
 
-private fun verifyFold(input: List<String>, foldIndex: Int): Int? {
-    var (max, min) = Pair(foldIndex, foldIndex - 1)
-    while (max < input.size && min >= 0) {
-        if (input[min--] != input[max++]) {
-            return null
+    fun verifyMirror(mirrorIndex: Int): Int? {
+        var (max, min) = Pair(mirrorIndex, mirrorIndex - 1)
+        while (max < input.size && min >= 0) {
+            val criteria = listOf(min--, max++)
+            if (matchingHashCodes.none { it.containsAll(criteria) }) {
+                return null
+            }
         }
+        return mirrorIndex
     }
-    return foldIndex
+
+    return input.indices
+        .windowed(2, 1)
+        .filter { indices -> matchingHashCodes.any { it.containsAll(indices) } }
+        .map { it.last() }
+        .firstOrNull { verifyMirror(it) != null }
 }
 
 internal fun List<String>.transpose() : List<String> {

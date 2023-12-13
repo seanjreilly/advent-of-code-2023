@@ -32,9 +32,9 @@ class Day13Test {
     @Test
     fun `findMirrorRow should look from top to bottom for matching rows`() {
         val input = """
-            aaa
-            aaa
-            bbb
+            ...
+            ...
+            ###
         """.trimIndent().lines()
 
         assert(findMirrorRow(input) == 1)
