@@ -1,0 +1,77 @@
+package day13
+
+import utils.readInput
+import kotlin.math.min
+import kotlin.system.measureTimeMillis
+
+fun main() {
+    val elapsed = measureTimeMillis {
+        val input = readInput("Day13")
+        println(part1(input))
+        println(part2(input))
+    }
+    println()
+    println("Elapsed time: $elapsed ms.")
+}
+
+fun part1(input: List<String>): Long {
+    val (rowResults, columnResults) =  input
+        .chunkOnPredicate { it.isBlank() }
+        .map { findReflection(it) }
+        .partition { it.mirrorOrientation == MirrorOrientation.Row }
+
+    return (rowResults.sumOf { it.index.toLong() } * 100L) + columnResults.sumOf { it.index.toLong() }
+}
+
+fun part2(input: List<String>): Long {
+    return 0
+}
+
+internal fun findReflection(pattern: List<String>): ReflectionResult {
+    return when (val result = findMirrorRow(pattern)) {
+        null -> ReflectionResult(MirrorOrientation.Column, findMirrorRow(pattern.transpose())!!)
+        else -> ReflectionResult(MirrorOrientation.Row, result)
+    }
+}
+
+internal enum class MirrorOrientation { Row, Column}
+internal data class ReflectionResult(val mirrorOrientation: MirrorOrientation, val index: Int)
+
+internal fun findMirrorRow(input: List<String>): Int? {
+    return input
+        .asSequence()
+        .windowed(2, 1)
+        .withIndex()
+        .filter { it.value.first() == it.value.last() }
+        .map { it.index + 1 }
+        .firstOrNull { verifyFold(input, it) != null }
+}
+
+private fun verifyFold(input: List<String>, foldIndex: Int): Int? {
+    var (max, min) = Pair(foldIndex, foldIndex - 1)
+    while (max < input.size && min >= 0) {
+        if (input[min--] != input[max++]) {
+            return null
+        }
+    }
+    return foldIndex
+}
+
+internal fun List<String>.transpose() : List<String> {
+    if (this.any { it.length != first().length }) {
+        throw IllegalArgumentException("every string in the list must have the same length")
+    }
+    return (0 until first().length).map { col -> this.map { it[col] }.joinToString("") }
+}
+
+internal fun <T> List<T>.chunkOnPredicate(predicate: (T) -> Boolean) : List<List<T>> {
+    var remainingEntries = this
+    val result = mutableListOf<List<T>>()
+
+    while(remainingEntries.isNotEmpty()) {
+        val chunk = remainingEntries.takeWhile{ !predicate(it) }
+        result.add(chunk)
+        remainingEntries = remainingEntries.subList(min(chunk.size + 1, remainingEntries.size), remainingEntries.size)
+    }
+    return result
+}
