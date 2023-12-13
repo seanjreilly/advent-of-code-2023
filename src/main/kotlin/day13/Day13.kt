@@ -75,3 +75,12 @@ internal fun <T> List<T>.chunkOnPredicate(predicate: (T) -> Boolean) : List<List
     }
     return result
 }
+
+typealias HashCode = UInt
+internal fun HashCode.oneCharAwayFromEqual(other: HashCode): Boolean = (this xor other).countOneBits() == 1
+
+internal fun String.customHashCode(): HashCode {
+    require(length <= 32) { "Only strings of length 32 or shorter are supported" }
+    require(toCharArray().all { it in listOf('#', '.') }) { "Only strings composed of '#' or '.' are supported" }
+    return this.toCharArray().withIndex().filter { it.value == '#' }.map { 1u shl it.index }.reduceOrNull(UInt::or) ?: 0u
+}

@@ -2,6 +2,7 @@ package day13
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import utils.readInput
 import kotlin.IllegalArgumentException
 
 class Day13Test {
@@ -105,6 +106,35 @@ class Day13Test {
         assert(findMirrorRow(chunkedInput.last()) == 4)
     }
 
+    //find mirror row with smudge should work when the smudge isn't at the mirror index
+
+    //find mirror row with smudge should work when the smude is at the mirror index
+
+    
+    @Test
+    fun `oneCharAwayFromEqual should return true given two lines that differ by exactly one character`() {
+        val a = "###.###".customHashCode()
+        val b = "#######".customHashCode()
+        
+        assert(a.oneCharAwayFromEqual(b))
+        assert(b.oneCharAwayFromEqual(a))
+    }
+
+    @Test
+    fun `oneCharAwayFromEqual should return false given two equal lines`() {
+        val a = "#.#.#.#".customHashCode()
+        assert (!a.oneCharAwayFromEqual(a))
+    }
+
+    @Test
+    fun `oneCharAwayFromEqual should return false given two lines that differ by more than one character`() {
+        val a = ".......".customHashCode()
+        val b = "..#.#..".customHashCode()
+
+        assert(!a.oneCharAwayFromEqual(b))
+        assert(!b.oneCharAwayFromEqual(a))
+    }
+
     @Test
     fun `findReflection should return a row mirror orientation given a horizontal reflection`() {
         val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
@@ -156,5 +186,32 @@ class Day13Test {
 
         val exception = assertThrows<IllegalArgumentException> { input.transpose() }
         assert(exception.message == "every string in the list must have the same length")
+    }
+
+    @Test
+    fun `max line length should be less than 64`() {
+        val maxLineLength = readInput("Day13").maxOf { it.length }
+        println(maxLineLength)
+        assert(maxLineLength < 32)
+    }
+
+    @Test
+    fun `max chunk length should be less than 64`() {
+        val maxChunkLength = readInput("Day13").chunkOnPredicate { it.isBlank() }.maxOf { it.size }
+        println(maxChunkLength)
+        assert(maxChunkLength < 32)
+    }
+
+    @Test
+    fun `customHashCode should set a bit for each hash character`() {
+        val a = ".#.#.#.#.#"
+        val b = "...#.#.#.#"
+
+        val aHash: UInt = a.customHashCode()
+        val bHash: UInt = b.customHashCode()
+
+        assert(aHash != bHash)
+        assert(aHash.countOneBits() == 5)
+        assert(bHash.countOneBits() == 4)
     }
 }
