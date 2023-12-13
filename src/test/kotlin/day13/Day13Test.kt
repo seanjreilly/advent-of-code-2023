@@ -105,6 +105,12 @@ class Day13Test {
         val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
         assert(findMirrorRow(chunkedInput.last()) == 4)
     }
+
+    @Test
+    fun `findMirrorRow should work with transposed sample input`() {
+        val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
+        assert(findMirrorRow(chunkedInput.first().transpose()) == 5)
+    }
     
     @Test
     fun `oneCharAwayFromEqual should return true given two lines that differ by exactly one character`() {
@@ -128,23 +134,6 @@ class Day13Test {
 
         assert(!a.oneCharAwayFromEqual(b))
         assert(!b.oneCharAwayFromEqual(a))
-    }
-
-    @Test
-    fun `findReflection should return a row mirror orientation given a horizontal reflection`() {
-        val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
-        val result: ReflectionResult = findReflection(chunkedInput.last())
-        assert(result.mirrorOrientation == MirrorOrientation.Row)
-        assert(result.index == 4)
-    }
-
-    @Test
-    fun `findReflection should return a column mirror orientation given a vertical reflection`() {
-        val chunkedInput = sampleInput.chunkOnPredicate { it.isBlank() }
-        val result = findReflection(chunkedInput.first())
-
-        assert(result.mirrorOrientation == MirrorOrientation.Column)
-        assert(result.index == 5)
     }
 
     @Test

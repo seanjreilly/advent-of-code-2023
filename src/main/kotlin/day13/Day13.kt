@@ -15,27 +15,24 @@ fun main() {
 }
 
 fun part1(input: List<String>): Long {
-    val (rowResults, columnResults) =  input
-        .chunkOnPredicate { it.isBlank() }
-        .map { findReflection(it) }
-        .partition { it.mirrorOrientation == MirrorOrientation.Row }
+    val patterns = input.chunkOnPredicate { it.isBlank() }
+    val (rowResults, columnsToFind) = patterns
+        .map { Pair(findMirrorRow(it), it) }
+        .partition { it.first != null }
 
-    return (rowResults.sumOf { it.index.toLong() } * 100L) + columnResults.sumOf { it.index.toLong() }
+    val columnScore = columnsToFind
+        .map { it.second.transpose() }
+        .mapNotNull { findMirrorRow(it) }
+        .sumOf { it.toLong() }
+
+    val rowScore = rowResults.sumOf { it.first!!.toLong() }
+
+    return (rowScore * 100) + columnScore
 }
 
 fun part2(input: List<String>): Long {
     return 0
 }
-
-internal fun findReflection(pattern: List<String>): ReflectionResult {
-    return when (val result = findMirrorRow(pattern)) {
-        null -> ReflectionResult(MirrorOrientation.Column, findMirrorRow(pattern.transpose())!!)
-        else -> ReflectionResult(MirrorOrientation.Row, result)
-    }
-}
-
-internal enum class MirrorOrientation { Row, Column}
-internal data class ReflectionResult(val mirrorOrientation: MirrorOrientation, val index: Int)
 
 internal fun findMirrorRow(input: List<String>): Int? {
     val matchingHashCodes = input.withIndex().groupBy({ it.value.customHashCode() }, { it.index }).values
