@@ -3,6 +3,7 @@ package day14
 import utils.Point
 import utils.readInput
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.system.measureTimeMillis
@@ -42,9 +43,10 @@ internal fun parse(input: List<String>): Platform {
 internal class Platform(val xCoords: IntRange, val yCoords: IntRange, var balls: Set<Point>, boulders: Set<Point>) {
     fun tiltNorth() {
         val newBallPositions = mutableSetOf<Point>()
+        val ballsByX = balls.sortedByDescending { it.y }.groupBy { it.x } //reverse the sort because we'll take from the end
         xCoords.forEach { x ->
             val brickPositions = brickLocationsByColumn[x] ?: TreeSet()
-            val ballsInColumn = balls.filter { it.x == x }.sortedByDescending { it.y }.toMutableList() //reverse the list: we'll take from the end
+            val ballsInColumn = ballsByX[x]?.toMutableList() ?: ArrayList()
             var minY = -1
             while (ballsInColumn.isNotEmpty()) {
                 val p: Point = ballsInColumn.removeLast()
@@ -57,9 +59,10 @@ internal class Platform(val xCoords: IntRange, val yCoords: IntRange, var balls:
 
     fun tiltWest() {
         val newBallPositions = mutableSetOf<Point>()
+        val ballsByY = balls.sortedByDescending { it.x }.groupBy { it.y } //reverse the sort because we'll take from the end
         yCoords.forEach { y ->
             val brickPositions = brickLocationsByRow[y] ?: TreeSet()
-            val ballsInRow = balls.filter { it.y == y }.sortedByDescending { it.x }.toMutableList() //reverse the list: we'll take from the end
+            val ballsInRow = ballsByY[y]?.toMutableList() ?: ArrayList()
             var minX = -1
             while (ballsInRow.isNotEmpty()) {
                 val p: Point = ballsInRow.removeLast()
@@ -72,9 +75,10 @@ internal class Platform(val xCoords: IntRange, val yCoords: IntRange, var balls:
 
     fun tiltSouth() {
         val newBallPositions = mutableSetOf<Point>()
+        val ballsByX = balls.sortedBy { it.y }.groupBy { it.x } // double-reverse the sort because we'll take from the end
         xCoords.forEach { x ->
             val brickPositions = brickLocationsByColumn[x] ?: TreeSet()
-            val ballsInColumn = balls.filter { it.x == x }.sortedBy { it.y }.toMutableList() //"reverse" the list: we'll take from the end
+            val ballsInColumn = ballsByX[x]?.toMutableList() ?: ArrayList()
             var maxY = yCoords.last + 1
             while (ballsInColumn.isNotEmpty()) {
                 val p: Point = ballsInColumn.removeLast()
@@ -87,9 +91,10 @@ internal class Platform(val xCoords: IntRange, val yCoords: IntRange, var balls:
 
     fun tiltEast() {
         val newBallPositions = mutableSetOf<Point>()
+        val ballsByY = balls.sortedBy { it.x }.groupBy { it.y } //double reverse the sort because we'll take from the end
         yCoords.forEach { y ->
             val brickPositions = brickLocationsByRow[y] ?: TreeSet()
-            val ballsInRow = balls.filter { it.y == y }.sortedBy { it.x }.toMutableList() //"reverse" the list: we'll take from the end
+            val ballsInRow = ballsByY[y]?.toMutableList() ?: ArrayList()
             var maxX = xCoords.last + 1
             while (ballsInRow.isNotEmpty()) {
                 val p: Point = ballsInRow.removeLast()
