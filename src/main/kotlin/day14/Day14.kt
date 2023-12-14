@@ -22,7 +22,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return parse(input).also { it.spinCycle(1_000_000_000) }.totalLoad().toLong()
 }
 
 internal fun parse(input: List<String>): Platform {
@@ -105,12 +105,30 @@ internal class Platform(val xCoords: IntRange, val yCoords: IntRange, var balls:
     }
 
     fun spinCycle(spins: Int) {
-        repeat(spins) {
+        val cycleDetection = mutableMapOf<Set<Point>, Int>()
+        var spinsSoFar = 0
+
+        do {
             tiltNorth()
             tiltWest()
             tiltSouth()
             tiltEast()
-        }
+
+            spinsSoFar++
+
+            val cycleStart = cycleDetection[balls]
+            if (cycleStart != null) {
+                val cycleLength = spinsSoFar - cycleStart
+                val spinsRemainingInPartialCycle = (spins - cycleStart) % cycleLength
+
+                // we could spin a few more times, but since we've run a full cycle
+                // we already have the intermediate value in the cache
+                balls = cycleDetection.entries.first { it.value == spinsRemainingInPartialCycle + cycleStart }.key
+                return
+            } else {
+                cycleDetection[balls] = spinsSoFar
+            }
+        } while (spinsSoFar < spins)
     }
 
     val brickLocationsByColumn: Map<Int, TreeSet<Int>> = boulders.groupBy({ it.x }, { it.y }).mapValues { TreeSet(it.value) }

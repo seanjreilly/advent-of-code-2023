@@ -34,6 +34,11 @@ class Day14Test {
     fun `part1 should parse a platform, tilt it north, and return the platform's total Load`() {
         assert(part1(sampleInput) == 136L)
     }
+
+    @Test
+    fun `part2 should parse a platform, spin it 1 billion times, and return the platform's total load`() {
+        assert(part2(sampleInput) == 64L)
+    }
     @Test
     fun `parse should produce a platform instance with x and y coordinate bounds`() {
         val platform: Platform = parse(sampleInput)
@@ -228,13 +233,13 @@ class Day14Test {
             assert(platform.balls == parse(expectedPositionsAfter3Cycles).balls)
         }
 
-//        @Test
-//        fun `spinCycle should be able to return results for very large numbers of spins`() {
-//            val platform = parse(sampleInput)
-//            val oneBillion = 1000000000
-//            platform.spinCycle(oneBillion)
-//
-//            assert(platform.totalLoad() == 64)
-//        }
+        @Test
+        fun `spinCycle should be able to return results for very large numbers of spins`() {
+            val platform = parse(sampleInput)
+            val oneBillion = 1000000000
+            platform.spinCycle(oneBillion)
+
+            assert(platform.totalLoad() == 64)
+        }
     }
 }
