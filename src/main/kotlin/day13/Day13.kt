@@ -46,40 +46,26 @@ internal fun findMirrorRowWithSmudge(pattern: List<String>): Int? {
     val hashCodes = pattern.map { it.customHashCode() }
 
     //find the original match, so we can ensure we don't return it
-    val originalMatch = findMirrorRowInternal(hashCodes)
-
-    //brute force all possible 1 character changes
-//    val potentialAnswers = hashCodes
-//        .indices
-//        .flatMap { lineIndex -> (0 until pattern.first().length).map { Pair(lineIndex, it) }}
-//        .map { (lineIndex, columnIndex) -> ArrayList(hashCodes).also { it[lineIndex] = hashCodes[lineIndex].flipBit(columnIndex) } }
-//        .map { findMirrorRowInternal(it) }
-//        .filterNotNull()
-//        .filter { it != originalMatch }
+    //(if the original was transposed the other way, we ignore it)
+    val originalMatch = findMirrorRow(pattern)
 
     //the only one-character changes that matter are making a line that didn't match another line before match now
-    val potentialAnswers = hashCodes
+    return hashCodes
         .withIndex()
-        .flatMap { hashCodes.withIndex().map { other -> it to other } }
         .asSequence()
+        .flatMap { hashCodes.withIndex().map { other -> it to other } }
         .filter { it.first.value.oneCharAwayFromEqual(it.second.value) }
         .map { it.first.index to it.second.index }
+        .toList()
         .map { pair -> ArrayList(hashCodes).also<ArrayList<HashCode>> { it[pair.first] = hashCodes[pair.second] } }
-        .map { findMirrorRowInternal(it) }
-        .filterNotNull()
-        .filter { it != originalMatch }
-
-    return potentialAnswers.firstOrNull()
+        .firstNotNullOfOrNull { findMirrorRowInternal(it, originalMatch) }
 }
 
-internal fun findMirrorRowInternal(hashCodes: List<HashCode>): Int? {
-    val matchingHashCodes = hashCodes.withIndex().groupBy({ it.value }, { it.index }).values
-
+internal fun findMirrorRowInternal(hashCodes: List<HashCode>, disallowedValue: Int? = null): Int? {
     fun verifyMirror(mirrorIndex: Int): Int? {
         var (max, min) = Pair(mirrorIndex, mirrorIndex - 1)
         while (max < hashCodes.size && min >= 0) {
-            val criteria = listOf(min--, max++)
-            if (matchingHashCodes.none { it.containsAll(criteria) }) {
+            if (hashCodes[min--] != hashCodes[max++]) {
                 return null
             }
         }
@@ -87,9 +73,11 @@ internal fun findMirrorRowInternal(hashCodes: List<HashCode>): Int? {
     }
 
     return hashCodes.indices
+        .asSequence()
         .windowed(2, 1)
-        .filter { indices -> matchingHashCodes.any { it.containsAll(indices) } }
+        .filter { hashCodes[it.first()] == hashCodes[it.last()] }
         .map { it.last() }
+        .filter { it != disallowedValue }
         .firstOrNull { verifyMirror(it) != null }
 }
 
@@ -114,8 +102,6 @@ internal fun <T> List<T>.chunkOnPredicate(predicate: (T) -> Boolean) : List<List
 
 typealias HashCode = UInt
 internal fun HashCode.oneCharAwayFromEqual(other: HashCode): Boolean = (this xor other).countOneBits() == 1
-
-internal fun HashCode.flipBit(index: Int): HashCode = (1u shl index) xor this
 
 internal fun String.customHashCode(): HashCode {
     require(length <= 32) { "Only strings of length 32 or shorter are supported" }

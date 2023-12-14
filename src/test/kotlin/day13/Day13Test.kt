@@ -222,16 +222,6 @@ class Day13Test {
     }
 
     @Test
-    fun `flipBit should flip the specified bit of a hash code`() {
-        val hashCode = "#####".customHashCode()
-        assert(hashCode.flipBit(0) == ".####".customHashCode())
-        assert(hashCode.flipBit(1) == "#.###".customHashCode())
-        assert(hashCode.flipBit(2) == "##.##".customHashCode())
-        assert(hashCode.flipBit(3) == "###.#".customHashCode())
-        assert(hashCode.flipBit(4) == "####.".customHashCode())
-    }
-
-    @Test
     fun `customHashCode should set a bit for each hash character`() {
         val a = ".#.#.#.#.#"
         val b = "...#.#.#.#"
@@ -242,5 +232,16 @@ class Day13Test {
         assert(aHash != bHash)
         assert(aHash.countOneBits() == 5)
         assert(bHash.countOneBits() == 4)
+    }
+
+    @Test
+    fun `no patterns should match part 1 normally and transposed`() {
+        val patterns = readInput("Day13").chunkOnPredicate { it.isBlank() }
+
+        val patternsMatchingNormally = patterns.withIndex().filter { findMirrorRow(it.value) != null }.map { it.index }.toSet()
+        val patternsMatchingTransposed = patterns.map { it.transpose() }.withIndex().filter { findMirrorRow(it.value) != null }.map { it.index }.toSet()
+
+        assert ((patternsMatchingNormally.size + patternsMatchingTransposed.size) == patterns.size)
+        assert (patternsMatchingNormally.intersect(patternsMatchingTransposed).isEmpty())
     }
 }
