@@ -30,7 +30,6 @@ class Day14Test {
         #....#....
     """.trimIndent().lines()
 
-
     @Test
     fun `part1 should parse a platform, tilt it north, and return the platform's total Load`() {
         assert(part1(sampleInput) == 136L)
@@ -80,7 +79,7 @@ class Day14Test {
         assert(platform.brickLocationsByColumn[8] == setOf(4))
         assert(platform.brickLocationsByColumn[9] == setOf(1, 5))
     }
-
+    
     @Nested
     inner class PlatformTest {
         @Test
@@ -97,10 +96,145 @@ class Day14Test {
         }
 
         @Test
+        fun `tiltWest should move every ball west until it runs into the west edge, a brick, or another ball`() {
+            val expectedResult = """
+                O....#....
+                OOO.#....#
+                .....##...
+                OO.#OO....
+                OO......#.
+                O.#O...#.#
+                O....#OO..
+                O.........
+                #....###..
+                #OO..#....
+            """.trimIndent().lines()
+
+            val platform: Platform = parse(sampleInput)
+            platform.tiltWest()
+
+            assert(platform.balls == parse(expectedResult).balls)
+        }
+
+        @Test
+        fun `tiltSouth should move every ball south until it runs into the south edge, a brick, or another ball`() {
+            val expectedResult = """
+                .....#....
+                ....#....#
+                ...O.##...
+                ...#......
+                O.O....O#O
+                O.#..O.#.#
+                O....#....
+                OO....OO..
+                #OO..###..
+                #OO.O#...O
+            """.trimIndent().lines()
+
+            val platform: Platform = parse(sampleInput)
+            platform.tiltSouth()
+
+            assert(platform.balls == parse(expectedResult).balls)
+        }
+
+        @Test
+        fun `tiltEast should move every ball east until it runs into the east edge, a brick, or another ball`() {
+            val expectedResult = """
+                ....O#....
+                .OOO#....#
+                .....##...
+                .OO#....OO
+                ......OO#.
+                .O#...O#.#
+                ....O#..OO
+                .........O
+                #....###..
+                #..OO#....
+            """.trimIndent().lines()
+
+            val platform: Platform = parse(sampleInput)
+            platform.tiltEast()
+
+            assert(platform.balls == parse(expectedResult).balls)
+        }
+
+        @Test
         fun `totalLoad should calculate each ball's distance from the south edge and return the sum`() {
             val platform = parse(sampleInputAfterTiltNorth)
 
-            assert(platform.totalLoad() == 136L)
+            assert(platform.totalLoad() == 136)
         }
+        
+        @Test
+        fun `spinCycle should move the platform north, west, south, and east once each for a single cycle`() {
+            val expectedPositionsAfter1Cycle = """
+                .....#....
+                ....#...O#
+                ...OO##...
+                .OO#......
+                .....OOO#.
+                .O#...O#.#
+                ....O#....
+                ......OOOO
+                #...O###..
+                #..OO#....
+            """.trimIndent().lines()
+
+            val platform = parse(sampleInput)
+            platform.spinCycle(1)
+
+            assert(platform.balls == parse(expectedPositionsAfter1Cycle).balls)
+        }
+
+        @Test
+        fun `spinCycle should move the balls into the expected position for 2 cycles`() {
+            val expectedPositionsAfter2Cycles = """
+                .....#....
+                ....#...O#
+                .....##...
+                ..O#......
+                .....OOO#.
+                .O#...O#.#
+                ....O#...O
+                .......OOO
+                #..OO###..
+                #.OOO#...O
+            """.trimIndent().lines()
+
+            val platform = parse(sampleInput)
+            platform.spinCycle(2)
+
+            assert(platform.balls == parse(expectedPositionsAfter2Cycles).balls)
+        }
+
+        @Test
+        fun `spinCycle should move the balls into the expected position for 3 cycles`() {
+            val expectedPositionsAfter3Cycles = """
+                .....#....
+                ....#...O#
+                .....##...
+                ..O#......
+                .....OOO#.
+                .O#...O#.#
+                ....O#...O
+                .......OOO
+                #...O###.O
+                #.OOO#...O
+            """.trimIndent().lines()
+
+            val platform = parse(sampleInput)
+            platform.spinCycle(3)
+
+            assert(platform.balls == parse(expectedPositionsAfter3Cycles).balls)
+        }
+
+//        @Test
+//        fun `spinCycle should be able to return results for very large numbers of spins`() {
+//            val platform = parse(sampleInput)
+//            val oneBillion = 1000000000
+//            platform.spinCycle(oneBillion)
+//
+//            assert(platform.totalLoad() == 64)
+//        }
     }
 }
