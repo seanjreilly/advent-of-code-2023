@@ -41,6 +41,10 @@ internal fun parse(input: List<String>): Platform {
 }
 
 internal class Platform(val xCoords: IntRange, val yCoords: IntRange, var balls: Set<Point>, boulders: Set<Point>) {
+
+    val brickLocationsByColumn: Map<Int, TreeSet<Int>> = boulders.groupBy({ it.x }, { it.y }).mapValues { TreeSet(it.value) }
+    val brickLocationsByRow: Map<Int, TreeSet<Int>> = boulders.groupBy({ it.y }, { it.x }).mapValues { TreeSet(it.value) }
+
     fun tiltNorth() {
         val newBallPositions = mutableSetOf<Point>()
         val ballsByX = balls.sortedByDescending { it.y }.groupBy { it.x } //reverse the sort because we'll take from the end
@@ -135,7 +139,4 @@ internal class Platform(val xCoords: IntRange, val yCoords: IntRange, var balls:
             }
         } while (spinsSoFar < spins)
     }
-
-    val brickLocationsByColumn: Map<Int, TreeSet<Int>> = boulders.groupBy({ it.x }, { it.y }).mapValues { TreeSet(it.value) }
-    val brickLocationsByRow: Map<Int, TreeSet<Int>> = boulders.groupBy({ it.y }, { it.x }).mapValues { TreeSet(it.value) }
 }
