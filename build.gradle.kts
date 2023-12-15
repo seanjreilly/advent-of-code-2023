@@ -13,6 +13,9 @@ kotlin {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
     jvmToolchain(21)
+    sourceSets.all {
+        languageSettings { languageVersion = "2.0" }
+    }
 }
 
 testing {
