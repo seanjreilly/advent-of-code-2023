@@ -43,20 +43,14 @@ private fun parseInitializationSequence(input: List<String>) = input.first().spl
 internal fun processInitializationSequence(instructions: List<String>): List<List<LabelAndFocalLength>> {
     val boxes = List(256) { mutableListOf<LabelAndFocalLength>() }
     instructions.forEach { instruction ->
-        when {
-            instruction.endsWith('-') -> {
-                val label = instruction.substringBefore('-')
-                val box = boxes[label.hash()]
-                box.removeIf { it.label == label }
-            }
+        val label = instruction.split('=', '-').first()
+        val box = boxes[label.hash()]
+        when (instruction.last())  {
+            '-' -> box.removeIf { it.label == label }
             else -> {
-                val label = instruction.substringBefore('=')
                 val focalLength = instruction.substringAfter('=').toInt()
-                val box = boxes[label.hash()]
-                when (val index = box.indexOfFirst { it.label == label }) {
-                    -1 -> box.add(LabelAndFocalLength(label, focalLength))
-                    else -> box[index].focalLength = focalLength
-                }
+                box.find { it.label == label }?.also { it.focalLength = focalLength } ?:
+                    box.add(LabelAndFocalLength(label, focalLength))
             }
         }
     }
