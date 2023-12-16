@@ -64,11 +64,16 @@ enum class CardinalDirection(internal val moveOperation: (Point) -> Point) {
     West(Point::west);
 
     fun turn(direction: TurnDirection): CardinalDirection {
-        var index = values().indexOf(this)
+        var index = entries.indexOf(this)
         when (direction) {
             TurnDirection.Left -> index--
             TurnDirection.Right -> index++
         }
-        return values()[index.mod(values().size)]
+        return entries[index.mod(entries.size)]
+    }
+
+    fun opposite(): CardinalDirection {
+        val index = entries.indexOf(this) + 2
+        return entries[index.mod(entries.size)]
     }
 }

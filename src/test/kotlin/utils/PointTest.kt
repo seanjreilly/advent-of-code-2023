@@ -168,5 +168,20 @@ class PointTest {
             assert(direction != newDirection)
             assert(result == direction)
         }
+
+        @Test
+        fun `opposite should return the opposite direction`() {
+            assert(CardinalDirection.North.opposite() == CardinalDirection.South)
+            assert(CardinalDirection.South.opposite() == CardinalDirection.North)
+            assert(CardinalDirection.East.opposite() == CardinalDirection.West)
+            assert(CardinalDirection.West.opposite() == CardinalDirection.East)
+        }
+
+        @Test
+        fun `calling opposite twice on a direction should return the original diraction`() {
+            CardinalDirection.entries.forEach { direction ->
+                assert(direction.opposite().opposite() == direction)
+            }
+        }
     }
 }
