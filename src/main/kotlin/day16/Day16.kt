@@ -22,24 +22,35 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    val contraption = Contraption(input)
+    return contraption.startingConfigurations()
+        .map { contraption.energizeTiles(it) }
+        .maxOf { it.size.toLong() }
 }
 
 typealias PointAndDirection = Pair<Point, CardinalDirection>
 
 internal class Contraption (input: List<String>)  {
-    fun energizeTiles(): Set<Point> {
+    init {
+        input.forEach { require(it.length == input.first().length) { "tile array must be rectangular" } }
+    }
+
+    val tiles: Array<CharArray> = input.map { it.toCharArray() }.toTypedArray()
+    val validXCoords = tiles.first().indices
+    val validYCoords = tiles.indices
+
+    fun energizeTiles(start: PointAndDirection = Point(0,0) to East): Set<Point> {
         val energizedTiles = mutableSetOf<Point>()
         val queue = ArrayDeque<PointAndDirection>()
         val cache = mutableSetOf<PointAndDirection>()
 
 
-        queue.addLast(Point(0,0) to East)
+        queue.addLast(start)
         while (queue.isNotEmpty()) {
             val (point, direction) = queue.removeFirst()
 
             // is within bounds?
-            if (point.x !in validXCoords || point.y !in validYCoourds) {
+            if (point.x !in validXCoords || point.y !in validYCoords) {
                 continue
             }
 
@@ -95,11 +106,12 @@ internal class Contraption (input: List<String>)  {
         return energizedTiles
     }
 
-    init {
-        input.forEach { require(it.length == input.first().length) { "tile array must be rectangular" } }
+    fun startingConfigurations(): Set<PointAndDirection> {
+        return (
+            validXCoords.map { Point(it, validYCoords.first) to South } +
+            validYCoords.map { Point(validXCoords.last, it) to West } +
+            validXCoords.map { Point(it, validYCoords.last) to North } +
+            validYCoords.map { Point(validXCoords.first, it) to East }
+        ).toSet()
     }
-
-    val tiles: Array<CharArray> = input.map { it.toCharArray() }.toTypedArray()
-    val validXCoords = tiles.first().indices
-    val validYCoourds = tiles.indices
 }
