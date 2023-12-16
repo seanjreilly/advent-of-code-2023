@@ -5,6 +5,7 @@ import utils.CardinalDirection.*
 import utils.Point
 import utils.readInput
 import java.lang.IllegalStateException
+import kotlin.streams.asStream
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -24,8 +25,12 @@ fun part1(input: List<String>): Long {
 fun part2(input: List<String>): Long {
     val contraption = Contraption(input)
     return contraption.startingConfigurations()
+        .asSequence()
+        .asStream()
+        .parallel()
         .map { contraption.energizeTiles(it) }
-        .maxOf { it.size.toLong() }
+        .map { it.size.toLong() }
+        .max(Comparator.naturalOrder()).get()
 }
 
 typealias PointAndDirection = Pair<Point, CardinalDirection>
