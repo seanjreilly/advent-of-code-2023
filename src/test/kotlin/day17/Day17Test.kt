@@ -22,8 +22,13 @@ class Day17Test {
     """.trimIndent().lines()
 
     @Test
-    fun `part1 should parse a graph and return the heat cost of the best route to the factory`() {
+    fun `part1 should build a graph and return the heat cost of the best route to the factory`() {
         assert(part1(sampleInput) == 102L)
+    }
+
+    @Test
+    fun `part2 should build an ultra crucible graph and return the heat cost of the best route to the factory`() {
+        assert(part2(sampleInput) == 94L)
     }
 
     @Test
@@ -69,6 +74,54 @@ class Day17Test {
         val graph: Graph = buildGraph(parseEntryCosts(sampleInput))
 
         val node = Point(0,0) facing North
+        val otherNodesReachableFromNode = graph[node]!!
+        assert(otherNodesReachableFromNode.isEmpty())
+    }
+
+    @Test
+    fun `buildUltraCrucibleGraph should return a weighted graph where PointAndDirection nodes can reach other nodes within 4 to 10 steps and a turn`() {
+        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
+
+        assert(graph.size == 13 * 13 * 4) //a node for each square, pointing in each direction
+
+        val startPoint = Point(0, 0)
+        val entryCondition = startPoint facing East
+        val nodesReachableFromEntry = graph[entryCondition]!! //test the nodes reachable from the start condition
+        assert(nodesReachableFromEntry.size == 14)
+
+        //can travel straight from 4-10 nodes, and then turn left or right
+        //expected weights are the cumulative costs of entering points from the beginning of the turn (including the first 3)
+        //8 before we start
+        assert(nodesReachableFromEntry[startPoint.copy(x=4) facing North] == 12)
+        assert(nodesReachableFromEntry[startPoint.copy(x=4) facing South] == 12)
+        assert(nodesReachableFromEntry[startPoint.copy(x=5) facing North] == 15)
+        assert(nodesReachableFromEntry[startPoint.copy(x=5) facing South] == 15)
+        assert(nodesReachableFromEntry[startPoint.copy(x=6) facing North] == 17)
+        assert(nodesReachableFromEntry[startPoint.copy(x=6) facing South] == 17)
+        assert(nodesReachableFromEntry[startPoint.copy(x=7) facing North] == 20)
+        assert(nodesReachableFromEntry[startPoint.copy(x=7) facing South] == 20)
+        assert(nodesReachableFromEntry[startPoint.copy(x=8) facing North] == 21)
+        assert(nodesReachableFromEntry[startPoint.copy(x=8) facing South] == 21)
+        assert(nodesReachableFromEntry[startPoint.copy(x=9) facing North] == 22)
+        assert(nodesReachableFromEntry[startPoint.copy(x=9) facing South] == 22)
+        assert(nodesReachableFromEntry[startPoint.copy(x=10) facing North] == 25)
+        assert(nodesReachableFromEntry[startPoint.copy(x=10) facing South] == 25)
+    }
+
+    @Test
+    fun `buildUltraCrucibleGraph should not include any edges that would lead out of bounds`() {
+        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
+
+        val node = Point(0,0) facing North
+        val otherNodesReachableFromNode = graph[node]!!
+        assert(otherNodesReachableFromNode.isEmpty())
+    }
+
+    @Test
+    fun `buildUltraCrucibleGraph should has to enforce a minimum of 4 steps and if that would be out of bounds there should be no edges from the node`() {
+        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
+
+        val node = Point(9,12) facing East
         val otherNodesReachableFromNode = graph[node]!!
         assert(otherNodesReachableFromNode.isEmpty())
     }

@@ -20,7 +20,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return findCostOfBestPathToFactory(buildUltraCrucibleGraph(parseEntryCosts(input))).toLong()
 }
 
 typealias Graph = Map<PointAndDirection, Map<PointAndDirection, Int>>
@@ -57,6 +57,40 @@ internal fun buildGraph(entryCosts: Array<IntArray>): Graph {
             }
 
             val reachableNodesAndCosts = reachablePointsAndCosts
+                .flatMap { (newPoint, cost) -> newDirections.map { newDirection -> (newPoint facing newDirection) to cost } } //cost isn't affected by the direction of the turn
+
+            reachableNodesAndCosts.toMap()
+        }
+}
+
+internal fun buildUltraCrucibleGraph(entryCosts: Array<IntArray>): Graph {
+    val validX = entryCosts.first().indices
+    val validY = entryCosts.indices
+
+    return validX.flatMap { x -> validY.map { y -> Point(x,y) } }
+        .flatMap { point -> CardinalDirection.entries.map { direction -> point facing direction } }
+        .associateBy( { it }) { (point, direction) ->
+            val newDirections = listOf(direction.turn(TurnDirection.Left), direction.turn(TurnDirection.Right))
+
+            // based on the rules, a legal sequence of moves is 4-10 tiles in the given direction, followed by
+            // either a left or a right turn. Model the entire sequence as a single graph edge.
+            // The cost of the edge is the total entry costs for each square entered during the sequence.
+            // Graph nodes are a point + a direction.
+
+            var newPoint = point
+            var costSoFar = 0
+            val reachablePointsAndCosts = mutableListOf<Pair<Point, Int>>()
+            for (i in 1..10) {
+                newPoint = newPoint.move(direction)
+                if ((newPoint.x !in validX) || (newPoint.y !in validY)) {
+                    break // if this point isn't valid the next one(s) won't be either
+                }
+                costSoFar += entryCosts[newPoint]
+                reachablePointsAndCosts += newPoint to costSoFar
+            }
+
+            val reachableNodesAndCosts = reachablePointsAndCosts
+                .drop(3) //the first 3 squares contribute to heat costs, but aren't valid destinations
                 .flatMap { (newPoint, cost) -> newDirections.map { newDirection -> (newPoint facing newDirection) to cost } } //cost isn't affected by the direction of the turn
 
             reachableNodesAndCosts.toMap()
