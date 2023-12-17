@@ -31,72 +31,8 @@ internal fun parseEntryCosts(input: List<String>): Array<IntArray> =
 
 internal operator fun Array<IntArray>.get(point: Point) = this[point.y][point.x]
 
-internal fun buildGraph(entryCosts: Array<IntArray>): Graph {
-    val validX = entryCosts.first().indices
-    val validY = entryCosts.indices
-
-    return validX.flatMap { x -> validY.map { y -> Point(x,y) } }
-        .flatMap { point -> CardinalDirection.entries.map { direction -> point facing direction } }
-        .associateBy( { it }) { (point, direction) ->
-            val newDirections = listOf(direction.turn(TurnDirection.Left), direction.turn(TurnDirection.Right))
-
-            // based on the rules, a legal sequence of moves is 1, 2, or 3 tiles in the given direction, followed by
-            // either a left or a right turn. Model the entire sequence as a single graph edge.
-            // The cost of the edge is the total entry costs for each square entered during the sequence.
-            // Graph nodes are a point + a direction.
-
-            var newPoint = point
-            var costSoFar = 0
-            val reachablePointsAndCosts = mutableListOf<Pair<Point, Int>>()
-            for (i in 1..3) {
-                newPoint = newPoint.move(direction)
-                if ((newPoint.x !in validX) || (newPoint.y !in validY)) {
-                    break // if this point isn't valid the next one(s) won't be either
-                }
-                costSoFar += entryCosts[newPoint]
-                reachablePointsAndCosts += newPoint to costSoFar
-            }
-
-            val reachableNodesAndCosts = reachablePointsAndCosts
-                .flatMap { (newPoint, cost) -> newDirections.map { newDirection -> (newPoint facing newDirection) to cost } } //cost isn't affected by the direction of the turn
-
-            reachableNodesAndCosts.toMap()
-        }
-}
-
-internal fun buildUltraCrucibleGraph(entryCosts: Array<IntArray>): Graph {
-    val validX = entryCosts.first().indices
-    val validY = entryCosts.indices
-
-    return validX.flatMap { x -> validY.map { y -> Point(x,y) } }
-        .flatMap { point -> CardinalDirection.entries.map { direction -> point facing direction } }
-        .associateBy( { it }) { (point, direction) ->
-            val newDirections = listOf(direction.turn(TurnDirection.Left), direction.turn(TurnDirection.Right))
-
-            // based on the rules, a legal sequence of moves is 4-10 tiles in the given direction, followed by
-            // either a left or a right turn. Model the entire sequence as a single graph edge.
-            // The cost of the edge is the total entry costs for each square entered during the sequence.
-            // Graph nodes are a point + a direction.
-
-            var newPoint = point
-            var costSoFar = 0
-            val reachablePointsAndCosts = mutableListOf<Pair<Point, Int>>()
-            for (i in 1..10) {
-                newPoint = newPoint.move(direction)
-                if ((newPoint.x !in validX) || (newPoint.y !in validY)) {
-                    break // if this point isn't valid the next one(s) won't be either
-                }
-                costSoFar += entryCosts[newPoint]
-                reachablePointsAndCosts += newPoint to costSoFar
-            }
-
-            val reachableNodesAndCosts = reachablePointsAndCosts
-                .drop(3) //the first 3 squares contribute to heat costs, but aren't valid destinations
-                .flatMap { (newPoint, cost) -> newDirections.map { newDirection -> (newPoint facing newDirection) to cost } } //cost isn't affected by the direction of the turn
-
-            reachableNodesAndCosts.toMap()
-        }
-}
+internal fun buildGraph(entryCosts: Array<IntArray>): Graph = buildGraphInternal(entryCosts, 1..3)
+internal fun buildUltraCrucibleGraph(entryCosts: Array<IntArray>): Graph = buildGraphInternal(entryCosts, 4..10)
 
 internal fun findCostOfBestPathToFactory(graph: Graph): Int {
     val tentativeDistances = graph.keys.associateWith { Int.MAX_VALUE }.toMutableMap()
@@ -145,4 +81,38 @@ internal fun findCostOfBestPathToFactory(graph: Graph): Int {
     return CardinalDirection.entries
         .map { endPoint facing it }
         .minOf { tentativeDistances[it]!! }
+}
+
+private fun buildGraphInternal(entryCosts: Array<IntArray>, legalMovesBeforeTurning: IntRange): Map<PointAndDirection, Map<PointAndDirection, Int>> {
+    val validX = entryCosts.first().indices
+    val validY = entryCosts.indices
+
+    return validX.flatMap { x -> validY.map { y -> Point(x, y) } }
+        .flatMap { point -> CardinalDirection.entries.map { direction -> point facing direction } }
+        .associateBy({ it }) { (point, direction) ->
+            val newDirections = listOf(direction.turn(TurnDirection.Left), direction.turn(TurnDirection.Right))
+
+            // based on the rules, a legal sequence of moves is 1, 2, or 3 tiles in the given direction, followed by
+            // either a left or a right turn. Model the entire sequence as a single graph edge.
+            // The cost of the edge is the total entry costs for each square entered during the sequence.
+            // Graph nodes are a point + a direction.
+
+            var newPoint = point
+            var costSoFar = 0
+            val reachablePointsAndCosts = mutableListOf<Pair<Point, Int>>()
+            for (i in 1..10) {
+                newPoint = newPoint.move(direction)
+                if ((newPoint.x !in validX) || (newPoint.y !in validY)) {
+                    break // if this point isn't valid the next one(s) won't be either
+                }
+                costSoFar += entryCosts[newPoint]
+                reachablePointsAndCosts += newPoint to costSoFar
+            }
+
+            val reachableNodesAndCosts = reachablePointsAndCosts
+                .filterIndexed { index, _ -> index + 1 in legalMovesBeforeTurning }
+                .flatMap { (newPoint, cost) -> newDirections.map { newDirection -> (newPoint facing newDirection) to cost } } //cost isn't affected by the direction of the turn
+
+            reachableNodesAndCosts.toMap()
+        }
 }
