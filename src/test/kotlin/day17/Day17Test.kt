@@ -132,4 +132,19 @@ class Day17Test {
         val cost: Int = findCostOfBestPathToFactory(graph)
         assert(cost == 102)
     }
+
+    @Test
+    fun `findCostOfBestPathToFactory should return the correct value with an alternate graph and ultra crucible rules`() {
+        val alternateInput = """
+            111111111111
+            999999999991
+            999999999991
+            999999999991
+            999999999991
+        """.trimIndent().lines()
+
+        val graph = buildUltraCrucibleGraph(parseEntryCosts(alternateInput))
+        val cost = findCostOfBestPathToFactory(graph)
+        assert (cost == 71)
+    }
 }
