@@ -37,109 +37,91 @@ class Day17Test {
 
         entryCosts.forEach { assert(it.size == 13) }
         assert(entryCosts.size == 13)
-        assert(entryCosts[Point(0,0)] == 2)
-        assert(entryCosts[Point(0,12)] == 4)
-        assert(entryCosts[Point(12,0)] == 3)
+        assert(entryCosts[Point(0, 0)] == 2)
+        assert(entryCosts[Point(0, 12)] == 4)
+        assert(entryCosts[Point(12, 0)] == 3)
 
-        assert(entryCosts[Point(1,1)] == 2)
-        assert(entryCosts[Point(2,2)] == 5)
-        assert(entryCosts[Point(3,3)] == 6)
-        assert(entryCosts[Point(4,4)] == 6)
-        assert(entryCosts[Point(5,5)] == 9)
+        assert(entryCosts[Point(1, 1)] == 2)
+        assert(entryCosts[Point(2, 2)] == 5)
+        assert(entryCosts[Point(3, 3)] == 6)
+        assert(entryCosts[Point(4, 4)] == 6)
+        assert(entryCosts[Point(5, 5)] == 9)
     }
-    
+
     @Test
-    fun `buildGraph should return a weighted graph where PointAndDirection nodes can reach other nodes within up to 3 steps and a turn`() {
-        val graph: Graph = buildGraph(parseEntryCosts(sampleInput))
-
-        assert(graph.size == 13 * 13 * 4) //a node for each square, pointing in each direction
-
+    fun `findNeighbours should return other nodes within 1 to 3 steps and a turn as neighbours for part 1`() {
+        val entryCosts = parseEntryCosts(sampleInput)
         val startPoint = Point(0, 0)
         val entryCondition = startPoint facing East
-        val nodesReachableFromEntry = graph[entryCondition]!! //test the nodes reachable from the start condition
-        assert(nodesReachableFromEntry.size == 6)
+
+        val neighbours = findNeighbours(entryCondition, entryCosts, 1..3) //test the nodes reachable from the start condition
+
+        assert(neighbours.size == 6)
 
         //can travel straight from 1-3 nodes, and then turn left or right
         //expected weights are the cumulative costs of entering points from the beginning of the turn
-        assert(nodesReachableFromEntry[startPoint.move(East) facing North] == 4)
-        assert(nodesReachableFromEntry[startPoint.move(East) facing South] == 4)
-        assert(nodesReachableFromEntry[startPoint.move(East).move(East) facing North] == 5)
-        assert(nodesReachableFromEntry[startPoint.move(East).move(East) facing South] == 5)
-        assert(nodesReachableFromEntry[startPoint.move(East).move(East).move(East) facing North] == 8)
-        assert(nodesReachableFromEntry[startPoint.move(East).move(East).move(East) facing South] == 8)
+        assert((startPoint.move(East) facing North to 4) in neighbours)
+        assert((startPoint.move(East) facing South to 4) in neighbours)
+        assert((startPoint.move(East).move(East) facing North to 5) in neighbours)
+        assert((startPoint.move(East).move(East) facing South to 5) in neighbours)
+        assert((startPoint.move(East).move(East).move(East) facing North to 8) in neighbours)
+        assert((startPoint.move(East).move(East).move(East) facing South to 8) in neighbours)
     }
 
     @Test
-    fun `buildGraph should not include any edges that would lead out of bounds`() {
-        val graph: Graph = buildGraph(parseEntryCosts(sampleInput))
-
-        val node = Point(0,0) facing North
-        val otherNodesReachableFromNode = graph[node]!!
-        assert(otherNodesReachableFromNode.isEmpty())
+    fun `findNeighbours should not include any nodes that are out of bounds`() {
+        val entryCosts = parseEntryCosts(sampleInput)
+        val node = Point(0, 0) facing North
+        assert(findNeighbours(node, entryCosts, 1..3).isEmpty())
     }
 
     @Test
-    fun `buildUltraCrucibleGraph should return a weighted graph where PointAndDirection nodes can reach other nodes within 4 to 10 steps and a turn`() {
-        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
-
-        assert(graph.size == 13 * 13 * 4) //a node for each square, pointing in each direction
-
+    fun `findNeighbours should return nodes within 4 to 10 steps and a turn for part 2`() {
+        val entryCosts = parseEntryCosts(sampleInput)
         val startPoint = Point(0, 0)
         val entryCondition = startPoint facing East
-        val nodesReachableFromEntry = graph[entryCondition]!! //test the nodes reachable from the start condition
-        assert(nodesReachableFromEntry.size == 14)
+
+        val neighbours = findNeighbours(entryCondition, entryCosts, 4..10) //test the nodes reachable from the start condition
+        assert(neighbours.size == 14)
 
         //can travel straight from 4-10 nodes, and then turn left or right
         //expected weights are the cumulative costs of entering points from the beginning of the turn (including the first 3)
         //8 before we start
-        assert(nodesReachableFromEntry[startPoint.copy(x=4) facing North] == 12)
-        assert(nodesReachableFromEntry[startPoint.copy(x=4) facing South] == 12)
-        assert(nodesReachableFromEntry[startPoint.copy(x=5) facing North] == 15)
-        assert(nodesReachableFromEntry[startPoint.copy(x=5) facing South] == 15)
-        assert(nodesReachableFromEntry[startPoint.copy(x=6) facing North] == 17)
-        assert(nodesReachableFromEntry[startPoint.copy(x=6) facing South] == 17)
-        assert(nodesReachableFromEntry[startPoint.copy(x=7) facing North] == 20)
-        assert(nodesReachableFromEntry[startPoint.copy(x=7) facing South] == 20)
-        assert(nodesReachableFromEntry[startPoint.copy(x=8) facing North] == 21)
-        assert(nodesReachableFromEntry[startPoint.copy(x=8) facing South] == 21)
-        assert(nodesReachableFromEntry[startPoint.copy(x=9) facing North] == 22)
-        assert(nodesReachableFromEntry[startPoint.copy(x=9) facing South] == 22)
-        assert(nodesReachableFromEntry[startPoint.copy(x=10) facing North] == 25)
-        assert(nodesReachableFromEntry[startPoint.copy(x=10) facing South] == 25)
+        assert(((startPoint.copy(x = 4) facing North) to 12) in neighbours)
+        assert(((startPoint.copy(x = 4) facing South) to 12) in neighbours)
+        assert(((startPoint.copy(x = 5) facing North) to 15) in neighbours)
+        assert(((startPoint.copy(x = 5) facing South) to 15) in neighbours)
+        assert(((startPoint.copy(x = 6) facing North) to 17) in neighbours)
+        assert(((startPoint.copy(x = 6) facing South) to 17) in neighbours)
+        assert(((startPoint.copy(x = 7) facing North) to 20) in neighbours)
+        assert(((startPoint.copy(x = 7) facing South) to 20) in neighbours)
+        assert(((startPoint.copy(x = 8) facing North) to 21) in neighbours)
+        assert(((startPoint.copy(x = 8) facing South) to 21) in neighbours)
+        assert(((startPoint.copy(x = 9) facing North) to 22) in neighbours)
+        assert(((startPoint.copy(x = 9) facing South) to 22) in neighbours)
+        assert(((startPoint.copy(x = 10) facing North) to 25) in neighbours)
+        assert(((startPoint.copy(x = 10) facing South) to 25) in neighbours)
     }
 
     @Test
-    fun `buildUltraCrucibleGraph should not include any edges that would lead out of bounds`() {
-        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
-
-        val node = Point(0,0) facing North
-        val otherNodesReachableFromNode = graph[node]!!
-        assert(otherNodesReachableFromNode.isEmpty())
-    }
-
-    @Test
-    fun `buildUltraCrucibleGraph should enforce a minimum of 4 steps and if that would be out of bounds there should be no edges from the node`() {
-        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
-
-        val node = Point(9,12) facing East
-        val otherNodesReachableFromNode = graph[node]!!
-        assert(otherNodesReachableFromNode.isEmpty())
-    }
-
-    @Test
-    fun `buildUltraCrucibleGraph should only return 2 answers when it's exactly 4 squares away from a bottom corner`() {
-        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
-
-        val node = Point(8,12) facing East
-        val otherNodesReachableFromNode = graph[node]!!
-        assert(otherNodesReachableFromNode.size == 2)
+    fun `findNeighbours should not include any nodes that are out of bounds in part 2`() {
+        val entryCosts = parseEntryCosts(sampleInput)
+        val node = Point(9, 12) facing East
+        assert(findNeighbours(node, entryCosts, 4..10).isEmpty())
     }
 
     @Test
     fun `findCostOfBestPathToFactory should return the heat cost of the best possible path to the factory from the start`() {
-        val graph: Graph = buildGraph(parseEntryCosts(sampleInput))
-        val cost: Int = findCostOfBestPathToFactory(graph)
+        val entryCosts = parseEntryCosts(sampleInput)
+        val cost: Int = findCostOfBestPathToFactory(entryCosts, 1..3)
         assert(cost == 102)
+    }
+
+    @Test
+    fun `findCostOfBestPathToFactory should return the heat cost of the best possible path to the factory with part2 rules`() {
+        val entryCosts = parseEntryCosts(sampleInput)
+        val cost: Int = findCostOfBestPathToFactory(entryCosts, 4..10)
+        assert(cost == 94)
     }
 
     @Test
@@ -152,9 +134,9 @@ class Day17Test {
             999999999991
         """.trimIndent().lines()
 
-        val graph = buildUltraCrucibleGraph(parseEntryCosts(alternateInput))
-        val cost = findCostOfBestPathToFactory(graph)
-        assert (cost == 71)
+        val entryCosts = parseEntryCosts(alternateInput)
+        val cost = findCostOfBestPathToFactory(entryCosts, 4..10)
+        assert(cost == 71)
     }
 
     @Test
@@ -166,8 +148,8 @@ class Day17Test {
             4
         """.trimIndent().lines()
 
-        val graph = buildGraph(parseEntryCosts(alternateInput))
-        val cost = findCostOfBestPathToFactory(graph)
+        val entryCosts = parseEntryCosts(alternateInput)
+        val cost = findCostOfBestPathToFactory(entryCosts, 1..3)
         assert(cost == 9)
     }
 
@@ -177,8 +159,8 @@ class Day17Test {
             1234
         """.trimIndent().lines()
 
-        val graph = buildGraph(parseEntryCosts(alternateInput))
-        val cost = findCostOfBestPathToFactory(graph)
+        val entryCosts = parseEntryCosts(alternateInput)
+        val cost = findCostOfBestPathToFactory(entryCosts, 1..3)
         assert(cost == 9)
     }
 }
