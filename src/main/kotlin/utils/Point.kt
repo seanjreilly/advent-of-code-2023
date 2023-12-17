@@ -51,6 +51,8 @@ data class Point(val x: Int, val y: Int) {
     fun move(cardinalDirection: CardinalDirection): Point {
         return cardinalDirection.moveOperation.invoke(this)
     }
+
+    infix fun facing(direction: CardinalDirection) = PointAndDirection(this, direction)
 }
 
 enum class TurnDirection {
@@ -77,3 +79,5 @@ enum class CardinalDirection(internal val moveOperation: (Point) -> Point) {
         return entries[index.mod(entries.size)]
     }
 }
+
+data class PointAndDirection(val point: Point, val direction: CardinalDirection)

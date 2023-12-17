@@ -3,6 +3,7 @@ package day16
 import utils.CardinalDirection
 import utils.CardinalDirection.*
 import utils.Point
+import utils.PointAndDirection
 import utils.readInput
 import java.lang.IllegalStateException
 import kotlin.streams.asStream
@@ -33,7 +34,7 @@ fun part2(input: List<String>): Long {
         .max(Comparator.naturalOrder()).get()
 }
 
-typealias PointAndDirection = Pair<Point, CardinalDirection>
+//typealias PointAndDirection = Pair<Point, CardinalDirection>
 
 internal class Contraption (input: List<String>)  {
     init {
@@ -44,7 +45,7 @@ internal class Contraption (input: List<String>)  {
     val validXCoords = tiles.first().indices
     val validYCoords = tiles.indices
 
-    fun energizeTiles(start: PointAndDirection = Point(0,0) to East): Set<Point> {
+    fun energizeTiles(start: PointAndDirection = Point(0,0) facing East): Set<Point> {
         val energizedTiles = mutableSetOf<Point>()
         val queue = ArrayDeque<PointAndDirection>()
         val cache = mutableSetOf<PointAndDirection>()
@@ -60,7 +61,7 @@ internal class Contraption (input: List<String>)  {
             }
 
             //check cache
-            if ((point to direction) in cache) {
+            if ((point facing direction) in cache) {
                 continue
             }
 
@@ -70,7 +71,7 @@ internal class Contraption (input: List<String>)  {
             //retrieve tile
             val tile = tiles[point.y][point.x]
 
-            fun move(direction: CardinalDirection) = point.move(direction) to direction
+            fun move(direction: CardinalDirection) = point.move(direction) facing direction
             fun keepGoing() = listOf(move(direction))
             fun turn (newDirection: CardinalDirection) = listOf(move(newDirection))
             fun split(a: CardinalDirection, b: CardinalDirection) = listOf(move(a), move(b))
@@ -105,7 +106,7 @@ internal class Contraption (input: List<String>)  {
             nextDirection.forEach { queue.addLast(it) }
 
             // add to cache
-            cache += (point to direction)
+            cache += (point facing direction)
         }
 
         return energizedTiles
@@ -113,10 +114,10 @@ internal class Contraption (input: List<String>)  {
 
     fun startingConfigurations(): Set<PointAndDirection> {
         return (
-            validXCoords.map { Point(it, validYCoords.first) to South } +
-            validYCoords.map { Point(validXCoords.last, it) to West } +
-            validXCoords.map { Point(it, validYCoords.last) to North } +
-            validYCoords.map { Point(validXCoords.first, it) to East }
+            validXCoords.map { Point(it, validYCoords.first) facing South } +
+            validYCoords.map { Point(validXCoords.last, it) facing West } +
+            validXCoords.map { Point(it, validYCoords.last) facing North } +
+            validYCoords.map { Point(validXCoords.first, it) facing East }
         ).toSet()
     }
 }

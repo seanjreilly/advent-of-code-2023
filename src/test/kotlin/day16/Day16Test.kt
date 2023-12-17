@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import utils.CardinalDirection.*
 import utils.Point
+import utils.PointAndDirection
 
 class Day16Test {
     private val sampleInput = """
@@ -71,72 +72,72 @@ class Day16Test {
         fun `startingConfigurations should include every point on the north edge heading south`() {
             val entries: Set<PointAndDirection> = Contraption(sampleInput).startingConfigurations()
 
-            val entriesOnNorthEdge = entries.filter { it.second == South }
+            val entriesOnNorthEdge = entries.filter { it.direction == South }
             assert(entriesOnNorthEdge.size == 10)
-            assert(Point(0,0) to South in entriesOnNorthEdge)
-            assert(Point(1,0) to South in entriesOnNorthEdge)
-            assert(Point(2,0) to South in entriesOnNorthEdge)
-            assert(Point(3,0) to South in entriesOnNorthEdge)
-            assert(Point(4,0) to South in entriesOnNorthEdge)
-            assert(Point(5,0) to South in entriesOnNorthEdge)
-            assert(Point(6,0) to South in entriesOnNorthEdge)
-            assert(Point(7,0) to South in entriesOnNorthEdge)
-            assert(Point(8,0) to South in entriesOnNorthEdge)
-            assert(Point(9,0) to South in entriesOnNorthEdge)
+            assert(Point(0,0) facing South in entriesOnNorthEdge)
+            assert(Point(1,0) facing South in entriesOnNorthEdge)
+            assert(Point(2,0) facing South in entriesOnNorthEdge)
+            assert(Point(3,0) facing South in entriesOnNorthEdge)
+            assert(Point(4,0) facing South in entriesOnNorthEdge)
+            assert(Point(5,0) facing South in entriesOnNorthEdge)
+            assert(Point(6,0) facing South in entriesOnNorthEdge)
+            assert(Point(7,0) facing South in entriesOnNorthEdge)
+            assert(Point(8,0) facing South in entriesOnNorthEdge)
+            assert(Point(9,0) facing South in entriesOnNorthEdge)
         }
 
         @Test
         fun `startingConfigurations should include every point on the east edge heading west`() {
             val entries: Set<PointAndDirection> = Contraption(sampleInput).startingConfigurations()
 
-            val entriesOnEastEdge = entries.filter { it.second == West }
+            val entriesOnEastEdge = entries.filter { it.direction == West }
             assert(entriesOnEastEdge.size == 10)
-            assert(Point(9, 0) to West in entriesOnEastEdge)
-            assert(Point(9, 1) to West in entriesOnEastEdge)
-            assert(Point(9, 2) to West in entriesOnEastEdge)
-            assert(Point(9, 3) to West in entriesOnEastEdge)
-            assert(Point(9, 4) to West in entriesOnEastEdge)
-            assert(Point(9, 5) to West in entriesOnEastEdge)
-            assert(Point(9, 6) to West in entriesOnEastEdge)
-            assert(Point(9, 7) to West in entriesOnEastEdge)
-            assert(Point(9, 8) to West in entriesOnEastEdge)
-            assert(Point(9, 9) to West in entriesOnEastEdge)
+            assert(Point(9, 0) facing West in entriesOnEastEdge)
+            assert(Point(9, 1) facing West in entriesOnEastEdge)
+            assert(Point(9, 2) facing West in entriesOnEastEdge)
+            assert(Point(9, 3) facing West in entriesOnEastEdge)
+            assert(Point(9, 4) facing West in entriesOnEastEdge)
+            assert(Point(9, 5) facing West in entriesOnEastEdge)
+            assert(Point(9, 6) facing West in entriesOnEastEdge)
+            assert(Point(9, 7) facing West in entriesOnEastEdge)
+            assert(Point(9, 8) facing West in entriesOnEastEdge)
+            assert(Point(9, 9) facing West in entriesOnEastEdge)
         }
 
         @Test
         fun `startingConfigurations should include every point on the south edge heading north`() {
             val entries: Set<PointAndDirection> = Contraption(sampleInput).startingConfigurations()
 
-            val entriesOnSouthEdge = entries.filter { it.second == North }
+            val entriesOnSouthEdge = entries.filter { it.direction == North }
             assert(entriesOnSouthEdge.size == 10)
-            assert(Point(0, 9) to North in entriesOnSouthEdge)
-            assert(Point(1, 9) to North in entriesOnSouthEdge)
-            assert(Point(2, 9) to North in entriesOnSouthEdge)
-            assert(Point(3, 9) to North in entriesOnSouthEdge)
-            assert(Point(4, 9) to North in entriesOnSouthEdge)
-            assert(Point(5, 9) to North in entriesOnSouthEdge)
-            assert(Point(6, 9) to North in entriesOnSouthEdge)
-            assert(Point(7, 9) to North in entriesOnSouthEdge)
-            assert(Point(8, 9) to North in entriesOnSouthEdge)
-            assert(Point(9, 9) to North in entriesOnSouthEdge)
+            assert(Point(0, 9) facing North in entriesOnSouthEdge)
+            assert(Point(1, 9) facing North in entriesOnSouthEdge)
+            assert(Point(2, 9) facing North in entriesOnSouthEdge)
+            assert(Point(3, 9) facing North in entriesOnSouthEdge)
+            assert(Point(4, 9) facing North in entriesOnSouthEdge)
+            assert(Point(5, 9) facing North in entriesOnSouthEdge)
+            assert(Point(6, 9) facing North in entriesOnSouthEdge)
+            assert(Point(7, 9) facing North in entriesOnSouthEdge)
+            assert(Point(8, 9) facing North in entriesOnSouthEdge)
+            assert(Point(9, 9) facing North in entriesOnSouthEdge)
         }
 
         @Test
         fun `startingConfigurations should include every point on the west edge heading east`() {
             val entries: Set<PointAndDirection> = Contraption(sampleInput).startingConfigurations()
 
-            val entriesOnWestEdge = entries.filter { it.second == East }
+            val entriesOnWestEdge = entries.filter { it.direction == East }
             assert(entriesOnWestEdge.size == 10)
-            assert(Point(0, 0) to East in entriesOnWestEdge)
-            assert(Point(0, 1) to East in entriesOnWestEdge)
-            assert(Point(0, 2) to East in entriesOnWestEdge)
-            assert(Point(0, 3) to East in entriesOnWestEdge)
-            assert(Point(0, 4) to East in entriesOnWestEdge)
-            assert(Point(0, 5) to East in entriesOnWestEdge)
-            assert(Point(0, 6) to East in entriesOnWestEdge)
-            assert(Point(0, 7) to East in entriesOnWestEdge)
-            assert(Point(0, 8) to East in entriesOnWestEdge)
-            assert(Point(0, 9) to East in entriesOnWestEdge)
+            assert(Point(0, 0) facing East in entriesOnWestEdge)
+            assert(Point(0, 1) facing East in entriesOnWestEdge)
+            assert(Point(0, 2) facing East in entriesOnWestEdge)
+            assert(Point(0, 3) facing East in entriesOnWestEdge)
+            assert(Point(0, 4) facing East in entriesOnWestEdge)
+            assert(Point(0, 5) facing East in entriesOnWestEdge)
+            assert(Point(0, 6) facing East in entriesOnWestEdge)
+            assert(Point(0, 7) facing East in entriesOnWestEdge)
+            assert(Point(0, 8) facing East in entriesOnWestEdge)
+            assert(Point(0, 9) facing East in entriesOnWestEdge)
         }
     }
 }
