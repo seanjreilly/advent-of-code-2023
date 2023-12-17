@@ -2,6 +2,7 @@ package day17
 
 import utils.*
 import utils.CardinalDirection.East
+import utils.CardinalDirection.South
 import java.util.*
 import kotlin.system.measureTimeMillis
 
@@ -98,9 +99,10 @@ internal fun buildUltraCrucibleGraph(entryCosts: Array<IntArray>): Graph {
 }
 
 internal fun findCostOfBestPathToFactory(graph: Graph): Int {
-    val startCondition = Point(0,0) facing East
     val tentativeDistances = graph.keys.associateWith { Int.MAX_VALUE }.toMutableMap()
-    tentativeDistances[startCondition] = 0
+    //the crucible can start facing east or south (north or west would go straight out of bounds)
+    tentativeDistances[Point(0,0) facing East] = 0
+    tentativeDistances[Point(0,0) facing South] = 0
 
     val unvisitedNodes = PriorityQueue<Pair<PointAndDirection, Int>>(compareBy { it.second })
     tentativeDistances.forEach { (pointAndDirection, distance) ->

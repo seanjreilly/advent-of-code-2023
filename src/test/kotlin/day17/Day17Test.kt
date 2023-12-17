@@ -118,12 +118,21 @@ class Day17Test {
     }
 
     @Test
-    fun `buildUltraCrucibleGraph should has to enforce a minimum of 4 steps and if that would be out of bounds there should be no edges from the node`() {
+    fun `buildUltraCrucibleGraph should enforce a minimum of 4 steps and if that would be out of bounds there should be no edges from the node`() {
         val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
 
         val node = Point(9,12) facing East
         val otherNodesReachableFromNode = graph[node]!!
         assert(otherNodesReachableFromNode.isEmpty())
+    }
+
+    @Test
+    fun `buildUltraCrucibleGraph should only return 2 answers when it's exactly 4 squares away from a bottom corner`() {
+        val graph: Graph = buildUltraCrucibleGraph(parseEntryCosts(sampleInput))
+
+        val node = Point(8,12) facing East
+        val otherNodesReachableFromNode = graph[node]!!
+        assert(otherNodesReachableFromNode.size == 2)
     }
 
     @Test
@@ -146,5 +155,30 @@ class Day17Test {
         val graph = buildUltraCrucibleGraph(parseEntryCosts(alternateInput))
         val cost = findCostOfBestPathToFactory(graph)
         assert (cost == 71)
+    }
+
+    @Test
+    fun `findCostOfBestPathToFactory should allow the crucible to start facing south`() {
+        val alternateInput = """
+            1
+            2
+            3
+            4
+        """.trimIndent().lines()
+
+        val graph = buildGraph(parseEntryCosts(alternateInput))
+        val cost = findCostOfBestPathToFactory(graph)
+        assert(cost == 9)
+    }
+
+    @Test
+    fun `findCostOfBestPathToFactory should allow the crucible to start facing east`() {
+        val alternateInput = """
+            1234
+        """.trimIndent().lines()
+
+        val graph = buildGraph(parseEntryCosts(alternateInput))
+        val cost = findCostOfBestPathToFactory(graph)
+        assert(cost == 9)
     }
 }
