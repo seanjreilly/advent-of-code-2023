@@ -3,7 +3,6 @@ package day17
 import utils.*
 import utils.CardinalDirection.East
 import utils.CardinalDirection.South
-import java.util.*
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -35,45 +34,10 @@ internal fun buildGraph(entryCosts: Array<IntArray>): Graph = buildGraphInternal
 internal fun buildUltraCrucibleGraph(entryCosts: Array<IntArray>): Graph = buildGraphInternal(entryCosts, 4..10)
 
 internal fun findCostOfBestPathToFactory(graph: Graph): Int {
-    val tentativeDistances = graph.keys.associateWith { Int.MAX_VALUE }.toMutableMap()
-    //the crucible can start facing east or south (north or west would go straight out of bounds)
-    tentativeDistances[Point(0,0) facing East] = 0
-    tentativeDistances[Point(0,0) facing South] = 0
-
-    val unvisitedNodes = PriorityQueue<Pair<PointAndDirection, Int>>(compareBy { it.second })
-    tentativeDistances.forEach { (pointAndDirection, distance) ->
-        unvisitedNodes.add(Pair(pointAndDirection, distance))
-    }
-
-    val visitedNodes = mutableSetOf<PointAndDirection>()
-
-    while (unvisitedNodes.isNotEmpty()) {
-        val currentNode = unvisitedNodes.remove().first
-
-        //do an extra filter to remove the duplicate entries from the priority queue (see below)
-        if (currentNode in visitedNodes) {
-            continue
-        }
-
-        visitedNodes += currentNode
-
-        val distanceToCurrentNode = tentativeDistances[currentNode]!!
-        if (distanceToCurrentNode == Int.MAX_VALUE) {
-            break //we've reached an unreachable point
-        }
-
-        val neighbours = graph[currentNode]!!.entries
-        neighbours
-            .filter { it.key !in visitedNodes }
-            .forEach { (newNode, transitionCost) ->
-                val currentCostToNode = tentativeDistances[newNode]!!
-                val altDistance = distanceToCurrentNode + transitionCost
-                if (altDistance < currentCostToNode) { //filter out more expensive paths
-                    tentativeDistances[newNode] = altDistance
-                    unvisitedNodes.add(newNode to altDistance) //don't remove the old point (slow), just leave a duplicate entry
-                }
-            }
-    }
+    val origin = Point(0,0)
+    val tentativeDistances = djikstras(
+        graph.keys, origin facing East, origin facing South
+    ) { node -> graph[node]!!.entries.map { it.toPair() } }
 
     // because we're modelling the graph as a PointAndDirection, there are four possible end nodes: the end point facing in each direction
     // the cheapest cost out of these is the answer
