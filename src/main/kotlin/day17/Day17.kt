@@ -44,7 +44,9 @@ internal fun findCostOfBestPathToFactory(graph: Graph): Int {
     val endPoint = Point(graph.keys.maxOf { it.point.x }, graph.keys.maxOf { it.point.y })
     return CardinalDirection.entries
         .map { endPoint facing it }
-        .minOf { tentativeDistances[it]!! }
+        .map { tentativeDistances[it] }
+        .filterNotNull()
+        .min()
 }
 
 private fun buildGraphInternal(entryCosts: Array<IntArray>, legalMovesBeforeTurning: IntRange): Map<PointAndDirection, Map<PointAndDirection, Int>> {

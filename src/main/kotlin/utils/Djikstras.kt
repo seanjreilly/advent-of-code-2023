@@ -2,17 +2,13 @@ package utils
 
 import java.util.*
 
-fun <N>  djikstras(nodes: Set<N>, vararg startNodes: N, neighboursMapping: (N) -> Collection<Pair<N, Int>>) : Map<N, Int> {
+fun <N> djikstras(nodes: Set<N>, vararg startNodes: N, neighboursMapping: (N) -> Collection<Pair<N, Int>>) : Map<N, Int> {
 
-    val tentativeDistances = nodes.associateWith { Int.MAX_VALUE }.toMutableMap()
-
+    val tentativeDistances = mutableMapOf<N, Int>()
     startNodes.forEach { tentativeDistances[it] = 0 }
 
     val unvisitedNodes = PriorityQueue<Pair<N, Int>>(compareBy { it.second })
-    unvisitedNodes += tentativeDistances.map { (node, distance) -> node to distance }
-//    tentativeDistances.forEach { (node, distance) ->
-//        unvisitedNodes.add(Pair(node, distance))
-//    }
+    unvisitedNodes += nodes.map { node -> node to (tentativeDistances[node] ?: Int.MAX_VALUE) }
 
     val visitedNodes = mutableSetOf<N>()
 
@@ -26,16 +22,13 @@ fun <N>  djikstras(nodes: Set<N>, vararg startNodes: N, neighboursMapping: (N) -
 
         visitedNodes += currentNode
 
-        val distanceToCurrentNode = tentativeDistances[currentNode]!!
-        if (distanceToCurrentNode == Int.MAX_VALUE) {
-            break //we've reached an unreachable point
-        }
+        val distanceToCurrentNode = tentativeDistances[currentNode] ?: break //stop if we've reached an unreachable point
 
         val neighbours = neighboursMapping(currentNode)
         neighbours
             .filter { it.first !in visitedNodes }
             .forEach { (newNode, transitionCost) ->
-                val currentCostToNode = tentativeDistances[newNode]!!
+                val currentCostToNode = tentativeDistances[newNode] ?: Int.MAX_VALUE
                 val altDistance = distanceToCurrentNode + transitionCost
                 if (altDistance < currentCostToNode) { //filter out more expensive paths
                     tentativeDistances[newNode] = altDistance
