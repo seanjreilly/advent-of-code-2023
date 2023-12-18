@@ -23,19 +23,6 @@ class Day18Test {
         U 2 (#7a21e3)
     """.trimIndent().lines()
 
-    private val sampleInputBorder = """
-        #######
-        #.....#
-        ###...#
-        ..#...#
-        ..#...#
-        ###.###
-        #...#..
-        ##..###
-        .#....#
-        .######
-    """.trimIndent().lines()
-
     private val sampleInputBorderAndInterior = """
         #######
         #######
@@ -50,42 +37,91 @@ class Day18Test {
     """.trimIndent().lines()
 
     @Test
-    fun `part1 should dig the border and return the count of border points and points contained by the border`() {
+    fun `part1 should parse a polygon from dig instructions and return the count of border points and points contained by the polygon`() {
         assert(part1(sampleInput) == 62L)
     }
 
     @Test
-    fun `digBorder should return the set of border points given a list of dig instructions`() {
-        val border = digBorder(sampleInput)
-
-        assert(border == parsePoints(sampleInputBorder))
+    fun `part2 should translate the hex codes, parse a polygon from dig instructions and return the count of border points and points contained by the polygon`() {
+        assert(part2(sampleInput) == 952408144115L)
     }
 
     @Test
-    fun `digBorder should throw an exception when the border doesn't end where it begins`() {
+    fun `parsePolygon should convert the part 1 dig instructions into a list of vertices`() {
+        val expectedPolygon = listOf(
+            LongPoint(0,0),
+            LongPoint(6, 0),
+            LongPoint(6, 5),
+            LongPoint(4, 5),
+            LongPoint(4, 7),
+            LongPoint(6, 7),
+            LongPoint(6, 9),
+            LongPoint(1, 9),
+            LongPoint(1, 7),
+            LongPoint(0, 7),
+            LongPoint(0, 5),
+            LongPoint(2, 5),
+            LongPoint(2, 2),
+            LongPoint(0, 2),
+            LongPoint(0, 0),
+        )
+
+        val polygon = parsePolygon(sampleInput)
+
+        assert(polygon == expectedPolygon)
+    }
+
+    @Test
+    fun `parsePolygon should throw an exception when the polygon doesn't end where it begins`() {
         val badInstructions = sampleInput.dropLast(1)
-        val exception: IllegalArgumentException = assertThrows { digBorder(badInstructions) }
-        assert(exception.message == "Border must end at its start point")
+        val exception: IllegalArgumentException = assertThrows { parsePolygon(badInstructions) }
+        assert(exception.message == "Polygon must end at its start point")
     }
 
     @Test
-    fun `digBorder should return a valid border given production input`() {
+    fun `parsePolygon should return a valid polygon given production input`() {
         val input = readInput("Day18")
-        val border = digBorder(input)
-
-        println("border size: ${border.size} points")
-        val boundingBox = border.boundingBox()
-        println("bounding box: $boundingBox with area ${boundingBox.area()}")
+        parsePolygon(input)
     }
 
     @Test
-    fun `findInteriorPoints should return the set of interior points given the border points`() {
-        val borderPoints = parsePoints(sampleInputBorder)
-        val expectedInteriorPoints = parsePoints(sampleInputBorderAndInterior) - borderPoints
+    fun `convertHexCodeToDigInstructions should translate the hex codes into dig instructions`() {
+        val expectedInstructions = """
+            R 461937
+            D 56407
+            R 356671
+            D 863240
+            R 367720
+            D 266681
+            L 577262
+            U 829975
+            L 112010
+            D 829975
+            L 491645
+            U 686074
+            L 5411
+            U 500254
+        """.trimIndent().lines()
 
-        val result = findInteriorPoints(borderPoints)
+        val instructions = convertHexCodeToDigInstructions(sampleInput)
 
-        assert(result == expectedInteriorPoints)
+        assert(instructions == expectedInstructions)
+    }
+
+    @Test
+    fun `parsing production part 2 input should produce a valid polygon`() {
+        val input = readInput("Day18")
+        parsePolygon(convertHexCodeToDigInstructions(input))
+    }
+
+    @Test
+    fun `countInteriorAndBorderPoints should return the number of points in the border and interior given a polygon`() {
+        val expectedResult = parsePoints(sampleInputBorderAndInterior).size
+        val polygon = parsePolygon(sampleInput)
+
+        val result: Long = countInteriorAndBorderPoints(polygon)
+
+        assert(result == expectedResult.toLong())
     }
 
     private fun parsePoints(input: List<String>): Set<Point> {
@@ -94,11 +130,5 @@ class Day18Test {
             .filter { it.second == '#' }
             .map { it.first }
             .toSet()
-    }
-
-    private fun BoundingBox.area() : Int {
-        val xSize = xBounds.last - xBounds.first
-        val ySize = yBounds.last - yBounds.first
-        return xSize * ySize
     }
 }
