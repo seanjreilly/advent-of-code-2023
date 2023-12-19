@@ -25,8 +25,13 @@ class Day19Test {
     """.trimIndent().lines()
 
     @Test
-    fun `part1 should anaylse each part and return the sum of the total rating for each accepted part`() {
+    fun `part1 should analyse each part and return the sum of the total rating for each accepted part`() {
         assert(part1(sampleInput) == 19114L)
+    }
+
+    @Test
+    fun `part2 should calculate how many distinct combinations of ratings will be accepted`() {
+        assert(part2(sampleInput) == 167409079868000L)
     }
 
     @Test
@@ -138,5 +143,17 @@ class Day19Test {
         val part = parseParts(sampleInput)[4]
 
         assert(testPart(part, workflows))
+    }
+
+    @Test
+    fun `invertExpression should preserve the field name and add one to the value when inverting greater than`() {
+        val expression = "a>9000"
+        assert(invertExpression(expression) == "a<9001")
+    }
+
+    @Test
+    fun `invertExpression should preserve the field name and subtract one from the value when inverting less than`() {
+        val expression = "s<1000"
+        assert(invertExpression(expression) == "s>999")
     }
 }

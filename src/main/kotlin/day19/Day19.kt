@@ -21,7 +21,52 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    val ruleMappings = parseRawWorkflowRules(input)
+
+    // find paths through the workflow to acceptance with a recursive DFS
+    fun recursiveSearch(rules: List<String>, conditionsSoFar: List<String>) : List<List<String>> {
+        val firstRule = rules.first()
+        val ruleTail = rules.drop(1)
+
+        return when (firstRule) {
+            "R" -> emptyList() //base case
+            "A" -> listOf(conditionsSoFar) //base case
+            in Regex(""".+?:.+?""") -> {
+                //conditional expressions create 2 possibilities
+                val expression = firstRule.substringBefore(":")
+                //first case: the condition is matched
+                val newLabel = firstRule.substringAfter(':')
+                val theBranchIsTaken = recursiveSearch(listOf(newLabel), conditionsSoFar + listOf(expression))
+
+                //second case: the condition is not matched
+                val invertedExpression = invertExpression(expression)
+                val theBranchIsNotTaken = recursiveSearch(ruleTail, conditionsSoFar + listOf(invertedExpression))
+
+                theBranchIsTaken + theBranchIsNotTaken
+            }
+            else -> recursiveSearch(ruleMappings[firstRule]!!, conditionsSoFar) //non-conditional match
+        }
+    }
+    val pathsToAcceptance = recursiveSearch(ruleMappings["in"]!!, emptyList())
+
+    // for each path to acceptance process the clauses into legal ranges
+    val acceptableRanges = pathsToAcceptance.map { clauses ->
+        //part ratings can be from 1 to 4000, inclusive
+        val intRanges = "xmas".toCharArray().associateWith { (1..4000) }.toMutableMap()
+        clauses.forEach { clause ->
+            val key = clause[0]
+            val operation = clause[1]
+            val newEndpoint = clause.drop(2).toInt()
+            val oldRange = intRanges[key]!!
+            intRanges[key] = when(operation) {
+                '<' -> oldRange.first until newEndpoint
+                else -> newEndpoint + 1 .. oldRange.last
+            }
+        }
+        intRanges
+    }
+
+    return acceptableRanges.sumOf { ranges -> ranges.values.map { it.count().toLong() }.reduce(Long::times) }
 }
 
 internal fun testPart(part: Part, workflows: Map<String, Workflow>): Boolean {
@@ -73,7 +118,6 @@ internal fun parseParts(input: List<String>): List<Part> {
         .toList()
 }
 
-
 internal typealias Predicate = (Int, Int) -> Boolean
 internal val GT: Predicate = { a, b -> a > b }
 internal val LT: Predicate = { a, b -> a < b }
@@ -91,28 +135,41 @@ internal data class ConditionalAssignmentRule(
 }
 
 internal fun parseWorkflows(input: List<String>): Map<String, Workflow> {
+    return parseRawWorkflowRules(input).mapValues { entry -> entry.value.map { parseClause(it) } }
+}
+
+internal fun parseRawWorkflowRules(input: List<String>) : Map<String, List<String>> {
     return input
-        .takeWhile(String::isNotBlank)
-        .associate { line -> line.substringBefore('{') to parseWorkflowRules(line) }
+        .asSequence()
+        .takeWhile { it.isNotBlank() }
+        .map { line -> line.substringBefore('{') to line }
+        .map { it.first to it.second.substringAfter('{').substringBefore('}') }
+        .map { it.first to it.second.split(',') }
+        .associate { it }
 }
 
 private val conditionalAssignmentRegex = """(.)([<>])(\d+):(.+)""".toRegex()
-internal fun parseWorkflowRules(line: String): Workflow {
-    val stepDefinitions = line.substringAfter('{').substringBefore('}')
-    return stepDefinitions
-        .split(',')
-        .map { clause ->
-            when(':' in clause) {
-                false -> AssignmentRule(clause)
-                true -> {
-                    val (field, rawPredicate, testValue, matchDestination) = conditionalAssignmentRegex.matchEntire(clause)!!.destructured
-                    val predicate = when (rawPredicate) {
-                        ">" -> GT
-                        "<" -> LT
-                        else -> throw IllegalStateException("Unexpected operator '$rawPredicate'")
-                    }
-                    ConditionalAssignmentRule(field.first(), predicate, testValue.toInt(), matchDestination)
-                }
-            }
+private fun parseClause(clause: String) = when (val match = conditionalAssignmentRegex.matchEntire(clause)) {
+    null -> AssignmentRule(clause)
+    else -> {
+        val (field, rawPredicate, testValue, matchDestination) = match.destructured
+        val predicate = when (rawPredicate) {
+            ">" -> GT
+            "<" -> LT
+            else -> throw IllegalStateException("Unexpected operator '$rawPredicate'")
         }
+        ConditionalAssignmentRule(field.first(), predicate, testValue.toInt(), matchDestination)
+    }
 }
+
+internal fun invertExpression(expression: String): String {
+    val field = expression[0]
+    val op = expression[1]
+    val amount = expression.drop(2).toInt()
+    return when (op) {
+        '>' -> "$field<${amount + 1}"
+        else -> "$field>${amount - 1}"
+    }
+}
+
+private operator fun Regex.contains(text: CharSequence): Boolean = this.matches(text) //lets us use in with a regex in a where statement
