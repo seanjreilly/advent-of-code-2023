@@ -24,49 +24,46 @@ fun part2(input: List<String>): Long {
     val ruleMappings = parseRawWorkflowRules(input)
 
     // find paths through the workflow to acceptance with a recursive DFS
-    fun recursiveSearch(rules: List<String>, conditionsSoFar: List<String>) : List<List<String>> {
+    fun recursiveSearch(rules: List<String>, remainingRange: XmasRange): List<XmasRange> {
         val firstRule = rules.first()
         val ruleTail = rules.drop(1)
 
         return when (firstRule) {
             "R" -> emptyList() //base case
-            "A" -> listOf(conditionsSoFar) //base case
+            "A" -> listOf(remainingRange) //base case
             in Regex(""".+?:.+?""") -> {
                 //conditional expressions create 2 possibilities
                 val expression = firstRule.substringBefore(":")
                 //first case: the condition is matched
                 val newLabel = firstRule.substringAfter(':')
-                val theBranchIsTaken = recursiveSearch(listOf(newLabel), conditionsSoFar + listOf(expression))
+                val theBranchIsTaken = recursiveSearch(listOf(newLabel), remainingRange.apply(expression))
 
                 //second case: the condition is not matched
-                val invertedExpression = invertExpression(expression)
-                val theBranchIsNotTaken = recursiveSearch(ruleTail, conditionsSoFar + listOf(invertedExpression))
+                val theBranchIsNotTaken = recursiveSearch(ruleTail, remainingRange.apply(invertExpression(expression)))
 
                 theBranchIsTaken + theBranchIsNotTaken
             }
-            else -> recursiveSearch(ruleMappings[firstRule]!!, conditionsSoFar) //non-conditional match
+            else -> recursiveSearch(ruleMappings[firstRule]!!, remainingRange) //non-conditional match
         }
     }
-    val pathsToAcceptance = recursiveSearch(ruleMappings["in"]!!, emptyList())
 
-    // for each path to acceptance process the clauses into legal ranges
-    val acceptableRanges = pathsToAcceptance.map { clauses ->
-        //part ratings can be from 1 to 4000, inclusive
-        val intRanges = "xmas".toCharArray().associateWith { (1..4000) }.toMutableMap()
-        clauses.forEach { clause ->
-            val key = clause[0]
-            val operation = clause[1]
-            val newEndpoint = clause.drop(2).toInt()
-            val oldRange = intRanges[key]!!
-            intRanges[key] = when(operation) {
-                '<' -> oldRange.first until newEndpoint
-                else -> newEndpoint + 1 .. oldRange.last
-            }
+    return recursiveSearch(ruleMappings["in"]!!, XmasRange()).sumOf { it.product() }
+}
+
+private data class XmasRange(val ranges: Map<Char, IntRange>) {
+    constructor() : this("xmas".toCharArray().associateWith { 1..4000 })
+    fun product() = ranges.values.map { it.count().toLong() }.reduce(Long::times)
+    fun apply(expression: String): XmasRange {
+        val key = expression[0]
+        val operation = expression[1]
+        val newEndpoint = expression.drop(2).toInt()
+        val oldRange = this.ranges[key]!!
+        val newRange = when (operation) {
+            '<' -> oldRange.first until newEndpoint
+            else -> newEndpoint + 1..oldRange.last
         }
-        intRanges
+        return XmasRange(this.ranges + (key to newRange))
     }
-
-    return acceptableRanges.sumOf { ranges -> ranges.values.map { it.count().toLong() }.reduce(Long::times) }
 }
 
 internal fun testPart(part: Part, workflows: Map<String, Workflow>): Boolean {
