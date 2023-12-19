@@ -90,18 +90,11 @@ internal sealed interface WorkflowRule {
     fun nextLabel(part: Part): String?
 }
 
-internal data class Part(val x: Int, val m: Int, val a: Int, val s: Int) {
-    operator fun get(field:Char) : Int {
-        return when (field) {
-            'x' -> x
-            'm' -> m
-            'a' -> a
-            's' -> s
-            else -> throw IllegalArgumentException("Unexpected field name '$field' ")
-        }
-    }
+internal data class Part internal constructor(val ratings: Map<Char, Int>) {
+    constructor(x: Int, m: Int, a: Int, s: Int): this(mapOf('x' to x, 'm' to m, 'a' to a, 's' to s))
+    operator fun get(field:Char) : Int = ratings[field]!!
 
-    val totalRating = x + m + a + s
+    val totalRating = ratings.values.sum()
 }
 
 private val partRegex = """[{]x=(\d+),m=(\d+),a=(\d+),s=(\d+)[}]""".toRegex()
