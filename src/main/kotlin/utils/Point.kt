@@ -81,3 +81,15 @@ enum class CardinalDirection(internal val moveOperation: (Point) -> Point) {
 }
 
 data class PointAndDirection(val point: Point, val direction: CardinalDirection)
+
+data class Bounds(val validXCoordinates: IntRange, val validYCoordinates: IntRange) : Iterable<Point> {
+    operator fun contains(point: Point) = point.x in validXCoordinates && point.y in validYCoordinates
+
+    override fun iterator() = iterator {
+        for (x in validYCoordinates) {
+            for (y in validYCoordinates) {
+                yield(Point(x, y))
+            }
+        }
+    }
+}

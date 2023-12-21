@@ -1,13 +1,12 @@
 package utils
 
 abstract class GridMap<T>(protected val data : Array<Array<T>>, private val getNeighboursMethod: (Point) -> Collection<Point>) : Iterable<Point> {
-    val height: Int = data.size
-    val width: Int = data.first().size
-    val bottomRightCorner = Point(width, height).northWest()
+    val bounds = Bounds(data.first().indices, data.indices)
+    val bottomRightCorner = Point(bounds.validXCoordinates.last, bounds.validYCoordinates.last)
 
     init {
         //ensure the map is rectangular
-        check(data.all { it.size == width }) {"every row must be the same size"}
+        check(data.all { it.size == data.first().size }) {"every row must be the same size"}
     }
 
     operator fun get(point: Point): T = data[point.y][point.x]
@@ -17,13 +16,7 @@ abstract class GridMap<T>(protected val data : Array<Array<T>>, private val getN
             .filter { contains(it) }
     }
 
-    fun contains(point: Point): Boolean  = point.x in (0 until width) && point.y in (0 until height)
+    operator fun contains(point: Point): Boolean  = point in bounds
 
-    override fun iterator() = iterator {
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                yield(Point(x, y))
-            }
-        }
-    }
+    override fun iterator() = bounds.iterator()
 }
