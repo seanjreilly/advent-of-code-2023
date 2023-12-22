@@ -2,7 +2,7 @@ package utils
 
 import java.util.*
 
-fun <N> djikstras(vararg startNodes: N, neighboursMapping: (N) -> Collection<Pair<N, Int>>) : Map<N, Int> {
+fun <N> djikstras(vararg startNodes: N, costLimit: Int = Int.MAX_VALUE, neighboursMapping: (N) -> Collection<Pair<N, Int>>) : Map<N, Int> {
 
     val tentativeDistances = mutableMapOf<N, Int>()
     val unvisitedNodes = PriorityQueue<Pair<N, Int>>(compareBy { it.second })
@@ -35,7 +35,7 @@ fun <N> djikstras(vararg startNodes: N, neighboursMapping: (N) -> Collection<Pai
             .forEach { (newNode, transitionCost) ->
                 val currentCostToNode = tentativeDistances[newNode] ?: Int.MAX_VALUE
                 val altDistance = distanceToCurrentNode + transitionCost
-                if (altDistance < currentCostToNode) { //filter out more expensive paths
+                if (altDistance < currentCostToNode && altDistance <= costLimit) { //filter out more expensive paths
                     tentativeDistances[newNode] = altDistance
                     unvisitedNodes.add(newNode to altDistance) //don't remove the old point (slow), just leave a duplicate entry
                 }
