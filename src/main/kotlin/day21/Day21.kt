@@ -23,7 +23,7 @@ fun part2(input: List<String>): Long {
 
 internal class Garden(val rocks: Set<Point>, val bounds: Bounds, val startPoint: Point) {
     fun findLegalDestinations(steps: Int): Set<Point> {
-        val distanceTree = djikstras(bounds.toSet(), startPoint, neighboursMapping = ::neighboursMapping)
+        val distanceTree = djikstras(startPoint, neighboursMapping = ::neighboursMapping)
         return distanceTree
             // points that are reachable in fewer than N steps count IF the difference between N and the point's score
             // is a multiple of 2 (the elf can leave and re-enter a point in 2 steps)

@@ -2,18 +2,18 @@ package utils
 
 import java.util.*
 
-fun <N> djikstras(nodes: Set<N>, vararg startNodes: N, neighboursMapping: (N) -> Collection<Pair<N, Int>>) : Map<N, Int> {
+fun <N> djikstras(vararg startNodes: N, neighboursMapping: (N) -> Collection<Pair<N, Int>>) : Map<N, Int> {
 
     val tentativeDistances = mutableMapOf<N, Int>()
+    val unvisitedNodes = PriorityQueue<Pair<N, Int>>(compareBy { it.second })
+
     /*
         Djikstra's usually features just one start node, but you can occasionally have more,
         such as when modelling nodes as point + direction and you're allowed to enter the maze
         facing whichever way you want.
      */
     startNodes.forEach { tentativeDistances[it] = 0 }
-
-    val unvisitedNodes = PriorityQueue<Pair<N, Int>>(compareBy { it.second })
-    unvisitedNodes += nodes.map { node -> node to (tentativeDistances[node] ?: Int.MAX_VALUE) }
+    unvisitedNodes += startNodes.map{ node -> node to 0 } //add the start nodes to the priority queue to kick things off
 
     val visitedNodes = mutableSetOf<N>()
 

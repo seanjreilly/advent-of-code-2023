@@ -27,12 +27,9 @@ internal fun findCostOfBestPathToFactory(entryCosts: Array<IntArray>, legalMoves
     val validX = entryCosts.first().indices
     val validY = entryCosts.indices
 
-    val nodes = validX.flatMap { x -> validY.map { y -> Point(x, y) } }
-        .flatMap { point -> CardinalDirection.entries.map { direction -> point facing direction } }.toSet()
-
     val origin = Point(0,0)
     val startNodes = arrayOf(origin facing East, origin facing South)
-    val distances = djikstras(nodes, *startNodes) { findNeighbours(it, entryCosts, legalMovesBeforeTurning) }
+    val distances = djikstras(*startNodes) { findNeighbours(it, entryCosts, legalMovesBeforeTurning) }
 
     // because we're modelling the graph as a PointAndDirection, there are four possible end nodes: the end point facing in each direction
     // the cheapest cost out of these is the answer
