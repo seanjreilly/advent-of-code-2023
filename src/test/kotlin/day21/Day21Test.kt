@@ -100,5 +100,26 @@ class Day21Test {
 
             assert(result == expectedResult)
         }
+
+        @Test
+        fun `countLegalDestinationsOnInfiniteGrid should return the number of squares the elf can visit in N steps`() {
+            val garden = Garden(sampleInput)
+
+            assert(garden.countLegalDestinationsOnInfiniteGrid(6) == 16L)
+            assert(garden.countLegalDestinationsOnInfiniteGrid(10) == 50L)
+            assert(garden.countLegalDestinationsOnInfiniteGrid(50) == 1594L)
+            assert(garden.countLegalDestinationsOnInfiniteGrid(100) == 6536L)
+        }
+
+        @Test
+        fun `neighboursMappingInfiniteGrid should return proper values outside of the garden bounds`() {
+            val garden = Garden(sampleInput)
+
+            assert(garden.neighboursMappingInfiniteGrid(Point(-3,-3)).isEmpty())
+            assert(garden.neighboursMappingInfiniteGrid(Point(19,19)).isEmpty())
+            assert(garden.neighboursMappingInfiniteGrid(Point(-8,-4)).size == 4)
+        }
+
+
     }
 }
