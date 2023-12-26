@@ -39,4 +39,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     implementation(kotlin("stdlib-jdk8"))
+
+    implementation("org.jgrapht:jgrapht-core:1.5.2")
 }
