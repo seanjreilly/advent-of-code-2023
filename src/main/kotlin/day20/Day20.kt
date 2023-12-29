@@ -1,7 +1,9 @@
 package day20
 
 import day20.PulseType.*
+import utils.lcm
 import utils.readInput
+import java.math.BigInteger
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -20,7 +22,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return parse(input).countPushesUntilRxIsPulsed()
 }
 
 internal enum class PulseType { HIGH, LOW }
@@ -86,6 +88,42 @@ internal class CommunicationSystem(val modules: Map<String, ElfModule>) {
         return PulseCounts(lowPulses, highPulses)
     }
 
+    fun countPushesUntilRxIsPulsed() : Long {
+        //find module that sends signal to rx
+        val firstLevelSourceModule = modules.values.first { "rx" in it.recipients }
+        require(firstLevelSourceModule is ConjunctionModule) { "this approach requires the signallers of rx to be ConjunctionModules" }
+
+        //find the modules that send signals to the module that sends to rx
+        val secondLevelSourceModules = modules.values.filter { firstLevelSourceModule.name in it.recipients }.toMutableSet()
+        secondLevelSourceModules.forEach {
+            require(it is ConjunctionModule) { "this approach requires the signallers of rx to be ConjunctionModules" }
+        }
+
+        // when each second level module sends a high pulse at the same time, the first level module will send a low pulse
+        // count the button pushes needed for each of the second level modules to send a high pulse
+        // and then compute the least common multiple of those
+        val buttonPushesNeeded = mutableSetOf<Long>()
+
+        var buttonPushes = 0L
+        val queue = ArrayDeque<Pulse>()
+        while (secondLevelSourceModules.isNotEmpty()) {
+            buttonPushes++
+
+            queue.addLast(Pulse("", LOW, "broadcaster")) //the pulse sent by the button push itself
+            while (queue.isNotEmpty()) {
+                val pulse = queue.removeFirst()
+                val module = modules[pulse.destination]
+                val outputPulses = module?.handlePulse(pulse) ?: emptyList()
+                if ((module in secondLevelSourceModules) && (outputPulses.all { it.type == HIGH })) {
+                    buttonPushesNeeded += buttonPushes
+                    secondLevelSourceModules -= module!!
+                }
+                queue.addAll(outputPulses)
+            }
+        }
+
+        return buttonPushesNeeded.map { it.toBigInteger() }.reduce(BigInteger::lcm).toLong()
+    }
 }
 
 data class PulseCounts(val lowPulses: Long, val highPulses: Long)
