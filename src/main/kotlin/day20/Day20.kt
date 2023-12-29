@@ -31,9 +31,11 @@ Called ElfModule to avoid a clash with java.lang.Module
  */
 internal sealed interface ElfModule {
     fun handlePulse(pulse: Pulse): List<Pulse>
+    val name: String
+    val recipients: List<String>
 }
 
-internal data class FlipFlopModule(val name: String, val recipients: List<String>) : ElfModule {
+internal data class FlipFlopModule(override val name: String, override val recipients: List<String>) : ElfModule {
     var isOn: Boolean = false
     override fun handlePulse(pulse: Pulse): List<Pulse> {
         return when (pulse.type) {
@@ -47,7 +49,7 @@ internal data class FlipFlopModule(val name: String, val recipients: List<String
     }
 }
 
-internal data class ConjunctionModule(val senders: Set<String>, val name: String, val recipients: List<String>) :
+internal data class ConjunctionModule(val senders: Set<String>, override val name: String, override val recipients: List<String>) :
     ElfModule {
     var state: Map<String, PulseType> = senders.associateWith { LOW }
     override fun handlePulse(pulse: Pulse): List<Pulse> {
@@ -57,10 +59,11 @@ internal data class ConjunctionModule(val senders: Set<String>, val name: String
     }
 }
 
-internal data class BroadcasterModule(val recipients: List<String>) : ElfModule {
+internal data class BroadcasterModule(override val recipients: List<String>) : ElfModule {
     override fun handlePulse(pulse: Pulse): List<Pulse> {
-        return recipients.map { Pulse("broadcaster", pulse.type, it) }
+        return recipients.map { Pulse(name, pulse.type, it) }
     }
+    override val name = "broadcaster"
 }
 
 internal class CommunicationSystem(val modules: Map<String, ElfModule>) {
