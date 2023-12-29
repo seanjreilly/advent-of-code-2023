@@ -1,5 +1,6 @@
 package day08
 
+import utils.lcm
 import utils.readInput
 import java.math.BigInteger
 import kotlin.system.measureTimeMillis
@@ -84,10 +85,4 @@ private fun parseLine(line: String): Pair<String, LeftRight> {
     val key = line.substringBefore('=').trim()
     val leftRight = line.substringAfter("(").substringBefore(")").split(", ").let { LeftRight(it[0], it[1]) }
     return Pair(key, leftRight)
-}
-
-internal fun BigInteger.lcm(other: BigInteger): BigInteger {
-    val gcd: BigInteger = this.gcd(other)
-    val absProduct: BigInteger = this.multiply(other).abs()
-    return absProduct.divide(gcd)
 }
