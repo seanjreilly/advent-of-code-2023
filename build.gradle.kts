@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     id("com.bnorm.power.kotlin-power-assert") version "0.13.0"
     `jvm-test-suite`
 }
