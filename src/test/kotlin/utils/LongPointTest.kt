@@ -29,6 +29,24 @@ class LongPointTest {
     }
 
     @Test
+    fun `manhattanDistance should return the manhattan distance between two points`() {
+        val pointA = LongPoint(0,0)
+        val pointB = LongPoint(3,5)
+
+        val manhattanDistance = pointA.manhattanDistance(pointB)
+
+        assert(manhattanDistance == 8L)
+    }
+
+    @Test
+    fun `manhattanDistance should be reflexive`() {
+        val pointA = LongPoint(0,0)
+        val pointB = LongPoint(3,5)
+
+        assert(pointA.manhattanDistance(pointB) == pointB.manhattanDistance(pointA))
+    }
+
+    @Test
     fun `LongBounds should only contain a point if it is within the bounds`() {
         val bounds = LongBounds(0 until 100, 0 until 100)
         assert(LongPoint(99,99) in bounds)

@@ -1,5 +1,6 @@
 package day18
 
+import utils.LongPoint
 import utils.readInput
 import kotlin.math.abs
 import kotlin.system.measureTimeMillis
@@ -80,9 +81,4 @@ internal fun convertHexCodeToDigInstructions(input: List<String>): List<String> 
         }
 }
 
-data class LongPoint(val x: Long, val y: Long) {
-    fun manhattanDistance(other: LongPoint): Long {
-        return abs(other.x - x) + abs(other.y - y)
-    }
-}
 typealias Polygon = List<LongPoint>

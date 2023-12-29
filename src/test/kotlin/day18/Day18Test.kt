@@ -2,6 +2,7 @@ package day18
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import utils.LongPoint
 import utils.Point
 import utils.readInput
 
