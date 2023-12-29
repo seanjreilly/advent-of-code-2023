@@ -93,3 +93,10 @@ data class Bounds(val validXCoordinates: IntRange, val validYCoordinates: IntRan
         }
     }
 }
+
+/*
+    Common extension functions for accessing a nested array with a point
+ */
+operator fun <T> Array<Array<T>>.get(p: Point) : T = this[p.x][p.y]
+operator fun Array<CharArray>.get(p: Point) = this[p.x][p.y]
+operator fun Array<IntArray>.get(p: Point) = this[p.x][p.y]

@@ -9,7 +9,7 @@ abstract class GridMap<T>(protected val data : Array<Array<T>>, private val getN
         check(data.all { it.size == data.first().size }) {"every row must be the same size"}
     }
 
-    operator fun get(point: Point): T = data[point.y][point.x]
+    operator fun get(point: Point): T = data[point]
 
     fun getNeighbours(point: Point): Collection<Point> {
         return getNeighboursMethod(point)
