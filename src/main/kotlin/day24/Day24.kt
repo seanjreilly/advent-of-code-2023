@@ -2,6 +2,7 @@ package day24
 
 import utils.LongBounds
 import utils.readInput
+import kotlin.math.roundToLong
 import kotlin.math.sign
 import kotlin.system.measureTimeMillis
 
@@ -37,6 +38,9 @@ internal data class Hailstone(val point: LongPoint3D, val velocity: Velocity3D) 
     private val slopeXY = velocity.deltaY.toDouble() / velocity.deltaX
     private val yIntercept = point.y - (this.slopeXY * point.x)
 
+    private val slopeXZ = velocity.deltaZ.toDouble() / velocity.deltaX
+    private val zIntercept = point.z - (this.slopeXZ * point.x)
+
     fun findIntersectionXY(other: Hailstone): DoublePoint? {
         //use slope-intercept equations to find an intersection point
         if (this.slopeXY == other.slopeXY) {
@@ -48,12 +52,45 @@ internal data class Hailstone(val point: LongPoint3D, val velocity: Velocity3D) 
         return DoublePoint(intersectX, intersectY)
     }
 
+    fun findIntersectionXZ(other: Hailstone): DoublePointXZ? {
+        //use slope-intercept equations to find an intersection point
+        if (this.slopeXZ == other.slopeXZ) {
+            return null // lines are parallel
+        }
+        val intersectX = (other.zIntercept - zIntercept) / (this.slopeXZ - other.slopeXZ)
+        val intersectZ = (this.slopeXZ * intersectX) + this.zIntercept
+
+        return DoublePointXZ(intersectX, intersectZ)
+    }
+
     fun isFuture2D(potentialFuturePoint: DoublePoint): Boolean {
         // this ignores the case where x velocity is zero and a hailstone is moving straight up or down
         // however, that doesn't occur in my production input
         if (potentialFuturePoint.x == point.x.toDouble()) { return true } //stones intersect at current position
         return sign(potentialFuturePoint.x - point.x) == velocity.deltaX.sign.toDouble()
     }
+
+    // Finds the (truncated to whole numbers) coordinates of the intersection point
+    // if one exists, as well as the time they intersect.
+    // Returns null if the rays do not intersect.
+    fun findIntersection3D(other: Hailstone): Pair<LongPoint3D, Long>? {
+        val xyIntersection = findIntersectionXY(other)
+        val xzIntersection = findIntersectionXZ(other)
+
+        if (xyIntersection == null || xzIntersection == null) {
+            return null
+        }
+
+        val (x, y, z) = listOf(xyIntersection.x, xyIntersection.y, xzIntersection.z).map(Double::roundToLong)
+
+        check(x == xzIntersection.x.roundToLong()) { "X coordinates from 2 planar intersections don't match. X from XY is ${xyIntersection.x}. X from XZ is ${xzIntersection.x}" }
+
+        val intersection = LongPoint3D(x,y,z)
+        val netVelocity = velocity - other.velocity
+        val intersectionTime = (other.point.x - point.x) / netVelocity.deltaX.toLong()
+        return intersection to intersectionTime
+    }
+
 
     companion object {
         internal operator fun invoke(line: String) : Hailstone {
@@ -66,7 +103,12 @@ internal data class Hailstone(val point: LongPoint3D, val velocity: Velocity3D) 
 
 internal data class LongPoint3D(val x: Long, val y: Long, val z: Long)
 internal data class DoublePoint(val x: Double, val y: Double)
-internal data class Velocity3D(val deltaX: Int, val deltaY: Int, val deltaZ: Int)
+internal data class DoublePointXZ(val x: Double, val z: Double)
+internal data class Velocity3D(val deltaX: Int, val deltaY: Int, val deltaZ: Int) {
+    internal operator fun minus(other: Velocity3D) : Velocity3D {
+        return Velocity3D(this.deltaX - other.deltaX, this.deltaY - other.deltaY, this.deltaZ - other.deltaZ)
+    }
+}
 
 internal fun isRelevantXYIntersection(hailstoneA: Hailstone, hailstoneB: Hailstone, bounds: LongBounds): Boolean {
     val intersection = hailstoneA.findIntersectionXY(hailstoneB) ?: return false

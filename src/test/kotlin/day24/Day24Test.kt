@@ -25,7 +25,7 @@ class Day24Test {
         }
 
         @Test
-        fun `findIntersectionXY should return null given another Hailstone that does not intersect with this one`() {
+        fun `findIntersectionXY should return null given another Hailstone that does not intersect with this one on the XY axis`() {
             val hailstoneA = Hailstone(sampleInput[1])
             val hailstoneB = Hailstone(sampleInput[2])
 
@@ -35,7 +35,7 @@ class Day24Test {
         }
 
         @Test
-        fun `findIntersectionXY should return the intersection point given another Hailstone that intersects with this one`() {
+        fun `findIntersectionXY should return the intersection point given another Hailstone that intersects with this one on the Xy axis`() {
             val hailstoneA = Hailstone(sampleInput[0])
             val hailstoneB = Hailstone(sampleInput[1])
 
@@ -43,6 +43,49 @@ class Day24Test {
 
             assert(truncate3(result.x) == 14.333)
             assert(truncate3(result.y) == 15.333)
+        }
+
+        @Test
+        fun `findIntersectionXZ should return null given another Hailstone that does not intersect with this one on the XZ axis`() {
+            val commonVelocity = Velocity3D(1, 1, 1)
+            val hailstoneA = Hailstone(LongPoint3D(0,0,0), commonVelocity)
+            val hailstoneB = Hailstone(LongPoint3D(1, 1, 1), commonVelocity)
+
+            val result = hailstoneA.findIntersectionXZ(hailstoneB)
+
+            assert(result == null)
+        }
+
+        @Test
+        fun `findIntersectionXZ should return the intersection point given another Hailstone that intersects with this one on the XZ axis`() {
+            val hailstoneA = Hailstone("24, 13, 10 @ -3, 1, 2")
+            val hailstoneB = Hailstone("20, 19, 15 @ 1, -5, -3")
+
+            val result = hailstoneA.findIntersectionXZ(hailstoneB)!!
+
+            assert(result.x == 21.0)
+            assert(result.z == 12.0)
+        }
+
+        @Test
+        fun `find intersection3D should return null given another hailstone that does not intersect with this one in 3d space`() {
+            val hailstoneA = Hailstone("18, 19, 22 @ -1, -1, -2")
+            val hailstoneB = Hailstone("18, 19, 22 @ -1, -1, -2")
+
+            val result = hailstoneA.findIntersection3D(hailstoneB)
+
+            assert(result == null)
+        }
+
+        @Test
+        fun `find intersection3D should return an intersection point and an intersection time given another hailstone that intersects with this one in 3d space`() {
+            val hailstoneA = Hailstone("24, 13, 10 @ -3, 1, 2")
+            val hailstoneB = Hailstone("19, 13, 30 @ -2, 1, -2")
+
+            val result = hailstoneA.findIntersection3D(hailstoneB)!!
+
+            assert(result.first == LongPoint3D(9, 18, 20))
+            assert(result.second == 5L)
         }
 
         @Test
