@@ -49,6 +49,10 @@ internal data class Hailstone(val point: LongPoint3D, val velocity: Velocity3D) 
         val intersectX = (other.yIntercept - yIntercept) / (this.slopeXY - other.slopeXY)
         val intersectY = (this.slopeXY * intersectX) + this.yIntercept
 
+        if (intersectX.isNaN() || intersectY.isNaN()) {
+            return null // not a real intersection
+        }
+
         return DoublePoint(intersectX, intersectY)
     }
 
@@ -59,6 +63,10 @@ internal data class Hailstone(val point: LongPoint3D, val velocity: Velocity3D) 
         }
         val intersectX = (other.zIntercept - zIntercept) / (this.slopeXZ - other.slopeXZ)
         val intersectZ = (this.slopeXZ * intersectX) + this.zIntercept
+
+        if (intersectX.isNaN() || intersectZ.isNaN()) {
+            return null // not a real intersection
+        }
 
         return DoublePointXZ(intersectX, intersectZ)
     }
@@ -83,7 +91,11 @@ internal data class Hailstone(val point: LongPoint3D, val velocity: Velocity3D) 
 
         val (x, y, z) = listOf(xyIntersection.x, xyIntersection.y, xzIntersection.z).map(Double::roundToLong)
 
-        check(x == xzIntersection.x.roundToLong()) { "X coordinates from 2 planar intersections don't match. X from XY is ${xyIntersection.x}. X from XZ is ${xzIntersection.x}" }
+        if (x != xzIntersection.x.roundToLong()) {
+            return null // not actually an intersection
+        }
+
+//        check(x == xzIntersection.x.roundToLong()) { "X coordinates from 2 planar intersections don't match. X from XY is ${xyIntersection.x}. X from XZ is ${xzIntersection.x}" }
 
         val intersection = LongPoint3D(x,y,z)
         val netVelocity = velocity - other.velocity
