@@ -28,22 +28,22 @@ fun part2(input: List<String>): Long {
 internal fun countIntersections(hailstones: List<Hailstone>, bounds: LongBounds): Long {
     return hailstones
         .twoElementCombinations()
-        .count { isRelevant2DIntersection(it.first, it.second, bounds) }
+        .count { isRelevantXYIntersection(it.first, it.second, bounds) }
         .toLong()
 }
 
 internal data class Hailstone(val point: LongPoint3D, val velocity: Velocity3D) {
 
-    private val slope = velocity.deltaY.toDouble() / velocity.deltaX
-    private val intercept = point.y - (this.slope * point.x)
+    private val slopeXY = velocity.deltaY.toDouble() / velocity.deltaX
+    private val yIntercept = point.y - (this.slopeXY * point.x)
 
-    fun findIntersection2D(other: Hailstone): DoublePoint? {
+    fun findIntersectionXY(other: Hailstone): DoublePoint? {
         //use slope-intercept equations to find an intersection point
-        if (this.slope == other.slope) {
+        if (this.slopeXY == other.slopeXY) {
             return null //lines are parallel
         }
-        val intersectX = (other.intercept - intercept) / (this.slope - other.slope)
-        val intersectY = (this.slope * intersectX) + this.intercept
+        val intersectX = (other.yIntercept - yIntercept) / (this.slopeXY - other.slopeXY)
+        val intersectY = (this.slopeXY * intersectX) + this.yIntercept
 
         return DoublePoint(intersectX, intersectY)
     }
@@ -68,8 +68,8 @@ internal data class LongPoint3D(val x: Long, val y: Long, val z: Long)
 internal data class DoublePoint(val x: Double, val y: Double)
 internal data class Velocity3D(val deltaX: Int, val deltaY: Int, val deltaZ: Int)
 
-internal fun isRelevant2DIntersection(hailstoneA: Hailstone, hailstoneB: Hailstone, bounds: LongBounds): Boolean {
-    val intersection = hailstoneA.findIntersection2D(hailstoneB) ?: return false
+internal fun isRelevantXYIntersection(hailstoneA: Hailstone, hailstoneB: Hailstone, bounds: LongBounds): Boolean {
+    val intersection = hailstoneA.findIntersectionXY(hailstoneB) ?: return false
     val tests = listOf(hailstoneA::isFuture2D, hailstoneB::isFuture2D, { it in bounds })
     return tests.all { it.invoke(intersection) }
 }

@@ -25,21 +25,21 @@ class Day24Test {
         }
 
         @Test
-        fun `findIntersection2D should return null given another Hailstone that does not intersect with this one`() {
+        fun `findIntersectionXY should return null given another Hailstone that does not intersect with this one`() {
             val hailstoneA = Hailstone(sampleInput[1])
             val hailstoneB = Hailstone(sampleInput[2])
 
-            val result = hailstoneA.findIntersection2D(hailstoneB)
+            val result = hailstoneA.findIntersectionXY(hailstoneB)
 
             assert(result == null)
         }
 
         @Test
-        fun `findIntersection2D should return the intersection point given another Hailstone that intersects with this one`() {
+        fun `findIntersectionXY should return the intersection point given another Hailstone that intersects with this one`() {
             val hailstoneA = Hailstone(sampleInput[0])
             val hailstoneB = Hailstone(sampleInput[1])
 
-            val result = hailstoneA.findIntersection2D(hailstoneB)!!
+            val result = hailstoneA.findIntersectionXY(hailstoneB)!!
 
             assert(truncate3(result.x) == 14.333)
             assert(truncate3(result.y) == 15.333)
@@ -58,7 +58,7 @@ class Day24Test {
             val hailstoneA = Hailstone(sampleInput[0])
             val hailstoneB = Hailstone(sampleInput[4])
 
-            val intersection = hailstoneA.findIntersection2D(hailstoneB)!!
+            val intersection = hailstoneA.findIntersectionXY(hailstoneB)!!
 
             assert(!hailstoneA.isFuture2D(intersection))
         }
@@ -68,7 +68,7 @@ class Day24Test {
             val hailstoneA = Hailstone(sampleInput[0])
             val hailstoneB = Hailstone(sampleInput[4])
 
-            val intersection = hailstoneA.findIntersection2D(hailstoneB)!!
+            val intersection = hailstoneA.findIntersectionXY(hailstoneB)!!
 
             assert(hailstoneB.isFuture2D(intersection))
         }
@@ -84,23 +84,23 @@ class Day24Test {
     }
 
     @Test
-    fun `isRelevant2DIntersection should return true iff the hailstones intersect in the future for both hailstones, inside the boundary`() {
+    fun `isRelevantXYIntersection should return true iff the hailstones intersect in the future for both hailstones, inside the boundary`() {
         val hailstones = sampleInput.map { Hailstone(it) }
         val bounds = LongBounds(7..27, 7..27)
 
-        assert(isRelevant2DIntersection(hailstones[0], hailstones[1], bounds))
-        assert(isRelevant2DIntersection(hailstones[0], hailstones[2], bounds))
-        assert(!isRelevant2DIntersection(hailstones[0], hailstones[3], bounds))
-        assert(!isRelevant2DIntersection(hailstones[0], hailstones[4], bounds))
+        assert(isRelevantXYIntersection(hailstones[0], hailstones[1], bounds))
+        assert(isRelevantXYIntersection(hailstones[0], hailstones[2], bounds))
+        assert(!isRelevantXYIntersection(hailstones[0], hailstones[3], bounds))
+        assert(!isRelevantXYIntersection(hailstones[0], hailstones[4], bounds))
 
-        assert(!isRelevant2DIntersection(hailstones[1], hailstones[2], bounds))
-        assert(!isRelevant2DIntersection(hailstones[1], hailstones[3], bounds))
-        assert(!isRelevant2DIntersection(hailstones[1], hailstones[4], bounds))
+        assert(!isRelevantXYIntersection(hailstones[1], hailstones[2], bounds))
+        assert(!isRelevantXYIntersection(hailstones[1], hailstones[3], bounds))
+        assert(!isRelevantXYIntersection(hailstones[1], hailstones[4], bounds))
 
-        assert(!isRelevant2DIntersection(hailstones[2], hailstones[3], bounds))
-        assert(!isRelevant2DIntersection(hailstones[2], hailstones[4], bounds))
+        assert(!isRelevantXYIntersection(hailstones[2], hailstones[3], bounds))
+        assert(!isRelevantXYIntersection(hailstones[2], hailstones[4], bounds))
 
-        assert(!isRelevant2DIntersection(hailstones[3], hailstones[4], bounds))
+        assert(!isRelevantXYIntersection(hailstones[3], hailstones[4], bounds))
     }
 
     @Test
