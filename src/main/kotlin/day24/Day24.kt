@@ -207,9 +207,6 @@ internal fun verifyPotentialPart2Solution(rockPosition: LongPoint3D, rockVelocit
 
         return rockZAtT == hailstoneZAtT
     }
-
-//    val matchCount = hailstones.count { verify(it) }
-//    return matchCount == hailstones.size
     return hailstones.all { verify(it) }
 }
 
