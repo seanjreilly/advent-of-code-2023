@@ -25,46 +25,25 @@ fun part2(input: List<String>): Long {
 }
 
 internal fun findLongestPath(input: List<String>): Int {
-    require(input.first().count { it == '.' } == 1)
-    require(input.last().count { it == '.' } == 1)
-    val (bounds, rawData) = parseGridWithPoints(input)
-    val data = rawData.toMap()
-
-    val start = data.entries.first { it.key.y == 0 && it.value == '.' }.key
-    val end = data.entries.first { it.key.y == bounds.lastY && it.value == '.' }.key
-
-    val queue = ArrayDeque<Pair<Point, Set<Point>>>()
-    var maxCost = Int.MIN_VALUE
-    queue += start to emptySet()
-    while (queue.isNotEmpty()) {
-        val (point, visitedPoints) = queue.removeFirst()
-        if (point == end) {
-            val cost = visitedPoints.size
-            maxCost = max(maxCost, cost)
-            continue
+    val predicate: (Point, Point, Char) -> Boolean = { newPoint, currentPoint, tileValue ->
+        when (tileValue) {
+            '.' -> true
+            '^' -> newPoint == currentPoint.north()
+            'v' -> newPoint == currentPoint.south()
+            '>' -> newPoint == currentPoint.east()
+            '<' -> newPoint == currentPoint.west()
+            else -> false//really #
         }
-
-        val updatedVisitedPoints = visitedPoints + point
-        point.getCardinalNeighbours()
-            .asSequence()
-            .filter { it in bounds }
-            .filter { it !in visitedPoints }
-            .filter {
-                when (data[it]) {
-                    '.' -> true
-                    '^' -> it == point.north()
-                    'v' -> it == point.south()
-                    '>' -> it == point.east()
-                    '<' -> it == point.west()
-                    else -> false//really #
-                }
-            }
-            .forEach { newPoint -> queue += newPoint to updatedVisitedPoints }
     }
-    return maxCost
+
+    return findPath(input, predicate)
 }
 
 internal fun findLongestPathPart2(input: List<String>): Int {
+    return findPath(input) { _, _, tileValue -> tileValue != '#' }
+}
+
+private fun findPath(input: List<String>, predicate: (Point, Point, Char) -> Boolean): Int {
     require(input.first().count { it == '.' } == 1)
     require(input.last().count { it == '.' } == 1)
     val (bounds, rawData) = parseGridWithPoints(input)
@@ -89,7 +68,7 @@ internal fun findLongestPathPart2(input: List<String>): Int {
             .asSequence()
             .filter { it in bounds }
             .filter { it !in visitedPoints }
-            .filter { data[it]!! != '#' }
+            .filter { predicate(it, point, data[it]!!) }
             .forEach { newPoint -> queue += newPoint to updatedVisitedPoints }
     }
     return maxCost
