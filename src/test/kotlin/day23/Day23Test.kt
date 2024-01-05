@@ -36,6 +36,11 @@ class Day23Test {
     }
 
     @Test
+    fun `part2 should return the longest path that doesn't visit any squares twice regardless of steep slopes`() {
+        assert(part2(sampleInput) == 154L)
+    }
+
+    @Test
     fun `findLongestPath should find the longest path from the top row to the bottom row`() {
         val input = """
             #.###
@@ -47,7 +52,7 @@ class Day23Test {
 
         assert(result == 4)
     }
-    
+
     @Test
     fun `findLongestPath should not cross a ^ symbol any direction other than north`() {
         val input = """
@@ -232,5 +237,25 @@ class Day23Test {
         """.trimIndent().lines()
 
         assertThrows<IllegalArgumentException> { findLongestPath(input) }
+    }
+
+    @Test
+    fun `findLongestPathPart2 should find the longest path from the top row to the bottom row and should treat steep slopes as paths`() {
+        val input = """
+            #.###
+            #^<>#
+            ###.#
+        """.trimIndent().lines()
+
+        val result = findLongestPathPart2(input)
+
+        assert(result == 4)
+    }
+
+    @Test
+    fun `findLongestPathPart2 should return 154 given sample input`() {
+        val result = findLongestPathPart2(sampleInput)
+
+        assert(result == 154)
     }
 }

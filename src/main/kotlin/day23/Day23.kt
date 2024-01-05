@@ -21,7 +21,7 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return findLongestPathPart2(input).toLong()
 }
 
 internal fun findLongestPath(input: List<String>): Int {
@@ -59,6 +59,37 @@ internal fun findLongestPath(input: List<String>): Int {
                     else -> false//really #
                 }
             }
+            .forEach { newPoint -> queue += newPoint to updatedVisitedPoints }
+    }
+    return maxCost
+}
+
+internal fun findLongestPathPart2(input: List<String>): Int {
+    require(input.first().count { it == '.' } == 1)
+    require(input.last().count { it == '.' } == 1)
+    val (bounds, rawData) = parseGridWithPoints(input)
+    val data = rawData.toMap()
+
+    val start = data.entries.first { it.key.y == 0 && it.value == '.' }.key
+    val end = data.entries.first { it.key.y == bounds.lastY && it.value == '.' }.key
+
+    val queue = ArrayDeque<Pair<Point, Set<Point>>>()
+    var maxCost = Int.MIN_VALUE
+    queue += start to emptySet()
+    while (queue.isNotEmpty()) {
+        val (point, visitedPoints) = queue.removeFirst()
+        if (point == end) {
+            val cost = visitedPoints.size
+            maxCost = max(maxCost, cost)
+            continue
+        }
+
+        val updatedVisitedPoints = visitedPoints + point
+        point.getCardinalNeighbours()
+            .asSequence()
+            .filter { it in bounds }
+            .filter { it !in visitedPoints }
+            .filter { data[it]!! != '#' }
             .forEach { newPoint -> queue += newPoint to updatedVisitedPoints }
     }
     return maxCost
