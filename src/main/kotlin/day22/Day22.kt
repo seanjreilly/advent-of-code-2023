@@ -123,14 +123,12 @@ internal fun Collection<Brick>.countFallingBricks(): Int {
         if (!brick.aboveGround) {
             continue //brick can't fall
         }
-        occupiedBlocks -= brick
-        val brickMovedDown = brick.moveDown()
-        if (brickMovedDown.none { it in occupiedBlocks }) {
+
+        if (brick.moveDown().bottomPoints.none { it in occupiedBlocks }) {
             //this brick will fall
-            //once a brick falls, we don't care how far it falls, just that it falls
+            //once we know it falls, we don't care how far it falls, just that it falls
             result += 1
-        } else {
-            occupiedBlocks += brick
+            occupiedBlocks -= brick
         }
     }
 
