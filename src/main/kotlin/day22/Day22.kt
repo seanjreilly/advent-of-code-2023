@@ -2,6 +2,7 @@ package day22
 
 import utils.readInput
 import kotlin.math.min
+import kotlin.streams.asStream
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -117,12 +118,16 @@ internal fun Collection<Brick>.findChainReactionCounts(): Map<Brick, Int> {
     val originalOccupiedBlocks = this.flatten().toSet()
     val sortedBlocks = this.sortedByDescending { it.minZ }
 
-    return sortedBlocks.indices.associate { index ->
-        val otherBricks = sortedBlocks.toMutableList()
-        val removedBrick = otherBricks.removeAt(index)
-        val occupiedBlocks = originalOccupiedBlocks.toMutableSet().also { it -= removedBrick }
-        removedBrick to countFallingBricks(occupiedBlocks, otherBricks)
-    }
+    return sortedBlocks.indices
+        .asSequence()
+        .asStream()
+        .parallel()
+        .map { index ->
+            val otherBricks = sortedBlocks.toMutableList()
+            val removedBrick = otherBricks.removeAt(index)
+            val occupiedBlocks = originalOccupiedBlocks.toMutableSet().also { it -= removedBrick }
+            removedBrick to countFallingBricks(occupiedBlocks, otherBricks)
+        }.toList().toMap()
 }
 
 private fun countFallingBricks(occupiedBlocks: MutableSet<Point3D>, sortedBricks: MutableList<Brick>): Int {
