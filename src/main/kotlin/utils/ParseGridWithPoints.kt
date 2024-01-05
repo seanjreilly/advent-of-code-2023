@@ -1,7 +1,7 @@
 package utils
 
 fun parseGridWithPoints(input: List<String>) : Pair<Bounds, Sequence<Pair<Point, Char>>> {
-    val bounds = Bounds(input.indices, input.first().indices)
+    val bounds = Bounds(input.first().indices, input.indices)
     val sequence = input
         .asSequence()
         .flatMapIndexed { y, line ->
