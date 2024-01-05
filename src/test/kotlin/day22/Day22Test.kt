@@ -215,4 +215,19 @@ class Day22Test {
             assert(result[it.key] == it.value)
         }
     }
+
+    @Test
+    fun `findChainReactionCounts should return the correct results when a brick falls into the same position as another brick`() {
+        val rawBricks = """
+            1,0,1~1,2,1
+            0,0,2~2,0,2
+            0,0,3~2,0,3
+        """.trimIndent().lines()
+        //the third brick should fall into the second brick's exact position when the first brick is disintegrated
+
+        val bricks = rawBricks.map { parseBrick(it) }
+
+        val result = bricks.findChainReactionCounts()
+        assert(result[bricks.first()] == 2)
+    }
 }

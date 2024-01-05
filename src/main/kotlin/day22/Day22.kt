@@ -113,12 +113,32 @@ internal fun Collection<Brick>.findSafeBricksToDisintegrate(): Set<Brick> {
     return (this - criticalBricks).toSet()
 }
 
-internal fun Collection<Brick>.findChainReactionCounts(): Map<Brick, Int> {
-    val brickSet = this.toSet()
-    return associate { brick ->
-        val bricksAfterDisintegrationAndSettling = this.filter { it != brick }.moveAllDown().toSet()
-        brick to bricksAfterDisintegrationAndSettling.count { it !in brickSet }
+internal fun Collection<Brick>.countFallingBricks(): Int {
+    val occupiedBlocks = this.flatten().toMutableSet()
+    val sortedBricks = this.sortedByDescending { it.minZ }.toMutableList()
+    var result = 0
+
+    while (sortedBricks.isNotEmpty()) {
+        val brick = sortedBricks.removeLast()
+        if (!brick.aboveGround) {
+            continue //brick can't fall
+        }
+        occupiedBlocks -= brick
+        val brickMovedDown = brick.moveDown()
+        if (brickMovedDown.none { it in occupiedBlocks }) {
+            //this brick will fall
+            //once a brick falls, we don't care how far it falls, just that it falls
+            result += 1
+        } else {
+            occupiedBlocks += brick
+        }
     }
+
+    return result
+}
+
+internal fun Collection<Brick>.findChainReactionCounts(): Map<Brick, Int> {
+    return associate { brick -> brick to this.filter { it != brick }.countFallingBricks() }
 }
 
 private fun Collection<Brick>.buildReverseIndex() = flatMap { brick -> brick.map { point -> point to brick } }.toMap()
