@@ -23,7 +23,11 @@ fun part1(input: List<String>): Long {
 }
 
 fun part2(input: List<String>): Long {
-    return 0
+    return input.map { parseBrick(it) }
+        .moveAllDown()
+        .findChainReactionCounts()
+        .values
+        .sumOf { it.toLong() }
 }
 
 internal fun parseBrick(line: String): Brick {
@@ -63,27 +67,26 @@ internal data class Point3D(val x: Int, val y: Int, val z: Int) {
 }
 
 internal fun Collection<Brick>.moveAllDown(): Collection<Brick> {
-    val reverseIndex = buildReverseIndex().toMutableMap()
+    val occupiedBlocks = this.flatten().toMutableSet()
     val sortedBricks = this.sortedByDescending { it.minZ }.toMutableList()
     val result = mutableListOf<Brick>()
 
     nextBrick@while (sortedBricks.isNotEmpty()) {
         var brick = sortedBricks.removeLast()
-        reverseIndex -= brick
+        occupiedBlocks -= brick
         thisBrick@while (brick.aboveGround) {
             /*
                 We can use a simple algorithm here, because
                 bricks are never narrow at the bottom and wider at higher levels
              */
             val brickMovedDown = brick.moveDown()
-            val spaceBelowThatHasToBeFree = brickMovedDown.bottomPoints
-            if (spaceBelowThatHasToBeFree.any { it in reverseIndex.keys }) {
+            if (brickMovedDown.any { it in occupiedBlocks }) {
                 break@thisBrick
             }
             brick = brickMovedDown
         }
 
-        reverseIndex += brick.map { it to brick }
+        occupiedBlocks += brick
         result += brick
     }
     return result
@@ -108,6 +111,14 @@ internal fun Collection<Brick>.findSafeBricksToDisintegrate(): Set<Brick> {
         }
 
     return (this - criticalBricks).toSet()
+}
+
+internal fun Collection<Brick>.findChainReactionCounts(): Map<Brick, Int> {
+    val brickSet = this.toSet()
+    return associate { brick ->
+        val bricksAfterDisintegrationAndSettling = this.filter { it != brick }.moveAllDown().toSet()
+        brick to bricksAfterDisintegrationAndSettling.count { it !in brickSet }
+    }
 }
 
 private fun Collection<Brick>.buildReverseIndex() = flatMap { brick -> brick.map { point -> point to brick } }.toMap()

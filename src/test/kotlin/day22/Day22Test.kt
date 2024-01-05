@@ -20,6 +20,11 @@ class Day22Test {
     fun `part1 should parse a collection of bricks, let them all fall, and return the count of bricks that can be safely disintegrated`() {
         assert(part1(sampleInput) == 5L)
     }
+
+    @Test
+    fun `part2 should parse a collection of bricks, let them all fall, count the number of bricks that would fall for each brick that was disintegrated, and return the total amount`() {
+        assert(part2(sampleInput) == 7L)
+    }
     
     @Nested
     inner class BrickTest {
@@ -187,5 +192,27 @@ class Day22Test {
 
         assert(result.size == 5)
         expectedResult.indices.forEach { assert(expectedResult[it] in result) }
+    }
+
+    @Test
+    fun `findChainReactionCounts should count the total number of blocks that would fall if each block was disintegrated`() {
+        val bricks = sampleInput.map { parseBrick(it) }.moveAllDown()
+
+        val result = bricks.findChainReactionCounts()
+
+        val expectedResult = mapOf(
+            parseBrick("1,0,1~1,2,1") to 6,
+            parseBrick("0,0,2~2,0,2") to 0,
+            parseBrick("0,2,2~2,2,2") to 0,
+            parseBrick("0,0,3~0,2,3") to 0,
+            parseBrick("2,0,3~2,2,3") to 0,
+            parseBrick("0,1,4~2,1,4") to 1,
+            parseBrick("1,1,5~1,1,6") to 0
+        )
+
+        assert(result.size == expectedResult.size)
+        expectedResult.entries.forEach {
+            assert(result[it.key] == it.value)
+        }
     }
 }
