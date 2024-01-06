@@ -1,7 +1,9 @@
 package day11
 
 import utils.Point
+import utils.parseGridWithPoints
 import utils.readInput
+import utils.twoElementCombinations
 import java.util.*
 import kotlin.system.measureTimeMillis
 
@@ -29,10 +31,9 @@ typealias Image = List<String>
 typealias Galaxy = Point
 
 internal fun findGalaxies(image: Image): Set<Galaxy> {
-    return image
-        .flatMapIndexed {y, line -> line.mapIndexed { x, char -> Triple(x, y, char) } }
-        .filter { it.third == '#' }
-        .map { Galaxy(it.first, it.second) }
+    return parseGridWithPoints(image).second
+        .filter { it.second == '#' }
+        .map { it.first }
         .toSet()
 }
 
@@ -51,9 +52,8 @@ internal fun expandUniverse(galaxies: Set<Galaxy>, image: Image, expansionFactor
 }
 
 internal fun findTotalDistanceBetweenGalaxies(expandedGalaxies: Set<Galaxy>): Long {
-    val galaxyList = expandedGalaxies.toList() // transform from a set to a list to get unique pairs
-    return galaxyList
-        .flatMapIndexed { index, galaxy -> galaxyList.drop(index + 1).map { galaxy to it } }
-        .map { it.first.manhattanDistance(it.second) }
+    return expandedGalaxies
+        .twoElementCombinations()
+        .map { (first, second) -> first.manhattanDistance(second) }
         .sumOf { it.toLong() }
 }
