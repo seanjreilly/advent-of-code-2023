@@ -3,6 +3,7 @@ package day10
 import utils.Point
 import utils.readInput
 import kotlin.system.measureTimeMillis
+import utils.get
 
 fun main() {
     val elapsed = measureTimeMillis {
@@ -99,8 +100,4 @@ private fun findLegalStartingPoints(input: List<String>, s: Point): Pair<Point, 
 
     assert(startPoints.size == 2) { "the pipe can only have 2 start points" }
     return Pair(startPoints.first(), startPoints.last())
-}
-
-private operator fun List<String>.get(p: Point) : Char {
-    return this[p.y][p.x]
 }
