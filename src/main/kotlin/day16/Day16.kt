@@ -34,8 +34,6 @@ fun part2(input: List<String>): Long {
         .max(Comparator.naturalOrder()).get()
 }
 
-//typealias PointAndDirection = Pair<Point, CardinalDirection>
-
 internal class Contraption (input: List<String>)  {
     init {
         input.forEach { require(it.length == input.first().length) { "tile array must be rectangular" } }
