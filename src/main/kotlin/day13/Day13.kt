@@ -47,7 +47,7 @@ internal fun findMirrorRowWithSmudge(pattern: List<String>): Int? {
 
     //find the original match, so we can ensure we don't return it
     //(if the original was transposed the other way, we ignore it)
-    val originalMatch = findMirrorRow(pattern)
+    val originalMatch = findMirrorRowInternal(hashCodes)
 
     //the only one-character changes that matter are making a line that didn't match another line before match now
     return hashCodes
@@ -56,9 +56,8 @@ internal fun findMirrorRowWithSmudge(pattern: List<String>): Int? {
         .flatMap { hashCodes.withIndex().map { other -> it to other } }
         .filter { it.first.value.oneCharAwayFromEqual(it.second.value) }
         .map { it.first.index to it.second.index }
-        .toList()
-        .map { pair -> ArrayList(hashCodes).also<ArrayList<HashCode>> { it[pair.first] = hashCodes[pair.second] } }
-        .firstNotNullOfOrNull { findMirrorRowInternal(it, originalMatch) }
+        .map { pair -> hashCodes.toMutableList().also { it[pair.first] = hashCodes[pair.second] } }
+        .firstNotNullOfOrNull { findMirrorRowInternal(it, disallowedValue = originalMatch) }
 }
 
 internal fun findMirrorRowInternal(hashCodes: List<HashCode>, disallowedValue: Int? = null): Int? {
