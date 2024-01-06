@@ -24,8 +24,7 @@ fun part2(input: List<String>): Long {
 }
 
 internal fun findCostOfBestPathToFactory(entryCosts: Array<IntArray>, legalMovesBeforeTurning: IntRange) : Int {
-    val validX = entryCosts.first().indices
-    val validY = entryCosts.indices
+    val bounds = Bounds(entryCosts)
 
     val origin = Point(0,0)
     val startNodes = arrayOf(origin facing East, origin facing South)
@@ -33,7 +32,7 @@ internal fun findCostOfBestPathToFactory(entryCosts: Array<IntArray>, legalMoves
 
     // because we're modelling the graph as a PointAndDirection, there are four possible end nodes: the end point facing in each direction
     // the cheapest cost out of these is the answer
-    val endPoint = Point(validX.last, validY.last)
+    val endPoint = Point(bounds.lastX, bounds.lastY)
     return CardinalDirection.entries
         .map { endPoint facing it }
         .map { distances[it] }
@@ -42,8 +41,7 @@ internal fun findCostOfBestPathToFactory(entryCosts: Array<IntArray>, legalMoves
 }
 
 internal fun findNeighbours(node: PointAndDirection, entryCosts: Array<IntArray>, legalMovesBeforeTurning: IntRange) : Collection<Pair<PointAndDirection, Int>> {
-    val validX = entryCosts.first().indices
-    val validY = entryCosts.indices
+    val bounds = Bounds(entryCosts)
     val newDirections = listOf(node.direction.turn(TurnDirection.Left), node.direction.turn(TurnDirection.Right))
 
     // based on the rules, a legal sequence of moves is N-M tiles in the given direction, followed by
@@ -55,7 +53,7 @@ internal fun findNeighbours(node: PointAndDirection, entryCosts: Array<IntArray>
     val reachablePointsAndCosts = mutableListOf<Pair<Point, Int>>()
     for (i in 1..legalMovesBeforeTurning.last) {
         newPoint = newPoint.move(node.direction)
-        if ((newPoint.x !in validX) || (newPoint.y !in validY)) {
+        if (newPoint !in bounds) {
             break // if this point isn't valid the next one(s) won't be either
         }
         costSoFar += entryCosts[newPoint]

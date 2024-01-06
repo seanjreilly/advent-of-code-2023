@@ -83,6 +83,13 @@ enum class CardinalDirection(internal val moveOperation: (Point) -> Point) {
 data class PointAndDirection(val point: Point, val direction: CardinalDirection)
 
 data class Bounds(val validXCoordinates: IntRange, val validYCoordinates: IntRange) : Iterable<Point> {
+
+    //convenience constructors
+    constructor(data: Array<IntArray>): this(data.first().indices, data.indices)
+    constructor(data: Array<CharArray>): this(data.first().indices, data.indices)
+    constructor(data: Array<Array<*>>): this(data.first().indices, data.indices)
+    constructor(data: Array<CharSequence>): this(data.first().indices, data.indices)
+
     val lastX = validXCoordinates.last
     val lastY = validYCoordinates.last
     operator fun contains(point: Point) = point.x in validXCoordinates && point.y in validYCoordinates
