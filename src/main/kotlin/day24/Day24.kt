@@ -2,6 +2,7 @@ package day24
 
 import utils.LongBounds
 import utils.readInput
+import utils.twoElementCombinations
 import kotlin.math.roundToLong
 import kotlin.math.sign
 import kotlin.system.measureTimeMillis
@@ -143,19 +144,6 @@ internal fun isRelevantXYIntersection(hailstoneA: Hailstone, hailstoneB: Hailsto
 
 internal operator fun LongRange.contains(d: Double) = d in (first.toDouble() .. last.toDouble())
 internal operator fun LongBounds.contains(point: DoublePoint) = (point.x in validXCoordinates) && (point.y in validYCoordinates)
-
-internal fun <T> List<T>.twoElementCombinations() : Sequence<Pair<T, T>> {
-    require(size >= 2) { "must have at least 2 elements in the list to generate 2 element combinations" }
-
-    val theList = this
-    return sequence {
-        for (i in 0 until (size - 1)) {
-            for (j in (i + 1) until size) {
-                yield(theList[i] to theList[j])
-            }
-        }
-    }
-}
 
 internal fun verifyPotentialPart2Solution(rockPosition: LongPoint3D, rockVelocity: Velocity3D, hailstones: Collection<Hailstone>): Boolean {
 

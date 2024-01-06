@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import utils.LongBounds
 import utils.readInput
+import utils.twoElementCombinations
 import kotlin.math.truncate
 
 class Day24Test {
