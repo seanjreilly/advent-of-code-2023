@@ -123,7 +123,7 @@ class Day23Test {
             #.#######
             #...#####
             #.#.....#
-            #.##>##>#
+            #.#####.#
             #....##.#
             #.#####.#
             #...>...#
@@ -157,9 +157,9 @@ class Day23Test {
     fun `findLongestPath should not cross a less than symbol any direction other than west`() {
         val input = """
             #.#######
-            #...#####
+            #..<#####
             #.#.....#
-            #.##<##.#
+            #.##.##.#
             #.<..##<#
             #.#####.#
             #.......#
