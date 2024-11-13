@@ -90,7 +90,7 @@ internal sealed interface WorkflowRule {
     fun nextLabel(part: Part): String?
 }
 
-internal data class Part internal constructor(val ratings: Map<Char, Int>) {
+internal data class Part(val ratings: Map<Char, Int>) {
     constructor(x: Int, m: Int, a: Int, s: Int): this(mapOf('x' to x, 'm' to m, 'a' to a, 's' to s))
     operator fun get(field:Char) : Int = ratings[field]!!
 
