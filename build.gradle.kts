@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("com.bnorm.power.kotlin-power-assert") version "0.13.0"
+    kotlin("jvm") version "2.0.21"
+    kotlin("plugin.power-assert") version "2.0.21"
     `jvm-test-suite`
 }
 
@@ -38,7 +38,6 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
-    implementation(kotlin("stdlib-jdk8"))
 
     implementation("org.jgrapht:jgrapht-core:1.5.2")
 }
