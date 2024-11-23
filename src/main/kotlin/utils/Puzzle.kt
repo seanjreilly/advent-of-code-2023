@@ -22,9 +22,6 @@ abstract class Puzzle<T> {
         return DAY_REGEX.matchEntire(simpleName)!!.groupValues[1].toInt()
     }
 
-    private val day by lazy { this.getAoCDay() }
-    private val year = "2023"
-
     private fun readInput() : List<String> {
         val dataFile = File("src/main/resources/Day${day}.txt")
         if (dataFile.exists()) {
@@ -41,6 +38,9 @@ abstract class Puzzle<T> {
         return dataFile.readLines()
     }
 
+    private val day by lazy { this.getAoCDay() }
+    private val year = "2023"
+
     abstract fun part1(input: List<String>): T
     abstract fun part2(input: List<String>): T
 
@@ -49,5 +49,4 @@ abstract class Puzzle<T> {
     }
 }
 
-abstract class IntPuzzle : Puzzle<Int>()
 abstract class LongPuzzle : Puzzle<Long>()
