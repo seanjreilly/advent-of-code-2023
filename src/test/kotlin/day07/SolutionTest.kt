@@ -3,7 +3,7 @@ package day07
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day07Test {
+class SolutionTest {
     private val sampleInput = """
         32T3K 765
         T55J5 684
@@ -11,7 +11,9 @@ class Day07Test {
         KTJJT 220
         QQQJA 483
     """.trimIndent().lines()
-    
+
+    private val solution = Solution()
+
     @Test
     fun `parseLine() should return a HandAndBidInstance`() {
         val result: HandAndBid = parse(sampleInput.first())
@@ -20,12 +22,12 @@ class Day07Test {
 
     @Test
     fun `part1 should order every card by strength, multiply each hand's bid by it's rank, and return the sum for all cards`() {
-        assert(part1(sampleInput) == 6440L)
+        assert(solution.part1(sampleInput) == 6440L)
     }
 
     @Test
     fun `part2 should order every card by strength using wildcards, multiply each hand's bid by it's rank, and return the sum for all cards`() {
-        assert(part2(sampleInput) == 5905L)
+        assert(solution.part2(sampleInput) == 5905L)
     }
 
     @Nested

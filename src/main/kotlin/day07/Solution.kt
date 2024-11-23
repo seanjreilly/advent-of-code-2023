@@ -1,24 +1,11 @@
 package day07
 
-import utils.readInput
-import kotlin.system.measureTimeMillis
+import utils.LongPuzzle
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day07")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return solve(input, Part1HandStrengthComparator)
-}
-
-fun part2(input: List<String>): Long {
-    return solve(input, Part2HandStrengthComparator)
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+    override fun part1(input: List<String>) = solve(input, Part1HandStrengthComparator)
+    override fun part2(input: List<String>) = solve(input, Part2HandStrengthComparator)
 }
 
 private fun solve(input: List<String>, comparator: Comparator<Hand>) = input

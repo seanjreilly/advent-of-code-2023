@@ -1,29 +1,18 @@
 package day06
 
-import utils.readInput
+import utils.LongPuzzle
 import java.math.MathContext
 import java.math.RoundingMode
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day06")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
+fun main() = Day06().run()
+class Day06 : LongPuzzle() {
 
-fun part1(input: List<String>): Long {
-    return parse(input)
+    override fun part1(input: List<String>) = parse(input)
         .map { it.waysToBeatRecordDistance() }
         .map { it }
         .reduce(Long::times)
-}
 
-fun part2(input: List<String>): Long {
-    return parsePart2(input).waysToBeatRecordDistance()
+    override fun part2(input: List<String>) = parsePart2(input).waysToBeatRecordDistance()
 }
 
 internal data class RaceDescription(val time: Long, val recordDistance: Long) {

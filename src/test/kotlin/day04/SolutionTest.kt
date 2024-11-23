@@ -3,7 +3,7 @@ package day04
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day04Test {
+class SolutionTest {
     private val sampleInput = """
         Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
         Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
@@ -13,14 +13,16 @@ class Day04Test {
         Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
     """.trimIndent().lines()
 
+    private val solution = Day04()
+
     @Test
     fun `part1 should parse all of the cards and return the sum of their points`() {
-        assert(part1(sampleInput) == 13L)
+        assert(solution.part1(sampleInput) == 13L)
     }
 
     @Test
     fun `part2 should win extra copies of the next n cards for the winning numbers on each card, and return the total number of cards seen `() {
-        assert(part2(sampleInput) == 30L)
+        assert(solution.part2(sampleInput) == 30L)
     }
     
     @Test

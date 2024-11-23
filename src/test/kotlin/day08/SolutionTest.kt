@@ -2,7 +2,7 @@ package day08
 
 import org.junit.jupiter.api.Test
 
-class Day08Test {
+class SolutionTest {
     private val sampleInput = """
         RL
 
@@ -36,6 +36,8 @@ class Day08Test {
         XXX = (XXX, XXX)
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `parseNodes should return a map of ids to LeftRight instances given input`() {
         val nodes: Map<String, LeftRight> = parse(sampleInput)
@@ -58,12 +60,12 @@ class Day08Test {
 
     @Test
     fun `part1 should count how many steps are needed following the directions to reach ZZZ from AAA`() {
-        assert(part1(sampleInput) == 2L)
-        assert(part1(sampleInput2) == 6L)
+        assert(solution.part1(sampleInput) == 2L)
+        assert(solution.part1(sampleInput2) == 6L)
     }
     
     @Test
     fun `part2 should count how many steps are needed starting from __A puts every journey on a __Z node`() {
-        assert(part2(samplePart2Input) == 6L)
+        assert(solution.part2(samplePart2Input) == 6L)
     }
 }

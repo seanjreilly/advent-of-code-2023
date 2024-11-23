@@ -1,38 +1,32 @@
 package day04
 
-import utils.readInput
+import utils.LongPuzzle
 import kotlin.math.pow
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day04")
-        println(part1(input))
-        println(part2(input))
+fun main() = Day04().run()
+class Day04 : LongPuzzle() {
+
+    override fun part1(input: List<String>): Long {
+        return input
+            .map { parseCard(it) }
+            .map { it.points() }
+            .sumOf { it.toLong() }
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    return input
-        .map { parseCard(it) }
-        .map { it.points() }
-        .sumOf { it.toLong() }
-}
+    override fun part2(input: List<String>): Long {
+        val remainingCardsAndCopies =
+            input.map { CardCopies(parseCard(it), 1) }.toMutableList() //start with 1 copy of each card
+        var cardsSeenSoFar = 0L
+        while (remainingCardsAndCopies.isNotEmpty()) {
+            val (currentCard, currentCopies) = remainingCardsAndCopies.removeAt(0)
+            cardsSeenSoFar += currentCopies
 
-fun part2(input: List<String>): Long {
-    val remainingCardsAndCopies = input.map { CardCopies(parseCard(it), 1) }.toMutableList() //start with 1 copy of each card
-    var cardsSeenSoFar = 0L
-    while (remainingCardsAndCopies.isNotEmpty()) {
-        val (currentCard, currentCopies) = remainingCardsAndCopies.removeAt(0)
-        cardsSeenSoFar += currentCopies
-
-        remainingCardsAndCopies
-            .take(currentCard.matchingNumberCount)
-            .forEach { it.copies += currentCopies }
+            remainingCardsAndCopies
+                .take(currentCard.matchingNumberCount)
+                .forEach { it.copies += currentCopies }
+        }
+        return cardsSeenSoFar
     }
-    return cardsSeenSoFar
 }
 
 private data class CardCopies(val card: Card, var copies: Int)

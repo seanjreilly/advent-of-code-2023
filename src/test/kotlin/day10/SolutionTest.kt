@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import utils.Point
 
-class Day10Test {
+class SolutionTest {
     private val sampleInput = """
         .....
         .S-7.
@@ -36,7 +36,9 @@ class Day10Test {
         |F--J
         LJ.LJ
     """.trimIndent().lines()
-    
+
+    private val solution = Solution()
+
     @Test
     fun `findS should return the point containing the S symbol`() {
         assert(findS(sampleInput) == Point(1, 1))
@@ -89,8 +91,8 @@ class Day10Test {
 
     @Test
     fun `part1 should return the length of the loop divided by 2`() {
-        assert(part1(sampleInputWithExtraPipes) == 4L)
-        assert(part1(moreComplexLoopWithExtraPipes) == 8L)
+        assert(solution.part1(sampleInputWithExtraPipes) == 4L)
+        assert(solution.part1(moreComplexLoopWithExtraPipes) == 8L)
     }
 
     @Test
@@ -107,7 +109,7 @@ class Day10Test {
             ...........
         """.trimIndent().lines()
 
-        assert(part2(loop) == 4L)
+        assert(solution.part2(loop) == 4L)
     }
 
     @Test
@@ -124,7 +126,7 @@ class Day10Test {
             ..........
         """.trimIndent().lines()
 
-        assert(part2(loop) == 4L)
+        assert(solution.part2(loop) == 4L)
     }
 
     @Test
@@ -142,7 +144,7 @@ class Day10Test {
             ....L---J.LJ.LJLJ...
         """.trimIndent().lines()
 
-        assert(part2(loop) == 8L)
+        assert(solution.part2(loop) == 8L)
     }
 
     @Test
@@ -160,7 +162,7 @@ class Day10Test {
             L7JLJL-JLJLJL--JLJ.L
         """.trimIndent().lines()
 
-        assert(part2(loop) == 10L)
+        assert(solution.part2(loop) == 10L)
     }
 
     @Nested

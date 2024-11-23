@@ -3,11 +3,13 @@ package day06
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day06Test {
+class SolutionTest {
     private val sampleInput = """
         Time:      7  15   30
         Distance:  9  40  200
     """.trimIndent().lines()
+
+    private val solution = Day06()
 
     @Test
     fun `parse should return a list of RaceDescription instances`() {
@@ -24,12 +26,12 @@ class Day06Test {
 
     @Test
     fun `part1 should parse the races, calculate the number of ways to beat the record for each race, and return the product`() {
-        assert(part1(sampleInput) == 288L)
+        assert(solution.part1(sampleInput) == 288L)
     }
 
     @Test
     fun `part2 should parse the input as a single race, and calculate the number of ways to beat the record`() {
-        assert(part2(sampleInput) == 71503L)
+        assert(solution.part2(sampleInput) == 71503L)
     }
     
     @Test

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.lang.IllegalArgumentException
 
-class Day05Test {
+class SolutionTest {
     private val sampleInput = """
         seeds: 79 14 55 13
 
@@ -42,6 +42,8 @@ class Day05Test {
         56 93 4
     """.trimIndent().lines()
 
+    private val solution = Day05()
+
     @Test
     fun `parseSeeds() should return a list of seed ids given an input file`() {
         val result: Set<Long> = parseSeeds(sampleInput)
@@ -58,12 +60,12 @@ class Day05Test {
 
     @Test
     fun `part1 should parse the seed numbers and the appropriate maps, run each seed number through every map in order, and return the lowest overall result`() {
-        assert(part1(sampleInput) == 35L)
+        assert(solution.part1(sampleInput) == 35L)
     }
 
     @Test
     fun `part2 should consider every seed in every range, run each seed number through every map in order, and return the lowest overall result`() {
-        assert(part2(sampleInput) == 46L)
+        assert(solution.part2(sampleInput) == 46L)
     }
 
     @Nested

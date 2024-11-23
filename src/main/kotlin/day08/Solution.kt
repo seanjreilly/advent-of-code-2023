@@ -1,49 +1,41 @@
 package day08
 
+import utils.LongPuzzle
 import utils.lcm
-import utils.readInput
 import java.math.BigInteger
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day08")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+    override fun part1(input: List<String>): Long {
+        val directions = input.first()
+        val nodes = parse(input)
+
+        var steps = 0L
+        var key = "AAA"
+        do {
+            val currentNode = nodes[key]!!
+            val index = (steps++ % directions.length).toInt()
+            key = when (directions[index]) {
+                'L' -> currentNode.left
+                else -> currentNode.right
+            }
+        } while (key != "ZZZ")
+        return steps
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    val directions = input.first()
-    val nodes = parse(input)
+    override fun part2(input: List<String>): Long {
+        val nodes = parse(input)
+        val directions = input.first()
 
-    var steps = 0L
-    var key = "AAA"
-    do {
-        val currentNode = nodes[key]!!
-        val index = (steps++ % directions.length).toInt()
-        key = when (directions[index]) {
-            'L' -> currentNode.left
-            else -> currentNode.right
-        }
-    } while (key != "ZZZ")
-    return steps
-}
-
-fun part2(input: List<String>): Long {
-    val nodes = parse(input)
-    val directions = input.first()
-
-    // find all nodes that end with A, calculate the journey length for each node to a node that ends with Z
-    // and then compute the Least Common Multiple of all journey lengths — this is
-    // the number of steps when all the journey periods will synchronize
-    return nodes.keys
-        .filter { it.endsWith("A") }
-        .map { countStepsUntilZNode(nodes, directions, it) }
-        .map { it.toBigInteger() }
-        .reduce(BigInteger::lcm).toLong()
+        // find all nodes that end with A, calculate the journey length for each node to a node that ends with Z
+        // and then compute the Least Common Multiple of all journey lengths — this is
+        // the number of steps when all the journey periods will synchronize
+        return nodes.keys
+            .filter { it.endsWith("A") }
+            .map { countStepsUntilZNode(nodes, directions, it) }
+            .map { it.toBigInteger() }
+            .reduce(BigInteger::lcm).toLong()
+    }
 }
 
 private fun countStepsUntilZNode(nodes: Map<String, LeftRight>, directions: String, startPosition: String) : Long {

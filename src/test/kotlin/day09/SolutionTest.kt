@@ -2,12 +2,14 @@ package day09
 
 import org.junit.jupiter.api.Test
 
-class Day09Test {
+class SolutionTest {
     private val sampleInput = """
         0 3 6 9 12 15
         1 3 6 10 15 21
         10 13 16 21 30 45
     """.trimIndent().lines()
+
+    private val solution = Solution()
 
     @Test
     fun `parseLongs should return a list of Longs given an input line`() {
@@ -25,11 +27,11 @@ class Day09Test {
 
     @Test
     fun `part1 should predict the next value for each line and return their sum`() {
-        assert(part1(sampleInput) == 114L)
+        assert(solution.part1(sampleInput) == 114L)
     }
 
     @Test
     fun `part2 should predict the previous value for each line and return their sum`() {
-        assert(part2(sampleInput) == 2L)
+        assert(solution.part2(sampleInput) == 2L)
     }
 }

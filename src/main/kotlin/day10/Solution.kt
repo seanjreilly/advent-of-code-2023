@@ -1,46 +1,36 @@
 package day10
 
+import utils.LongPuzzle
 import utils.Point
-import utils.readInput
-import kotlin.system.measureTimeMillis
 import utils.get
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day10")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+    override fun part1(input: List<String>) = findLoop(input).size.toLong() / 2
 
-fun part1(input: List<String>): Long {
-    return findLoop(input).size.toLong() / 2
-}
+    override fun part2(input: List<String>): Long {
+        val loop = findLoop(input)
+        val upFacingSegments = "L|J"
+        var tilesInsideTheLoopSoFar = 0L
 
-fun part2(input: List<String>): Long {
-    val loop = findLoop(input)
-    val upFacingSegments = "L|J"
-    var tilesInsideTheLoopSoFar = 0L
-
-    input.mapIndexed { y, line ->
-        // use a ray-casting algorithm to find tiles that are "inside the loop" on each line
-        // an odd number of intersections from the beginning of the line counts as "inside"
-        var intersectionsSoFarThisLine = 0
-        for (p: Point in line.mapIndexed { x, _ -> Point(x, y) }) {
-            if (p in loop) {
-                var tile = input[p]
-                if (tile == 'S') { tile = replaceSWithOriginalCharacter(input, p) }
-                if (tile in upFacingSegments) {
-                    intersectionsSoFarThisLine++ //only segments that "cross" the horizontal count as intersections
+        input.mapIndexed { y, line ->
+            // use a ray-casting algorithm to find tiles that are "inside the loop" on each line
+            // an odd number of intersections from the beginning of the line counts as "inside"
+            var intersectionsSoFarThisLine = 0
+            for (p: Point in line.mapIndexed { x, _ -> Point(x, y) }) {
+                if (p in loop) {
+                    var tile = input[p]
+                    if (tile == 'S') { tile = replaceSWithOriginalCharacter(input, p) }
+                    if (tile in upFacingSegments) {
+                        intersectionsSoFarThisLine++ //only segments that "cross" the horizontal count as intersections
+                    }
+                } else if (intersectionsSoFarThisLine % 2 == 1) {
+                    tilesInsideTheLoopSoFar++
                 }
-            } else if (intersectionsSoFarThisLine % 2 == 1) {
-                tilesInsideTheLoopSoFar++
             }
         }
+        return tilesInsideTheLoopSoFar
     }
-    return tilesInsideTheLoopSoFar
 }
 
 internal fun findLoop(input: List<String>): Set<Point> {
