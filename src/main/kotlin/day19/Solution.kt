@@ -1,53 +1,48 @@
 package day19
 
-import utils.readInput
-import kotlin.system.measureTimeMillis
+import utils.LongPuzzle
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day19")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+
+    override fun part1(input: List<String>): Long {
+        val workflows = parseWorkflows(input)
+        return parseParts(input)
+            .filter { testPart(it, workflows) }
+            .sumOf { it.totalRating.toLong() }
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    val workflows = parseWorkflows(input)
-    return parseParts(input)
-        .filter { testPart(it, workflows) }
-        .sumOf { it.totalRating.toLong() }
-}
+    override fun part2(input: List<String>): Long {
+        val ruleMappings = parseRawWorkflowRules(input)
 
-fun part2(input: List<String>): Long {
-    val ruleMappings = parseRawWorkflowRules(input)
+        // find paths through the workflow to acceptance with a recursive DFS
+        fun recursiveSearch(rules: List<String>, remainingRange: XmasRange): List<XmasRange> {
+            val firstRule = rules.first()
+            val ruleTail = rules.drop(1)
 
-    // find paths through the workflow to acceptance with a recursive DFS
-    fun recursiveSearch(rules: List<String>, remainingRange: XmasRange): List<XmasRange> {
-        val firstRule = rules.first()
-        val ruleTail = rules.drop(1)
+            return when (firstRule) {
+                "R" -> emptyList() //base case
+                "A" -> listOf(remainingRange) //base case
+                in Regex(""".+?:.+?""") -> {
+                    //conditional expressions create 2 possibilities
+                    val expression = firstRule.substringBefore(":")
+                    //first case: the condition is matched
+                    val newLabel = firstRule.substringAfter(':')
+                    val theBranchIsTaken = recursiveSearch(listOf(newLabel), remainingRange.apply(expression))
 
-        return when (firstRule) {
-            "R" -> emptyList() //base case
-            "A" -> listOf(remainingRange) //base case
-            in Regex(""".+?:.+?""") -> {
-                //conditional expressions create 2 possibilities
-                val expression = firstRule.substringBefore(":")
-                //first case: the condition is matched
-                val newLabel = firstRule.substringAfter(':')
-                val theBranchIsTaken = recursiveSearch(listOf(newLabel), remainingRange.apply(expression))
+                    //second case: the condition is not matched
+                    val theBranchIsNotTaken =
+                        recursiveSearch(ruleTail, remainingRange.apply(invertExpression(expression)))
 
-                //second case: the condition is not matched
-                val theBranchIsNotTaken = recursiveSearch(ruleTail, remainingRange.apply(invertExpression(expression)))
+                    theBranchIsTaken + theBranchIsNotTaken
+                }
 
-                theBranchIsTaken + theBranchIsNotTaken
+                else -> recursiveSearch(ruleMappings[firstRule]!!, remainingRange) //non-conditional match
             }
-            else -> recursiveSearch(ruleMappings[firstRule]!!, remainingRange) //non-conditional match
         }
-    }
 
-    return recursiveSearch(ruleMappings["in"]!!, XmasRange()).sumOf { it.product() }
+        return recursiveSearch(ruleMappings["in"]!!, XmasRange()).sumOf { it.product() }
+    }
 }
 
 private data class XmasRange(val ranges: Map<Char, IntRange>) {

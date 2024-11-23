@@ -3,7 +3,7 @@ package day14
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day14Test {
+class SolutionTest {
     private val sampleInput = """
         O....#....
         O.OO#....#
@@ -30,14 +30,16 @@ class Day14Test {
         #....#....
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should parse a platform, tilt it north, and return the platform's total Load`() {
-        assert(part1(sampleInput) == 136L)
+        assert(solution.part1(sampleInput) == 136)
     }
 
     @Test
     fun `part2 should parse a platform, spin it 1 billion times, and return the platform's total load`() {
-        assert(part2(sampleInput) == 64L)
+        assert(solution.part2(sampleInput) == 64)
     }
     @Test
     fun `parse should produce a platform instance with x and y coordinate bounds`() {

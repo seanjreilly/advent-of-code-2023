@@ -3,24 +3,17 @@ package day17
 import utils.*
 import utils.CardinalDirection.East
 import utils.CardinalDirection.South
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day17")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : IntPuzzle() {
+
+    override fun part1(input: List<String>): Int {
+        return findCostOfBestPathToFactory(parseEntryCosts(input), 1..3)
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    return findCostOfBestPathToFactory(parseEntryCosts(input), 1..3).toLong()
-}
-
-fun part2(input: List<String>): Long {
-    return findCostOfBestPathToFactory(parseEntryCosts(input), 4..10).toLong()
+    override fun part2(input: List<String>): Int {
+        return findCostOfBestPathToFactory(parseEntryCosts(input), 4..10)
+    }
 }
 
 internal fun findCostOfBestPathToFactory(entryCosts: Array<IntArray>, legalMovesBeforeTurning: IntRange) : Int {

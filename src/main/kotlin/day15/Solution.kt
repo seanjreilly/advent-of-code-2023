@@ -1,31 +1,24 @@
 package day15
 
-import utils.readInput
-import kotlin.system.measureTimeMillis
+import utils.LongPuzzle
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day15")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+
+    override fun part1(input: List<String>): Long {
+        return parseInitializationSequence(input)
+            .sumOf { it.hash().toLong() }
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    return parseInitializationSequence(input)
-        .sumOf { it.hash().toLong() }
-}
+    override fun part2(input: List<String>): Long {
+        val boxes = processInitializationSequence(parseInitializationSequence(input))
 
-fun part2(input: List<String>): Long {
-    val boxes = processInitializationSequence(parseInitializationSequence(input))
-
-    return boxes.flatMapIndexed { boxIndex, box ->
+        return boxes.flatMapIndexed { boxIndex, box ->
             box.mapIndexed { lensIndex, labelAndFocalLength -> Triple(boxIndex, lensIndex, labelAndFocalLength) }
         }
-        .map {(boxIndex, lensIndex, labelAndFocalLength) -> (boxIndex + 1) * (lensIndex + 1) * labelAndFocalLength.focalLength}
-        .sumOf { it.toLong() }
+            .map { (boxIndex, lensIndex, labelAndFocalLength) -> (boxIndex + 1) * (lensIndex + 1) * labelAndFocalLength.focalLength }
+            .sumOf { it.toLong() }
+    }
 }
 
 internal fun String.hash(): Int {

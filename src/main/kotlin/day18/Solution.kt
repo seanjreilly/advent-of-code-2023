@@ -1,26 +1,16 @@
 package day18
 
 import utils.LongPoint
-import utils.readInput
+import utils.LongPuzzle
 import kotlin.math.abs
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day18")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+    override fun part1(input: List<String>) = countInteriorAndBorderPoints(parsePolygon(input))
+
+    override fun part2(input: List<String>): Long {
+        return countInteriorAndBorderPoints(parsePolygon(convertHexCodeToDigInstructions(input)))
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return countInteriorAndBorderPoints(parsePolygon(input))
-}
-
-fun part2(input: List<String>): Long {
-    return countInteriorAndBorderPoints(parsePolygon(convertHexCodeToDigInstructions(input)))
 }
 
 internal fun parsePolygon(instructions: List<String>): Polygon {

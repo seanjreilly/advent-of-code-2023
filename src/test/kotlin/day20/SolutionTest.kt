@@ -4,7 +4,7 @@ import day20.PulseType.*
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day20Test {
+class SolutionTest {
     private val sampleInput = """
         broadcaster -> a, b, c
         %a -> b
@@ -21,9 +21,11 @@ class Day20Test {
         &con -> output
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should construct a CommunicationSystem, press the button 1000 times, and return the product of low and high pulses counted`() {
-        assert(part1(sampleInput) == 32000000L)
+        assert(solution.part1(sampleInput) == 32000000L)
     }
 
     @Nested

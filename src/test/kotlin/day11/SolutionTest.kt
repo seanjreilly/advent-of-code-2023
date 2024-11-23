@@ -2,7 +2,7 @@ package day11
 
 import org.junit.jupiter.api.Test
 
-class Day11Test {
+class SolutionTest {
     private val sampleInput = """
         ...#......
         .......#..
@@ -30,7 +30,9 @@ class Day11Test {
         .........#...
         #....#.......
     """.trimIndent().lines()
-    
+
+    private val solution = Solution()
+
     @Test
     fun `findGalaxies should return the coordinates of the # characters `() {
         val result: Set<Galaxy> = findGalaxies(sampleInput)
@@ -74,11 +76,11 @@ class Day11Test {
 
     @Test
     fun `part1 should expand the universe, calculate the shortest distance between every unique pair of galaxies, and return the sum`() {
-        assert(part1(sampleInput) == 374L)
+        assert(solution.part1(sampleInput) == 374L)
     }
 
     @Test
     fun `part2 should expand the universe by a factor of 1 million, calculate the shortest distance between every unique pair of galaxies, and return the sum`() {
-        assert(part2(sampleInput) == 82000210L)
+        assert(solution.part2(sampleInput) == 82000210L)
     }
 }

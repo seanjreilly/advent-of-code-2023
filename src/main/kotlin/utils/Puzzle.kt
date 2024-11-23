@@ -17,12 +17,12 @@ abstract class Puzzle<T> {
         println("Elapsed time: $elapsed ms.")
     }
 
-    open fun getAoCDay() : Int {
+    private fun getAoCDay() : Int {
         val simpleName: String = this::class.java.packageName
         return DAY_REGEX.matchEntire(simpleName)!!.groupValues[1].toInt()
     }
 
-    private fun readInput() : List<String> {
+    fun readInput() : List<String> {
         val dataFile = File("src/main/resources/Day${day}.txt")
         if (dataFile.exists()) {
             println("using cached download ${dataFile.path}")
@@ -49,4 +49,5 @@ abstract class Puzzle<T> {
     }
 }
 
+abstract class IntPuzzle : Puzzle<Int>()
 abstract class LongPuzzle : Puzzle<Long>()

@@ -6,7 +6,7 @@ import utils.LongPoint
 import utils.Point
 import utils.readInput
 
-class Day18Test {
+class SolutionTest {
     private val sampleInput = """
         R 6 (#70c710)
         D 5 (#0dc571)
@@ -37,14 +37,16 @@ class Day18Test {
         .######
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should parse a polygon from dig instructions and return the count of border points and points contained by the polygon`() {
-        assert(part1(sampleInput) == 62L)
+        assert(solution.part1(sampleInput) == 62L)
     }
 
     @Test
     fun `part2 should translate the hex codes, parse a polygon from dig instructions and return the count of border points and points contained by the polygon`() {
-        assert(part2(sampleInput) == 952408144115L)
+        assert(solution.part2(sampleInput) == 952408144115L)
     }
 
     @Test
@@ -111,7 +113,7 @@ class Day18Test {
 
     @Test
     fun `parsing production part 2 input should produce a valid polygon`() {
-        val input = readInput("Day18")
+        val input = solution.readInput()
         parsePolygon(convertHexCodeToDigInstructions(input))
     }
 

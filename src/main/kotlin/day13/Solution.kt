@@ -1,25 +1,12 @@
 package day13
 
-import utils.readInput
+import utils.LongPuzzle
 import kotlin.math.min
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day13")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return calculateScore(input, ::findMirrorRow)
-}
-
-fun part2(input: List<String>): Long {
-    return calculateScore(input, ::findMirrorRowWithSmudge)
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+    override fun part1(input: List<String>) = calculateScore(input, ::findMirrorRow)
+    override fun part2(input: List<String>) = calculateScore(input, ::findMirrorRowWithSmudge)
 }
 
 private fun calculateScore(input: List<String>, transformation: (List<String>) -> Int?): Long {

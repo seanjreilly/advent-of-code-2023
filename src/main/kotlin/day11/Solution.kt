@@ -1,30 +1,23 @@
 package day11
 
+import utils.LongPuzzle
 import utils.Point
 import utils.parseGridWithPoints
-import utils.readInput
 import utils.twoElementCombinations
 import java.util.*
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day11")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+
+    override fun part1(input: Image): Long {
+        val expandedGalaxies = expandUniverse(findGalaxies(input), input)
+        return findTotalDistanceBetweenGalaxies(expandedGalaxies)
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: Image): Long {
-    val expandedGalaxies = expandUniverse(findGalaxies(input), input)
-    return findTotalDistanceBetweenGalaxies(expandedGalaxies)
-}
-
-fun part2(input: List<String>): Long {
-    val expandedGalaxies = expandUniverse(findGalaxies(input), input, 1_000_000)
-    return findTotalDistanceBetweenGalaxies(expandedGalaxies)
+    override fun part2(input: List<String>): Long {
+        val expandedGalaxies = expandUniverse(findGalaxies(input), input, 1_000_000)
+        return findTotalDistanceBetweenGalaxies(expandedGalaxies)
+    }
 }
 
 typealias Image = List<String>

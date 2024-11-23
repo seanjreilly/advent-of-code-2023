@@ -5,7 +5,7 @@ import org.junit.jupiter.api.assertThrows
 import utils.readInput
 import kotlin.IllegalArgumentException
 
-class Day13Test {
+class SolutionTest {
     private val sampleInput = """
         #.##..##.
         ..#.##.#.
@@ -24,14 +24,16 @@ class Day13Test {
         #....#..#
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should find the reflection in each pattern and return the sum of row indicies times 100 plus column indices`() {
-        assert(part1(sampleInput) == 405L)
+        assert(solution.part1(sampleInput) == 405L)
     }
 
     @Test
     fun `part2 should find the reflection with smudge in each pattern and return the sum of row indicies time 100 plus column indices`() {
-        assert(part2(sampleInput) == 400L)
+        assert(solution.part2(sampleInput) == 400L)
     }
 
     @Test

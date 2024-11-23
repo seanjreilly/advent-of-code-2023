@@ -1,25 +1,18 @@
 package day12
 
-import utils.readInput
-import java.lang.IllegalStateException
-import kotlin.system.measureTimeMillis
+import utils.LongPuzzle
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day12")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
 
-fun part1(input: List<String>): Long {
-    return input.map(ConditionRecord::parse).sumOf { it.countPossibleArrangements() }
-}
+    override fun part1(input: List<String>) = input
+        .map(ConditionRecord::parse)
+        .sumOf { it.countPossibleArrangements() }
 
-fun part2(input: List<String>): Long {
-    return input.map(::unfold).map(ConditionRecord::parse).sumOf { it.countPossibleArrangements() }
+    override fun part2(input: List<String>) = input
+        .map(::unfold)
+        .map(ConditionRecord::parse)
+        .sumOf { it.countPossibleArrangements() }
 }
 
 internal data class ConditionRecord(val damagedRecord: String, val alternateFormat: List<Int>) {

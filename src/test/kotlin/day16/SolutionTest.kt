@@ -6,7 +6,7 @@ import utils.CardinalDirection.*
 import utils.Point
 import utils.PointAndDirection
 
-class Day16Test {
+class SolutionTest {
     private val sampleInput = """
         .|...\....
         |.-.\.....
@@ -20,14 +20,16 @@ class Day16Test {
         ..//.|....
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should construct a contraption, energize the tiles, and return the number of energized tiles`() {
-        assert(part1(sampleInput) == 46L)
+        assert(solution.part1(sampleInput) == 46L)
     }
 
     @Test
     fun `part2 should find the initial beam configuration that energizes the most tiles and return that number`() {
-        assert(part2(sampleInput) == 51L)
+        assert(solution.part2(sampleInput) == 51L)
     }
     
     @Nested

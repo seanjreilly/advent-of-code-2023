@@ -1,28 +1,19 @@
 package day20
 
 import day20.PulseType.*
+import utils.LongPuzzle
 import utils.lcm
-import utils.readInput
 import java.math.BigInteger
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day20")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+
+    override fun part1(input: List<String>): Long {
+        val (lowPulses, highPulses) = parse(input).pushButton(1000)
+        return lowPulses * highPulses
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    val (lowPulses, highPulses) = parse(input).pushButton(1000)
-    return lowPulses * highPulses
-}
-
-fun part2(input: List<String>): Long {
-    return parse(input).countPushesUntilRxIsPulsed()
+    override fun part2(input: List<String>): Long = parse(input).countPushesUntilRxIsPulsed()
 }
 
 internal enum class PulseType { HIGH, LOW }

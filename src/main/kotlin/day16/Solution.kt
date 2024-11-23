@@ -2,36 +2,26 @@ package day16
 
 import utils.CardinalDirection
 import utils.CardinalDirection.*
+import utils.LongPuzzle
 import utils.Point
 import utils.PointAndDirection
-import utils.readInput
-import java.lang.IllegalStateException
 import kotlin.streams.asStream
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day16")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+
+    override fun part1(input: List<String>) = Contraption(input).energizeTiles().size.toLong()
+
+    override fun part2(input: List<String>): Long {
+        val contraption = Contraption(input)
+        return contraption.startingConfigurations()
+            .asSequence()
+            .asStream()
+            .parallel()
+            .map { contraption.energizeTiles(it) }
+            .map { it.size.toLong() }
+            .max(Comparator.naturalOrder()).get()
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return Contraption(input).energizeTiles().size.toLong()
-}
-
-fun part2(input: List<String>): Long {
-    val contraption = Contraption(input)
-    return contraption.startingConfigurations()
-        .asSequence()
-        .asStream()
-        .parallel()
-        .map { contraption.energizeTiles(it) }
-        .map { it.size.toLong() }
-        .max(Comparator.naturalOrder()).get()
 }
 
 internal class Contraption (input: List<String>)  {

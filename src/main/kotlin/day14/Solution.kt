@@ -1,29 +1,15 @@
 package day14
 
+import utils.IntPuzzle
 import utils.Point
-import utils.readInput
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day14")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return parse(input).also { it.tiltNorth() }.totalLoad().toLong()
-}
-
-fun part2(input: List<String>): Long {
-    return parse(input).also { it.spinCycle(1_000_000_000) }.totalLoad().toLong()
+fun main() = Solution().run()
+class Solution : IntPuzzle() {
+    override fun part1(input: List<String>) = parse(input).also { it.tiltNorth() }.totalLoad()
+    override fun part2(input: List<String>) = parse(input).also { it.spinCycle(1_000_000_000) }.totalLoad()
 }
 
 internal fun parse(input: List<String>): Platform {

@@ -3,7 +3,7 @@ package day12
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day12Test {
+class SolutionTest {
     private val sampleInput = """
         ???.### 1,1,3
         .??..??...?##. 1,1,3
@@ -13,14 +13,16 @@ class Day12Test {
         ?###???????? 3,2,1
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should calculate the number of legal arrangements for each line and return the sum`() {
-        assert(part1(sampleInput) == 21L)
+        assert(solution.part1(sampleInput) == 21L)
     }
 
     @Test
     fun `part2 should calculate the number of legal arrangements for each unfolded line and return the sum`() {
-        assert(part2(sampleInput) == 525152L)
+        assert(solution.part2(sampleInput) == 525152L)
     }
 
     @Nested

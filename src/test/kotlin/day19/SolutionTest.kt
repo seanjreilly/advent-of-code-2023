@@ -3,7 +3,7 @@ package day19
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day19Test {
+class SolutionTest {
     private val sampleInput = """
         px{a<2006:qkq,m>2090:A,rfg}
         pv{a>1716:R,A}
@@ -24,14 +24,16 @@ class Day19Test {
         {x=2127,m=1623,a=2188,s=1013}
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should analyse each part and return the sum of the total rating for each accepted part`() {
-        assert(part1(sampleInput) == 19114L)
+        assert(solution.part1(sampleInput) == 19114L)
     }
 
     @Test
     fun `part2 should calculate how many distinct combinations of ratings will be accepted`() {
-        assert(part2(sampleInput) == 167409079868000L)
+        assert(solution.part2(sampleInput) == 167409079868000L)
     }
 
     @Test

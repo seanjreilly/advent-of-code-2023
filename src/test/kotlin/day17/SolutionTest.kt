@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import utils.CardinalDirection.*
 import utils.Point
 
-class Day17Test {
+class SolutionTest {
     private val sampleInput = """
         2413432311323
         3215453535623
@@ -21,14 +21,16 @@ class Day17Test {
         4322674655533
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should build a graph and return the heat cost of the best route to the factory`() {
-        assert(part1(sampleInput) == 102L)
+        assert(solution.part1(sampleInput) == 102)
     }
 
     @Test
     fun `part2 should build an ultra crucible graph and return the heat cost of the best route to the factory`() {
-        assert(part2(sampleInput) == 94L)
+        assert(solution.part2(sampleInput) == 94)
     }
 
     @Test
