@@ -1,7 +1,7 @@
 package utils
 
 import java.io.File
-import java.net.URL
+import java.net.URI
 import java.nio.file.Files
 import kotlin.system.measureTimeMillis
 
@@ -27,7 +27,7 @@ abstract class Puzzle<T> {
         if (dataFile.exists()) {
             println("using cached download ${dataFile.path}")
         } else {
-            val url = URL("https://adventofcode.com/${year}/day/${day}/input")
+            val url = URI("https://adventofcode.com/${year}/day/${day}/input").toURL()
             println("downloading data file from ${url} to ${dataFile.path}")
             val credentials = File("src/main/resources/credentials.txt").readText().trim()
             url.openConnection().apply {
