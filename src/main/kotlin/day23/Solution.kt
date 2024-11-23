@@ -1,28 +1,15 @@
 package day23
 
 import utils.Bounds
+import utils.IntPuzzle
 import utils.Point
 import utils.parseGridWithPoints
-import utils.readInput
 import kotlin.math.max
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day23")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return findLongestPath(input).toLong()
-}
-
-fun part2(input: List<String>): Long {
-    return findLongestPathPart2(input).toLong()
+fun main() = Solution().run()
+class Solution : IntPuzzle() {
+    override fun part1(input: List<String>) = findLongestPath(input)
+    override fun part2(input: List<String>) = findLongestPathPart2(input)
 }
 
 internal fun findLongestPath(input: List<String>): Int {

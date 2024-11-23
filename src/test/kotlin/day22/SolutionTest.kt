@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.lang.IllegalStateException
 
-class Day22Test {
+class SolutionTest {
     private val sampleInput = """
         1,0,1~1,2,1
         0,0,2~2,0,2
@@ -16,14 +16,16 @@ class Day22Test {
         1,1,8~1,1,9
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should parse a collection of bricks, let them all fall, and return the count of bricks that can be safely disintegrated`() {
-        assert(part1(sampleInput) == 5L)
+        assert(solution.part1(sampleInput) == 5)
     }
 
     @Test
     fun `part2 should parse a collection of bricks, let them all fall, count the number of bricks that would fall for each brick that was disintegrated, and return the total amount`() {
-        assert(part2(sampleInput) == 7L)
+        assert(solution.part2(sampleInput) == 7)
     }
     
     @Nested

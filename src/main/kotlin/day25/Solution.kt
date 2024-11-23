@@ -4,25 +4,12 @@ import org.jgrapht.Graph
 import org.jgrapht.alg.StoerWagnerMinimumCut
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.DefaultUndirectedGraph
-import utils.readInput
-import kotlin.system.measureTimeMillis
+import utils.IntPuzzle
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day25")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return cut(parse(input)).map { it.toLong() }.reduce(Long::times)
-}
-
-fun part2(input: List<String>): Long {
-    return 0
+fun main() = Solution().run()
+class Solution : IntPuzzle() {
+    override fun part1(input: List<String>) = cut(parse(input)).reduce(Int::times)
+    override fun part2(input: List<String>) = 0
 }
 
 internal fun parse(input: List<String>): Graph<String, DefaultEdge> {

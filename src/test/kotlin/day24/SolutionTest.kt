@@ -7,7 +7,7 @@ import utils.readInput
 import utils.twoElementCombinations
 import kotlin.math.truncate
 
-class Day24Test {
+class SolutionTest {
     private val sampleInput = """
         19, 13, 30 @ -2,  1, -2
         18, 19, 22 @ -1, -1, -2
@@ -15,6 +15,8 @@ class Day24Test {
         12, 31, 28 @ -1, -2, -1
         20, 19, 15 @  1, -5, -3
     """.trimIndent().lines()
+
+    private val solution = Solution()
 
     @Nested
     inner class HailstoneTest {
@@ -222,7 +224,7 @@ class Day24Test {
 
     @Test
     fun `find possible solutions for production data and try to verify them`() {
-        val hailstones = readInput("Day24").map { Hailstone(it) }
+        val hailstones = solution.readInput().map { Hailstone(it) }
         val potentialSolutions = findPotentialRockVelocities(hailstones)
             .mapNotNull { findPotentialRockOrigin(it, hailstones)?.to(it) }
 
@@ -251,14 +253,14 @@ class Day24Test {
 
     @Test
     fun `findRockThatHitsAllHailstones should return an answer for production data`() {
-        val hailstones = readInput("Day24").map { Hailstone(it) }
+        val hailstones = solution.readInput().map { Hailstone(it) }
 
         findRockThatHitsAllHailstones(hailstones)
     }
 
     @Test
     fun `part2 should find position of the rock that hits every hailstone, and return the sum of its x, y, and z axes`() {
-        assert(part2(sampleInput) == 24L + 13L + 10L)
+        assert(solution.part2(sampleInput) == 24L + 13L + 10L)
     }
 
     companion object {

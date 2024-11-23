@@ -3,7 +3,7 @@ package day23
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class Day23Test {
+class SolutionTest {
     private val sampleInput = """
         #.#####################
         #.......#########...###
@@ -30,14 +30,16 @@ class Day23Test {
         #####################.#
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should return the longest path that doesn't visit any squares twice and travels the right way down steep slopes`() {
-        assert(part1(sampleInput) == 94L)
+        assert(solution.part1(sampleInput) == 94)
     }
 
     @Test
     fun `part2 should return the longest path that doesn't visit any squares twice regardless of steep slopes`() {
-        assert(part2(sampleInput) == 154L)
+        assert(solution.part2(sampleInput) == 154)
     }
 
     @Test

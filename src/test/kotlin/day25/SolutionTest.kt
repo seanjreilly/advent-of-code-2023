@@ -4,7 +4,7 @@ import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultEdge
 import org.junit.jupiter.api.Test
 
-class Day25Test {
+class SolutionTest {
     private val sampleInput = """
         jqt: rhn xhk nvd
         rsh: frs pzl lsr
@@ -21,9 +21,11 @@ class Day25Test {
         frs: qnr lhk lsr
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should parse the graph, make a min cut, and return the product of the component graph sizes`() {
-        assert(part1(sampleInput) == 54L)
+        assert(solution.part1(sampleInput) == 54)
     }
 
     @Test

@@ -1,34 +1,26 @@
 package day22
 
-import utils.readInput
+import utils.IntPuzzle
 import kotlin.math.min
 import kotlin.streams.asStream
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day22")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : IntPuzzle() {
+
+    override fun part1(input: List<String>): Int {
+        return input.map { parseBrick(it) }
+            .moveAllDown()
+            .findSafeBricksToDisintegrate()
+            .size
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    return input.map { parseBrick(it) }
-        .moveAllDown()
-        .findSafeBricksToDisintegrate()
-        .size
-        .toLong()
-}
-
-fun part2(input: List<String>): Long {
-    return input.map { parseBrick(it) }
-        .moveAllDown()
-        .findChainReactionCounts()
-        .values
-        .sumOf { it.toLong() }
+    override fun part2(input: List<String>): Int {
+        return input.map { parseBrick(it) }
+            .moveAllDown()
+            .findChainReactionCounts()
+            .values
+            .sum()
+    }
 }
 
 internal fun parseBrick(line: String): Brick {

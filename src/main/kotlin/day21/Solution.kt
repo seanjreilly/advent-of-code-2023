@@ -2,24 +2,13 @@ package day21
 
 import utils.*
 import kotlin.math.sign
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day21")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
 
-fun part1(input: List<String>): Long {
-    return Garden(input).findLegalDestinations(64).size.toLong()
-}
+    override fun part1(input: List<String>) = Garden(input).findLegalDestinations(64).size.toLong()
 
-fun part2(input: List<String>): Long {
-    return Garden(input).countLegalDestinationsOnInfiniteGrid(26501365)
+    override fun part2(input: List<String>) = Garden(input).countLegalDestinationsOnInfiniteGrid(26501365)
 }
 
 internal class Garden(val rocks: Set<Point>, val bounds: Bounds, val startPoint: Point) {

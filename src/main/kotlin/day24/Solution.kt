@@ -1,31 +1,24 @@
 package day24
 
 import utils.LongBounds
-import utils.readInput
+import utils.LongPuzzle
 import utils.twoElementCombinations
 import kotlin.math.roundToLong
 import kotlin.math.sign
-import kotlin.system.measureTimeMillis
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day24")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+
+    override fun part1(input: List<String>): Long {
+        val coordinateRange = 200_000_000_000_000L..400_000_000_000_000L
+        val bounds = LongBounds(coordinateRange, coordinateRange)
+        return countIntersections(input.map { Hailstone(it) }, bounds)
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    val coordinateRange = 200_000_000_000_000L .. 400_000_000_000_000L
-    val bounds = LongBounds(coordinateRange, coordinateRange)
-    return countIntersections(input.map { Hailstone(it) }, bounds)
-}
-
-fun part2(input: List<String>): Long {
-    val (solutionPosition, _) = findRockThatHitsAllHailstones(input.map { Hailstone(it) })
-    return solutionPosition.x + solutionPosition.y + solutionPosition.z
+    override fun part2(input: List<String>): Long {
+        val (solutionPosition, _) = findRockThatHitsAllHailstones(input.map { Hailstone(it) })
+        return solutionPosition.x + solutionPosition.y + solutionPosition.z
+    }
 }
 
 internal fun countIntersections(hailstones: List<Hailstone>, bounds: LongBounds): Long {

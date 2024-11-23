@@ -6,7 +6,7 @@ import utils.Bounds
 import utils.Point
 import utils.parseGridWithPoints
 
-class Day21Test {
+class SolutionTest {
     private val sampleInput = """
         ...........
         .....###.#.
@@ -21,9 +21,11 @@ class Day21Test {
         ...........
     """.trimIndent().lines()
 
+    private val solution = Solution()
+
     @Test
     fun `part1 should construct a Garden instance and count the number of squares the elf can reach in 64 steps`() {
-        assert(part1(sampleInput) == 42L)
+        assert(solution.part1(sampleInput) == 42L)
     }
     
     @Nested
@@ -119,7 +121,5 @@ class Day21Test {
             assert(garden.neighboursMappingInfiniteGrid(Point(19,19)).isEmpty())
             assert(garden.neighboursMappingInfiniteGrid(Point(-8,-4)).size == 4)
         }
-
-
     }
 }
