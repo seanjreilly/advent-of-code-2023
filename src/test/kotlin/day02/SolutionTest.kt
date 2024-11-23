@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import utils.readInput
 
-class Day02Test {
+class SolutionTest {
     private val sampleInput = """
         Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
         Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
@@ -13,7 +13,7 @@ class Day02Test {
         Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
     """.trimIndent().lines()
 
-    private val solution = Day02()
+    private val solution = Solution()
 
     @Test
     fun `parse should return the expected gameDescription given a line`() {

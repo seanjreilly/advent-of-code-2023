@@ -2,7 +2,7 @@ package day01
 
 import org.junit.jupiter.api.Test
 
-class Day01Test {
+class SolutionTest {
     private val sampleInput = """
         1abc2
         pqr3stu8vwx
@@ -20,7 +20,7 @@ class Day01Test {
         7pqrstsixteen
     """.trimIndent().lines()
 
-    private val solution = Day01()
+    private val solution = Solution()
 
     @Test
     fun `firstDigit should return the first digit in the string`() {

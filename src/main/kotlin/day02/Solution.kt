@@ -7,8 +7,8 @@ private const val RED = "red"
 private const val GREEN = "green"
 private const val BLUE = "blue"
 
-fun main() = Day02().run()
-class Day02 : LongPuzzle() {
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
 
     override fun part1(input: List<String>) = input.map(::parse).filter { it.possible }.sumOf { it.id }.toLong()
     override fun part2(input: List<String>): Long = input.map(::parse).sumOf { it.power }.toLong()

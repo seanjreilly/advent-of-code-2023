@@ -3,7 +3,7 @@ package day03
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class Day03Test {
+class SolutionTest {
     private val sampleInput = """
         467..114..
         ...*......

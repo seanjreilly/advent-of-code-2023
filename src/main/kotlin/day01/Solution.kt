@@ -2,8 +2,8 @@ package day01
 
 import utils.LongPuzzle
 
-fun main() = Day01().run()
-class Day01 : LongPuzzle() {
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
     override fun part1(input: List<String>) = input.map { firstAndLastDigits(it) }.sumOf { it.toLong() }
     override fun part2(input: List<String>) = input
         .map { firstDigitPart2(it).toString() + lastDigitPart2(it) }
