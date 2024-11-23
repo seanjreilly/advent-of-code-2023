@@ -18,7 +18,7 @@ abstract class Puzzle<T> {
     }
 
     open fun getAoCDay() : Int {
-        val simpleName: String = this::class.simpleName!!
+        val simpleName: String = this::class.java.packageName
         return DAY_REGEX.matchEntire(simpleName)!!.groupValues[1].toInt()
     }
 
@@ -45,7 +45,7 @@ abstract class Puzzle<T> {
     abstract fun part2(input: List<String>): T
 
     companion object {
-        private val DAY_REGEX = """Day(\d{2})""".toRegex()
+        private val DAY_REGEX = """day(\d{2})""".toRegex(RegexOption.IGNORE_CASE)
     }
 }
 
