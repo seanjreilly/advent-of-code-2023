@@ -2,7 +2,6 @@ package day02
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import utils.readInput
 
 class SolutionTest {
     private val sampleInput = """
@@ -67,7 +66,7 @@ class SolutionTest {
 
     @Test
     fun `sanity check -- the production file should not include any lines that don't mention every color at least once`() {
-        val lines = readInput("Day2")
+        val lines = solution.readInput()
         lines.forEach {
             val gd = solution.parse(it)
 

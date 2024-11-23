@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import utils.LongPoint
 import utils.Point
-import utils.readInput
 
 class SolutionTest {
     private val sampleInput = """
@@ -83,7 +82,7 @@ class SolutionTest {
 
     @Test
     fun `parsePolygon should return a valid polygon given production input`() {
-        val input = readInput("Day18")
+        val input = solution.readInput()
         parsePolygon(input)
     }
 

@@ -3,7 +3,6 @@ package day24
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import utils.LongBounds
-import utils.readInput
 import utils.twoElementCombinations
 import kotlin.math.truncate
 
@@ -180,7 +179,7 @@ class SolutionTest {
     @Test
     fun `assert that duplicate velocity components for each axis exist in test and production  data`() {
         countDuplicateDeltaComponents(sampleInput.map { Hailstone(it) })
-        countDuplicateDeltaComponents(readInput("Day24").map { Hailstone(it) })
+        countDuplicateDeltaComponents(solution.readInput().map { Hailstone(it) })
     }
 
     @Test

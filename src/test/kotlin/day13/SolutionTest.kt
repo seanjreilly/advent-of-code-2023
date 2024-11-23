@@ -2,8 +2,6 @@ package day13
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import utils.readInput
-import kotlin.IllegalArgumentException
 
 class SolutionTest {
     private val sampleInput = """
@@ -193,21 +191,21 @@ class SolutionTest {
 
     @Test
     fun `max line length should be less than 64`() {
-        val maxLineLength = readInput("Day13").maxOf { it.length }
+        val maxLineLength = solution.readInput().maxOf { it.length }
         println(maxLineLength)
         assert(maxLineLength < 32)
     }
 
     @Test
     fun `max chunk length should be less than 64`() {
-        val maxChunkLength = readInput("Day13").chunkOnPredicate { it.isBlank() }.maxOf { it.size }
+        val maxChunkLength = solution.readInput().chunkOnPredicate { it.isBlank() }.maxOf { it.size }
         println(maxChunkLength)
         assert(maxChunkLength < 32)
     }
 
     @Test
     fun `there should be no line with a custom hash code of 0`() {
-        readInput("Day13")
+        solution.readInput()
             .filter { it.isNotBlank() }
             .map { it.customHashCode() }
             .none { it == 0u }
@@ -215,7 +213,7 @@ class SolutionTest {
 
     @Test
     fun `there should be no transposed line with a custom hash code of 0`() {
-        readInput("Day13")
+        solution.readInput()
             .chunkOnPredicate { it.isBlank() }
             .map { it.transpose() }
             .flatten()
@@ -238,7 +236,7 @@ class SolutionTest {
 
     @Test
     fun `no patterns should match part 1 normally and transposed`() {
-        val patterns = readInput("Day13").chunkOnPredicate { it.isBlank() }
+        val patterns = solution.readInput().chunkOnPredicate { it.isBlank() }
 
         val patternsMatchingNormally = patterns.withIndex().filter { findMirrorRow(it.value) != null }.map { it.index }.toSet()
         val patternsMatchingTransposed = patterns.map { it.transpose() }.withIndex().filter { findMirrorRow(it.value) != null }.map { it.index }.toSet()
