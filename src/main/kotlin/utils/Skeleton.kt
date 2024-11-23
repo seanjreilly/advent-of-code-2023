@@ -6,7 +6,7 @@ package utils
  * The skeleton code to run each day
  */
 fun main() = Solution().run()
-class Solution : LongPuzzle() {
+class Solution : LongSolution() {
     override fun part1(input: List<String>): Long {
         TODO("Not yet implemented")
     }
