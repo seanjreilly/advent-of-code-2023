@@ -17,6 +17,8 @@ class Day03Test {
         .664.598..
     """.trimIndent().lines()
 
+    private val solution = Day03()
+
     @Test
     fun `findPartNumbers() should return the part numbers that are adjacent to at least one symbol`() {
         val partNumbers: List<PartNumber> = findPartNumbers(sampleInput)
@@ -48,12 +50,12 @@ class Day03Test {
 
     @Test
     fun `part1 should return the sum of all the part numbers in the engine schematic `() {
-        assert(part1(sampleInput) == 4361L)
+        assert(solution.part1(sampleInput) == 4361L)
     }
 
     @Test
     fun `part2 should calculate the product of the part numbers for each gear and return the sum of those products`() {
-        assert(part2(sampleInput) == 467835L)
+        assert(solution.part2(sampleInput) == 467835L)
     }
 
     @Nested

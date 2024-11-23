@@ -1,24 +1,11 @@
 package day03
 
-import utils.readInput
-import kotlin.system.measureTimeMillis
+import utils.LongPuzzle
 
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("Day03")
-        println(part1(input))
-        println(part2(input))
-    }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
-
-fun part1(input: List<String>): Long {
-    return findPartNumbers(input).sumOf { it.value }
-}
-
-fun part2(input: List<String>): Long {
-    return findGears(input).sumOf { it.partNumbers.reduce(Long::times) }
+fun main() = Day03().run()
+class Day03 : LongPuzzle() {
+    override fun part1(input: List<String>): Long = findPartNumbers(input).sumOf { it.value }
+    override fun part2(input: List<String>): Long = findGears(input).sumOf { it.partNumbers.reduce(Long::times) }
 }
 
 private val DIGITS_REGEX = """\d+""".toRegex()
