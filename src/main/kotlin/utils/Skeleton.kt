@@ -1,29 +1,17 @@
-@file:Suppress("UNUSED_PARAMETER", "unused") //just a template
+@file:Suppress("unused") //just a template
 
 package utils
-
-import kotlin.system.measureTimeMillis
 
 /*
  * The skeleton code to run each day
  */
-
-fun main() {
-    val elapsed = measureTimeMillis {
-        val input = readInput("DayXX")
-        println(part1(input))
-        println(part2(input))
+fun main() = Solution().run()
+class Solution : LongPuzzle() {
+    override fun part1(input: List<String>): Long {
+        TODO("Not yet implemented")
     }
-    println()
-    println("Elapsed time: $elapsed ms.")
-}
 
-fun part1(input: List<String>): Long {
-    return 0
-}
-
-fun part2(input: List<String>): Long {
-    return 0
+    override fun part2(input: List<String>) = 0L
 }
 
 /*
@@ -31,3 +19,5 @@ fun part2(input: List<String>): Long {
  */
 private val sampleInput = """
     """.trimIndent().lines()
+
+private val solution = Solution()
