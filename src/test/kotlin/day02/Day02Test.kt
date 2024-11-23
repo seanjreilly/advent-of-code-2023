@@ -13,9 +13,11 @@ class Day02Test {
         Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
     """.trimIndent().lines()
 
+    private val solution = Day02()
+
     @Test
     fun `parse should return the expected gameDescription given a line`() {
-        val result: GameDescription = parse(sampleInput.first())
+        val result: GameDescription = solution.parse(sampleInput.first())
 
         assert(result.id == 1)
         assert(result.maxRed == 4)
@@ -28,46 +30,46 @@ class Day02Test {
         //line from prod input file
         val input = "Game 23: 10 green, 1 blue, 5 red; 2 red, 4 green; 9 green, 2 red; 10 green, 1 blue, 5 red"
 
-        val result = parse(input)
+        val result = solution.parse(input)
 
         assert(result.id == 23)
     }
 
     @Test
     fun `parse should handle a multi-digit number of cubes`() {
-        val result = parse(sampleInput[2])
+        val result = solution.parse(sampleInput[2])
         assert(result.maxRed == 20)
         assert(result.maxGreen == 13)
 
-        assert(parse(sampleInput[3]).maxBlue == 15) //need a different input line for blue
+        assert(solution.parse(sampleInput[3]).maxBlue == 15) //need a different input line for blue
     }
 
     @Nested
     inner class GameDescriptionTest {
         @Test
         fun `possible should return true iff it can be played with 12 red, 13 green, and 14 blue cubes`() {
-            assert(parse(sampleInput[0]).possible)
-            assert(parse(sampleInput[1]).possible)
-            assert(!parse(sampleInput[2]).possible)
-            assert(!parse(sampleInput[3]).possible)
-            assert(parse(sampleInput[4]).possible)
+            assert(solution.parse(sampleInput[0]).possible)
+            assert(solution.parse(sampleInput[1]).possible)
+            assert(!solution.parse(sampleInput[2]).possible)
+            assert(!solution.parse(sampleInput[3]).possible)
+            assert(solution.parse(sampleInput[4]).possible)
         }
 
         @Test
         fun `power should return minRed times minGreen times minBlue`() {
-            assert(parse(sampleInput[0]).power == 48)
-            assert(parse(sampleInput[1]).power == 12)
-            assert(parse(sampleInput[2]).power == 1560)
-            assert(parse(sampleInput[3]).power == 630)
-            assert(parse(sampleInput[4]).power == 36)
+            assert(solution.parse(sampleInput[0]).power == 48)
+            assert(solution.parse(sampleInput[1]).power == 12)
+            assert(solution.parse(sampleInput[2]).power == 1560)
+            assert(solution.parse(sampleInput[3]).power == 630)
+            assert(solution.parse(sampleInput[4]).power == 36)
         }
     }
 
     @Test
     fun `sanity check -- the production file should not include any lines that don't mention every color at least once`() {
-        val lines = readInput("Day02")
+        val lines = readInput("Day2")
         lines.forEach {
-            val gd = parse(it)
+            val gd = solution.parse(it)
 
             assert(gd.maxRed > 0) { "line ${gd.id} doesn't have any red cubes" }
             assert(gd.maxGreen > 0) { "line ${gd.id} doesn't have any green cubes" }
@@ -77,11 +79,11 @@ class Day02Test {
 
     @Test
     fun `part1 should find the possible games and return the sum of their ids`() {
-        assert(part1(sampleInput) == 8L)
+        assert(solution.part1(sampleInput) == 8L)
     }
 
     @Test
     fun `part2 should return the sum of the games power scores`() {
-        assert(part2(sampleInput) == 2286L)
+        assert(solution.part2(sampleInput) == 2286L)
     }
 }
